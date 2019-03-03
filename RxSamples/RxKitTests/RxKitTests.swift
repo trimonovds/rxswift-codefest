@@ -7,6 +7,8 @@
 //
 
 import XCTest
+import RxSwift
+import RxTest
 @testable import RxKit
 
 class RxKitTests: XCTestCase {
@@ -20,8 +22,16 @@ class RxKitTests: XCTestCase {
     }
 
     func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        let testScheduler = TestScheduler(initialClock: 0)
+        let sourceArray = [1,2,3,4,6,12]
+        let testObserver = testScheduler.start { () -> Observable<Int> in
+            Observable<Int>
+                .from(sourceArray)
+                .duplicate()
+        }
+
+        let expected = (sourceArray.count * 2 + 1)
+        XCTAssert(testObserver.events.count == expected)
     }
 
     func testPerformanceExample() {

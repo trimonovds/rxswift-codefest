@@ -19,6 +19,13 @@ target 'RxSamples' do
 
   target 'RxKit' do
     pod 'RxSwift'
+
+    target 'RxKitTests' do
+      inherit! :search_paths
+
+      pod 'RxTest'
+    end
+
   end
 
 end
