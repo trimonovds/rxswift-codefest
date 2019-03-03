@@ -13,8 +13,11 @@ public class SomeSampleClass {
     public static let shared = SomeSampleClass()
 
     public func doSmth() {
-        Observable<Int>.from([1,2,3,4]).subscribe(onNext: { (x) in
-            print(x)
-        })
+        Observable<Int>
+            .from([1,2,3,4,6])
+            .duplicate()
+            .subscribe(onNext: { (x) in
+                print(x)
+            })
     }
 }

@@ -21,6 +21,7 @@
 		8713BFF2222C38BE00D423A7 /* RxKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8713BFDD222C38BE00D423A7 /* RxKit.framework */; };
 		8713BFF3222C38BE00D423A7 /* RxKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8713BFDD222C38BE00D423A7 /* RxKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8713BFFC222C391700D423A7 /* SomeTestClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8713BFFB222C391700D423A7 /* SomeTestClass.swift */; };
+		8713BFFE222C3BB600D423A7 /* ObservableType+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8713BFFD222C3BB600D423A7 /* ObservableType+Extensions.swift */; };
 		C0F4022AB1FB4BE418800270 /* Pods_RxSamples.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA0D3BFF4D0471B95B35110C /* Pods_RxSamples.framework */; };
 /* End PBXBuildFile section */
 
@@ -92,6 +93,7 @@
 		8713BFEC222C38BE00D423A7 /* RxKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxKitTests.swift; sourceTree = "<group>"; };
 		8713BFEE222C38BE00D423A7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8713BFFB222C391700D423A7 /* SomeTestClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SomeTestClass.swift; sourceTree = "<group>"; };
+		8713BFFD222C3BB600D423A7 /* ObservableType+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ObservableType+Extensions.swift"; sourceTree = "<group>"; };
 		8E108877AAAB8BF5A319E9C8 /* Pods-RxSamples.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxSamples.release.xcconfig"; path = "Target Support Files/Pods-RxSamples/Pods-RxSamples.release.xcconfig"; sourceTree = "<group>"; };
 		A7AEB5DC03F21486A5A4AAD6 /* Pods-RxSamples-RxKit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxSamples-RxKit.debug.xcconfig"; path = "Target Support Files/Pods-RxSamples-RxKit/Pods-RxSamples-RxKit.debug.xcconfig"; sourceTree = "<group>"; };
 		A9071C8BA3C58E30AAB0EE9E /* Pods_RxSamples_RxKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RxSamples_RxKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -197,6 +199,7 @@
 		8713BFDE222C38BE00D423A7 /* RxKit */ = {
 			isa = PBXGroup;
 			children = (
+				8713BFFD222C3BB600D423A7 /* ObservableType+Extensions.swift */,
 				8713BFDF222C38BE00D423A7 /* RxKit.h */,
 				8713BFE0222C38BE00D423A7 /* Info.plist */,
 				8713BFFB222C391700D423A7 /* SomeTestClass.swift */,
@@ -541,6 +544,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8713BFFE222C3BB600D423A7 /* ObservableType+Extensions.swift in Sources */,
 				8713BFFC222C391700D423A7 /* SomeTestClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
