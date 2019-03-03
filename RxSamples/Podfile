@@ -17,4 +17,8 @@ target 'RxSamples' do
     pod 'RxTest'
   end
 
+  target 'RxKit' do
+    pod 'RxSwift'
+  end
+
 end

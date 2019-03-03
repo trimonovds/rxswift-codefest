@@ -7,11 +7,14 @@
 //
 
 import Foundation
+import RxSwift
 
 public class SomeSampleClass {
     public static let shared = SomeSampleClass()
 
     public func doSmth() {
-        print("Rx Rx Rx")
+        Observable<Int>.from([1,2,3,4]).subscribe(onNext: { (x) in
+            print(x)
+        })
     }
 }
