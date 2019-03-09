@@ -8,22 +8,26 @@
 
 import Foundation
 
-public protocol Disposable: AnyObject {
-    func dispose()
+open class Observable<T>: IObservable {
+    public typealias Element = T
+
+    public init() {
+        
+    }
+
+    public func asObservable() -> Observable<T> {
+        return self
+    }
+
+    open func subscribe<O>(_ observer: O) -> Disposable where O: IObserver, T == O.Element {
+        fatalError("Implement in subclasses")
+    }
 }
 
-public enum Event<T> {
-    case success(T)
-    case error(Error)
-    case completed
-}
+class Observer<T>: IObserver {
+    typealias Element = T
 
-public protocol Observer {
-    associatedtype T
-    func on(_ event: Event<T>)
-}
-
-public protocol Observable {
-    associatedtype T
-    func subscribe<O: Observer>(_ observer: O) -> Disposable where O.T == T
+    func on(_ event: Event<T>) {
+        fatalError("Implement in subclasses")
+    }
 }

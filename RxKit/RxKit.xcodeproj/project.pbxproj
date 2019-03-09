@@ -7,10 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		875981222233E53900B2BD7F /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 875981212233E53900B2BD7F /* Filter.swift */; };
+		875981252233ED9800B2BD7F /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 875981242233ED9800B2BD7F /* Observable.swift */; };
 		8788BEB32233E0E40022032C /* RxKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8788BEA92233E0E40022032C /* RxKit.framework */; };
 		8788BEB82233E0E40022032C /* RxKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8788BEB72233E0E40022032C /* RxKitTests.swift */; };
 		8788BEBA2233E0E40022032C /* RxKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 8788BEAC2233E0E40022032C /* RxKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8788BEC42233E1140022032C /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8788BEC32233E1140022032C /* Observable.swift */; };
+		8788BEC42233E1140022032C /* IObservable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8788BEC32233E1140022032C /* IObservable.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -24,13 +26,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		875981212233E53900B2BD7F /* Filter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Filter.swift; sourceTree = "<group>"; };
+		875981242233ED9800B2BD7F /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
 		8788BEA92233E0E40022032C /* RxKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RxKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8788BEAC2233E0E40022032C /* RxKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RxKit.h; sourceTree = "<group>"; };
 		8788BEAD2233E0E40022032C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8788BEB22233E0E40022032C /* RxKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RxKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8788BEB72233E0E40022032C /* RxKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxKitTests.swift; sourceTree = "<group>"; };
 		8788BEB92233E0E40022032C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8788BEC32233E1140022032C /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
+		8788BEC32233E1140022032C /* IObservable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IObservable.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,7 +79,9 @@
 			children = (
 				8788BEAC2233E0E40022032C /* RxKit.h */,
 				8788BEAD2233E0E40022032C /* Info.plist */,
-				8788BEC32233E1140022032C /* Observable.swift */,
+				8788BEC32233E1140022032C /* IObservable.swift */,
+				875981212233E53900B2BD7F /* Filter.swift */,
+				875981242233ED9800B2BD7F /* Observable.swift */,
 			);
 			path = RxKit;
 			sourceTree = "<group>";
@@ -198,7 +204,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8788BEC42233E1140022032C /* Observable.swift in Sources */,
+				8788BEC42233E1140022032C /* IObservable.swift in Sources */,
+				875981252233ED9800B2BD7F /* Observable.swift in Sources */,
+				875981222233E53900B2BD7F /* Filter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
