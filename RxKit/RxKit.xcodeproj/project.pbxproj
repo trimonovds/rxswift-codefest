@@ -9,6 +9,11 @@
 /* Begin PBXBuildFile section */
 		875981222233E53900B2BD7F /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 875981212233E53900B2BD7F /* Filter.swift */; };
 		875981252233ED9800B2BD7F /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 875981242233ED9800B2BD7F /* Observable.swift */; };
+		875981272233F18200B2BD7F /* Disposables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 875981262233F18200B2BD7F /* Disposables.swift */; };
+		875981292233F1D900B2BD7F /* Just.swift in Sources */ = {isa = PBXBuildFile; fileRef = 875981282233F1D900B2BD7F /* Just.swift */; };
+		8759812B2233F1FB00B2BD7F /* From.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8759812A2233F1FB00B2BD7F /* From.swift */; };
+		8759812D2233F24100B2BD7F /* IObservable+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8759812C2233F24100B2BD7F /* IObservable+Extensions.swift */; };
+		875981302233F3FD00B2BD7F /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8759812F2233F3FD00B2BD7F /* Map.swift */; };
 		8788BEB32233E0E40022032C /* RxKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8788BEA92233E0E40022032C /* RxKit.framework */; };
 		8788BEB82233E0E40022032C /* RxKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8788BEB72233E0E40022032C /* RxKitTests.swift */; };
 		8788BEBA2233E0E40022032C /* RxKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 8788BEAC2233E0E40022032C /* RxKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -28,6 +33,11 @@
 /* Begin PBXFileReference section */
 		875981212233E53900B2BD7F /* Filter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Filter.swift; sourceTree = "<group>"; };
 		875981242233ED9800B2BD7F /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
+		875981262233F18200B2BD7F /* Disposables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Disposables.swift; sourceTree = "<group>"; };
+		875981282233F1D900B2BD7F /* Just.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Just.swift; sourceTree = "<group>"; };
+		8759812A2233F1FB00B2BD7F /* From.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = From.swift; sourceTree = "<group>"; };
+		8759812C2233F24100B2BD7F /* IObservable+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IObservable+Extensions.swift"; sourceTree = "<group>"; };
+		8759812F2233F3FD00B2BD7F /* Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
 		8788BEA92233E0E40022032C /* RxKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RxKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8788BEAC2233E0E40022032C /* RxKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RxKit.h; sourceTree = "<group>"; };
 		8788BEAD2233E0E40022032C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -56,6 +66,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8759812E2233F2A600B2BD7F /* Operators */ = {
+			isa = PBXGroup;
+			children = (
+				8759812A2233F1FB00B2BD7F /* From.swift */,
+				875981282233F1D900B2BD7F /* Just.swift */,
+				875981212233E53900B2BD7F /* Filter.swift */,
+				8759812F2233F3FD00B2BD7F /* Map.swift */,
+			);
+			path = Operators;
+			sourceTree = "<group>";
+		};
 		8788BE9F2233E0E40022032C = {
 			isa = PBXGroup;
 			children = (
@@ -77,11 +98,13 @@
 		8788BEAB2233E0E40022032C /* RxKit */ = {
 			isa = PBXGroup;
 			children = (
+				8759812E2233F2A600B2BD7F /* Operators */,
 				8788BEAC2233E0E40022032C /* RxKit.h */,
 				8788BEAD2233E0E40022032C /* Info.plist */,
 				8788BEC32233E1140022032C /* IObservable.swift */,
-				875981212233E53900B2BD7F /* Filter.swift */,
 				875981242233ED9800B2BD7F /* Observable.swift */,
+				875981262233F18200B2BD7F /* Disposables.swift */,
+				8759812C2233F24100B2BD7F /* IObservable+Extensions.swift */,
 			);
 			path = RxKit;
 			sourceTree = "<group>";
@@ -205,8 +228,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				8788BEC42233E1140022032C /* IObservable.swift in Sources */,
+				8759812B2233F1FB00B2BD7F /* From.swift in Sources */,
+				875981302233F3FD00B2BD7F /* Map.swift in Sources */,
+				875981272233F18200B2BD7F /* Disposables.swift in Sources */,
 				875981252233ED9800B2BD7F /* Observable.swift in Sources */,
+				875981292233F1D900B2BD7F /* Just.swift in Sources */,
 				875981222233E53900B2BD7F /* Filter.swift in Sources */,
+				8759812D2233F24100B2BD7F /* IObservable+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
