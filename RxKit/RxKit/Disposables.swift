@@ -25,4 +25,8 @@ public class Disposables {
     public static func empty() -> Disposable {
         return BlockDisposable(block: { })
     }
+
+    public static func create(block: @escaping () -> Void) -> Disposable {
+        return BlockDisposable(block: block)
+    }
 }

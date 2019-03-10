@@ -91,6 +91,16 @@ http://reactivex.io/documentation/operators.html#tree - Operators Decision tree 
     }
 - etc...
 
+Про Sink, Producer
 
+Sink 
+1. Фактически это хрень, которая создается с observer'ом и ему форвардит событияему 
+2. Ему передается cancel, который на самом деле есть SinkDisposer, 
+который по сути является Disposable'ом, держащим ссылки на подписку и Sink. 
+То есть его dispose это sink = nil, subscription = nil
+3. Sink чаще всего производить filter, map etc... то есть получает событие из исходного стрима
+и применяет операцию над ним, при этом получая .error, .completed он форвардит это дальше и вызывает dispose 
+который в итоге освобождает ресурсы и перестает ретейнить этот Sink и подписку
+4. Когда создается Sink, инкрементится число ресурсов, при deinit'е - уменьшается на 1
 
-
+!!!(sink, subscription) - тут subscription это подписка sink'а на исходный стрим

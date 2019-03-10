@@ -13,15 +13,15 @@ extension IObservable {
     /// Передаем такой subscribe, вместо: subscribe: @escaping (_ observer: O) -> Disposable потому, что
     /// передать в метод generic IObserver нельзя, соот-но нужно делать generic метод с конкретным O: IObserver,
     /// который будет отличаться от O в методе override func subscribe в нашем CreateObservable
-    public static func create(subscribe: @escaping ((Event<Element>) -> Void) -> Disposable) -> Observable<Element> {
+    public static func create(subscribe: @escaping (@escaping (Event<Element>) -> Void) -> Disposable) -> Observable<Element> {
         return CreateObservable(subscribe: subscribe)
     }
 }
 
 class CreateObservable<T>: Observable<T> {
-    private let subscribeHandler: ((Event<T>) -> Void) -> Disposable
+    private let subscribeHandler: (@escaping (Event<T>) -> Void) -> Disposable
 
-    init(subscribe: @escaping ((Event<T>) -> Void) -> Disposable) {
+    init(subscribe: @escaping (@escaping (Event<T>) -> Void) -> Disposable) {
         self.subscribeHandler = subscribe
     }
 
