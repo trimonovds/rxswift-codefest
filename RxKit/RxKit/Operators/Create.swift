@@ -26,7 +26,32 @@ class CreateObservable<T>: Observable<T> {
     }
 
     override func subscribe<O>(_ observer: O) -> Disposable where T == O.Element, O: IObserver {
-        return self.subscribeHandler(observer.on)
+        let createObserver = CreateObserver(observer)
+        return self.subscribeHandler(createObserver.on)
+    }
+}
+
+class CreateObserver<T>: Observer<T> {
+
+    private let coreOn: (Event<T>) -> Void
+    private var isStopped: Bool = false
+
+    init<O>(_ observer: O) where O: IObserver, O.Element == T {
+        self.coreOn = observer.on
+    }
+
+    override func on(_ event: Event<T>) {
+        guard !isStopped else { return }
+        switch event {
+        case .next(let value):
+            coreOn(.next(value))
+        case .error(let error):
+            coreOn(.error(error))
+            isStopped = true
+        case .completed:
+            coreOn(.completed)
+            isStopped = true
+        }
     }
 }
 

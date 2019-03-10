@@ -89,7 +89,10 @@ http://reactivex.io/documentation/operators.html#tree - Operators Decision tree 
             return AnonymousObservable(subscribe)
         }
     }
-- etc...
+- Почему тип Event выглядит так... почему есть error? И можно ли как для Single'а (SingleObserver) 
+сделать ErrorlessObserver... Давайте попробуем
+
+КИШОЧКИ RxSwift
 
 Про Sink, Producer
 
@@ -104,3 +107,11 @@ Sink
 4. Когда создается Sink, инкрементится число ресурсов, при deinit'е - уменьшается на 1
 
 !!!(sink, subscription) - тут subscription это подписка sink'а на исходный стрим
+
+Producer
+1. Просто наследник Observable, который реализует template метод с управлением ресурсами - SinkDisposer
+и предлагает реализовать метод run, который и вернет Sink и Subscription
+
+В общем все доп типы нужны для 2-х вещей - шедулинга и удовлетворения контракта Observable'а. 
+AnonymousObservable, AnonymousObserver, Produces, Sink... 
+Тем самым RxSwift обрабатывает кейсы, когда мы в Observable.create передаем on(.error) -> on(.next)
