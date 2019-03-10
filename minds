@@ -62,3 +62,33 @@ http://reactivex.io/documentation/operators.html#tree - Operators Decision tree 
 - Написать кастомный оператор
 
 Написать пример с amb (lowQuality.amd(highqualityShare).concat(highQualityShared).distinctUntil
+
+1. Reentrancy
+2. Backpressure
+3. Многие задачи сводятся к rx-search из примеров. 
+С одной стороны это хорошо - многие задачи можем решить поняв этот сэмпл
+С другой стороны это плохо - начинаем везде и все решать НЕ ТАК, КАК БЫЛО БЫ УДОБНЕЕ/ПОНЯТНЕЕ/ЧИЩЕ/ПРОЩЕ ПРОТЕСТИРОВАТЬ, а так, как привыкли с Rx.
+Нужен пример...
+4. Проблема разработчика часто это - непонимание того, как работает либа, которое в свою очередь возникает потому,
+что разработчик не писал этот код и не знает какие проблемы решает та или иная его часть
+Например: 
+- ObservableConvertibleType и соот-но asObservable() - зачем?
+- Пример с Observable.create... почему там AnyObserver?
+    extension ObservableType {
+        // MARK: create
+
+        /**
+        Creates an observable sequence from a specified subscribe method implementation.
+
+        - seealso: [create operator on reactivex.io](http://reactivex.io/documentation/operators/create.html)
+
+        - parameter subscribe: Implementation of the resulting observable sequence's `subscribe` method.
+        - returns: The observable sequence with the specified implementation for the `subscribe` method.
+        */
+        public static func create(_ subscribe: @escaping (AnyObserver<E>) -> Disposable) -> Observable<E> {
+            return AnonymousObservable(subscribe)
+        }
+    }
+- etc...
+
+
