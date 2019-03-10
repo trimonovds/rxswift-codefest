@@ -42,7 +42,7 @@ extension BlockObserver {
     convenience init(onNext: @escaping (T) -> Void, onError: @escaping (Error) -> Void, onComplete: @escaping () -> Void) {
         let eventHandler = { (event: Event<T>) -> Void in
             switch event {
-            case .success(let value):
+            case .next(let value):
                 onNext(value)
             case .error(let error):
                 onError(error)

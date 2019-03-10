@@ -11,10 +11,10 @@ Observable.from(elements: [100, -12, 15, -17])
 
 Observable
     .create(subscribe: { (observer: (Event<Int>) -> Void) -> Disposable in
-        observer(.success(3))
-        observer(.success(5))
+        observer(.next(3))
+        observer(.next(5))
         observer(.completed)
-        observer(.success(121))
+        observer(.next(121))
         return Disposables.empty()
     })
     .subscribe(onNext: { print($0) })

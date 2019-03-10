@@ -25,7 +25,7 @@ final class FromObservable<T>: Observable<T> {
 
     override func subscribe<O>(_ observer: O) -> Disposable where T == O.Element, O : IObserver {
         for el in elements {
-            observer.on(.success(el))
+            observer.on(.next(el))
         }
         observer.on(.completed)
         return Disposables.empty()

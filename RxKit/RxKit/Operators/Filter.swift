@@ -41,9 +41,9 @@ class FilterObserver<T>: Observer<T> {
 
     override func on(_ event: Event<T>) {
         switch event {
-        case .success(let value):
+        case .next(let value):
             if predicate(value) {
-                coreOn(.success(value))
+                coreOn(.next(value))
             }
         case .error(let error):
             coreOn(.error(error))

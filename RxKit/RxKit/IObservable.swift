@@ -13,7 +13,7 @@ public protocol Disposable: AnyObject {
 }
 
 public enum Event<Element> {
-    case success(Element)
+    case next(Element)
     case error(Error)
     case completed
 }

@@ -41,9 +41,9 @@ class MapObserver<TFrom, TTo>: Observer<TFrom> {
 
     override func on(_ event: Event<TFrom>) {
         switch event {
-        case .success(let value):
+        case .next(let value):
             let transformedValue = self.transform(value)
-            coreOn(.success(transformedValue))
+            coreOn(.next(transformedValue))
         case .error(let error):
             coreOn(.error(error))
         case .completed:
