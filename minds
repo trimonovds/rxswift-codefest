@@ -92,6 +92,11 @@ http://reactivex.io/documentation/operators.html#tree - Operators Decision tree 
 - Почему тип Event выглядит так... почему есть error? И можно ли как для Single'а (SingleObserver) 
 сделать ErrorlessObserver... Давайте попробуем
 
+Как решить проблемы Reactive Extensions:
+
+- Например использовать ReactiveSwift, в котором есть различие между hot/cold observable - Signal/SignalProducer
+- Писать доки или собственных Trait'ов
+
 КИШОЧКИ RxSwift
 
 Про Sink, Producer
@@ -115,3 +120,19 @@ Producer
 В общем все доп типы нужны для 2-х вещей - шедулинга и удовлетворения контракта Observable'а. 
 AnonymousObservable, AnonymousObserver, Produces, Sink... 
 Тем самым RxSwift обрабатывает кейсы, когда мы в Observable.create передаем on(.error) -> on(.next)
+
+Concurrency in Rx:
+
+A popular misconception is that Rx is multithreaded by default.
+Like events, Rx is just a way of chaining callbacks together for a given notification. 
+While Rx is a free-threaded model, this does not mean that subscribing or calling OnNext will introduce multi-threading to your sequence. 
+Being free-threaded means that you are not restricted to which thread you choose to do your work. 
+For example, you can choose to do your work such as invoking a subscription, observing or producing notifications, on any thread you like. 
+The alternative to a free-threaded model is a Single Threaded Apartment (STA) model where you must interact with the system on a given thread. 
+It is common to use the STA model when working with User Interfaces and some COM interop. 
+So, just as a recap: if you do not introduce any scheduling, your callbacks will be invoked on the same thread that the OnNext/OnError/OnCompleted methods are invoked from.
+
+In the Rx world, there are generally two things you want to control the concurrency model for:
+
+1. The invocation of the subscription
+2. The observing of notifications
