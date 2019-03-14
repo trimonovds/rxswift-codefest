@@ -99,6 +99,10 @@ http://reactivex.io/documentation/operators.html#tree - Operators Decision tree 
 
 КИШОЧКИ RxSwift
 
+Про hot vs cold Observables
+
+https://github.com/ReactiveX/RxSwift/blob/master/Documentation/HotAndColdObservables.md
+
 Про Sink, Producer
 
 Sink 
