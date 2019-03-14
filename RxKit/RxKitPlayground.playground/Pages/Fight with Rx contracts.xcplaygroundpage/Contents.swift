@@ -5,15 +5,15 @@ import RxKit
 import Utils
 import PlaygroundSupport
 
-struct Country {
-    let name: String
-}
-
 class CountryCell: TableViewCell {
     typealias Model = Country
     func bind(to model: CountryCell.Model) {
         self.textLabel?.text = model.name
     }
+}
+
+struct Country {
+    let name: String
 }
 
 protocol CountriesRepository {
@@ -24,19 +24,14 @@ struct CountriesModel {
     let countries: [Country]
 }
 
-class CountriesViewController: UIViewController {
+class CountriesViewController: UIViewController, UITableViewDelegate {
 
     typealias CountryCellConfigurator = CellConfigurator<CountryCell, Country>
 
-    var model: CountriesModel? {
+    var model: CountriesModel! {
         didSet {
-            guard let m = model else {
-                dataSource.sectionConfigurations = []
-                tableView.reloadData()
-                return
-            }
             dataSource.sectionConfigurations = [
-                SectionConfigurator(cellConfigurators: m.countries.map { CountryCellConfigurator(model: $0) })
+                SectionConfigurator(cellConfigurators: model.countries.map { CountryCellConfigurator(model: $0) })
             ]
             tableView.reloadData()
         }
@@ -65,14 +60,33 @@ class CountriesViewController: UIViewController {
         tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
         tableView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
         tableView.dataSource = dataSource
+        tableView.delegate = self
+
+        model = CountriesModel(countries: [])
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         repo.fetchCountries().subscribe(onNext: {
-            self.model = CountriesModel(countries: $0)
+            self.update(withNewCountries: $0)
         })
+    }
+
+    func update(withNewCountries countries: [Country]) {
+        self.model = CountriesModel(countries: countries)
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+
+        guard let selectedCountyName = model?.countries[indexPath.row].name else { return }
+        let alertVc = UIAlertController(title: "Wow", message: "\(selectedCountyName) chosen!", preferredStyle: .alert)
+        alertVc.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
+            alertVc.dismiss(animated: true, completion: nil)
+        }))
+
+        self.present(alertVc, animated: true, completion: nil)
     }
 
     private let repo: CountriesRepository
@@ -82,7 +96,10 @@ class CountriesViewController: UIViewController {
 class CountriesRepositoryImpl: CountriesRepository {
     func fetchCountries() -> Observable<[Country]> {
         let fakeCountries = [
-            Country(name: "Russia")
+            Country(name: "Russia"),
+            Country(name: "USA"),
+            Country(name: "Austria"),
+            Country(name: "France")
         ]
         return Observable<[Country]>.just(element: fakeCountries)
     }
