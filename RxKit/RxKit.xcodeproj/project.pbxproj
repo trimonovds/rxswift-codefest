@@ -19,6 +19,7 @@
 		8788BEB82233E0E40022032C /* RxKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8788BEB72233E0E40022032C /* RxKitTests.swift */; };
 		8788BEBA2233E0E40022032C /* RxKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 8788BEAC2233E0E40022032C /* RxKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8788BEC42233E1140022032C /* IObservable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8788BEC32233E1140022032C /* IObservable.swift */; };
+		87EA93CA223CF54500C64D16 /* StartWith.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87EA93C9223CF54500C64D16 /* StartWith.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		8788BEB72233E0E40022032C /* RxKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxKitTests.swift; sourceTree = "<group>"; };
 		8788BEB92233E0E40022032C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8788BEC32233E1140022032C /* IObservable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IObservable.swift; sourceTree = "<group>"; };
+		87EA93C9223CF54500C64D16 /* StartWith.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartWith.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +78,7 @@
 				875981212233E53900B2BD7F /* Filter.swift */,
 				8759812F2233F3FD00B2BD7F /* Map.swift */,
 				8704F50A2233FA2C00543D1C /* Create.swift */,
+				87EA93C9223CF54500C64D16 /* StartWith.swift */,
 			);
 			path = Operators;
 			sourceTree = "<group>";
@@ -232,6 +235,7 @@
 			files = (
 				8704F50B2233FA2C00543D1C /* Create.swift in Sources */,
 				8788BEC42233E1140022032C /* IObservable.swift in Sources */,
+				87EA93CA223CF54500C64D16 /* StartWith.swift in Sources */,
 				8759812B2233F1FB00B2BD7F /* From.swift in Sources */,
 				875981302233F3FD00B2BD7F /* Map.swift in Sources */,
 				875981272233F18200B2BD7F /* Disposables.swift in Sources */,

@@ -20,25 +20,13 @@ protocol CountriesRepository {
     func fetchCountries() -> Observable<[Country]>
 }
 
-struct CountriesModel {
-    let countries: [Country]
-}
-
 class CountriesViewController: UIViewController, UITableViewDelegate {
 
     typealias CountryCellConfigurator = CellConfigurator<CountryCell, Country>
 
-    var model: CountriesModel! {
-        didSet {
-            dataSource.sectionConfigurations = [
-                SectionConfigurator(cellConfigurators: model.countries.map { CountryCellConfigurator(model: $0) })
-            ]
-            tableView.reloadData()
-        }
-    }
 
-    var tableView: UITableView!
-    var searchBar: UISearchBar!
+    let tableView: UITableView = UITableView()
+    let searchBar: UISearchBar = UISearchBar()
 
     init(repo: CountriesRepository) {
         self.repo = repo
@@ -51,7 +39,7 @@ class CountriesViewController: UIViewController, UITableViewDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView = UITableView()
+
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -60,7 +48,6 @@ class CountriesViewController: UIViewController, UITableViewDelegate {
         tableView.dataSource = dataSource
         tableView.delegate = self
 
-        searchBar = UISearchBar()
         view.addSubview(searchBar)
         searchBar.translatesAutoresizingMaskIntoConstraints = false
 
@@ -69,32 +56,26 @@ class CountriesViewController: UIViewController, UITableViewDelegate {
             searchBar.pinToParentSafe(withEdges: [.top, .left, .right]) +
             [tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor)]
         )
-
-        model = CountriesModel(countries: [])
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        repo.fetchCountries().subscribe(onNext: {
-            self.update(withNewCountries: $0)
+        let countriesStream = repo.fetchCountries().startWith(element: [])
+        countriesStream.subscribe(onNext: { countries in
+            self.updateDataSource(with: countries)
+            self.tableView.reloadData()
         })
+        countriesStream.map { $0.count }
+            .subscribe(onNext: { countriesCount in
+                self.searchBar.placeholder = "\(countriesCount) countries"
+            })
     }
 
-    func update(withNewCountries countries: [Country]) {
-        self.model = CountriesModel(countries: countries)
-    }
-
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-
-        guard let selectedCountyName = model?.countries[indexPath.row].name else { return }
-        let alertVc = UIAlertController(title: "Wow", message: "\(selectedCountyName) chosen!", preferredStyle: .alert)
-        alertVc.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
-            alertVc.dismiss(animated: true, completion: nil)
-        }))
-
-        self.present(alertVc, animated: true, completion: nil)
+    func updateDataSource(with countries: [Country]) {
+        dataSource.sectionConfigurations = [
+            SectionConfigurator(cellConfigurators: countries.map { CountryCellConfigurator(model: $0) })
+        ]
     }
 
     private let repo: CountriesRepository
