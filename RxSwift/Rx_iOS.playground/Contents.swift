@@ -15,10 +15,15 @@ class CountryCell: TableViewCell {
 
 struct Country {
     let name: String
+    let isEnabled: Bool
 }
 
 protocol CountriesRepository {
     func fetchCountries() -> Observable<[Country]>
+}
+
+struct CountriesModel {
+    let countries: [Country]
 }
 
 class CountriesViewController: UIViewController, UITableViewDelegate {
@@ -54,32 +59,31 @@ class CountriesViewController: UIViewController, UITableViewDelegate {
 
         NSLayoutConstraint.activate(
             tableView.pinToParentSafe(withEdges: [.bottom, .left, .right]) +
-                searchBar.pinToParentSafe(withEdges: [.top, .left, .right]) +
-                [tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor)]
+            searchBar.pinToParentSafe(withEdges: [.top, .left, .right]) +
+            [tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor)]
         )
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        let countriesStream = repo.fetchCountries().startWith([])
+        let countriesStream = repo.fetchCountries().startWith([]).publish()
         countriesStream.subscribe(onNext: { [weak self] countries in
             guard let slf = self else { return }
             slf.updateDataSource(with: countries)
             slf.tableView.reloadData()
         })
-        countriesStream.map { $0.count }
-            .subscribe({ [weak self] event in
+        countriesStream.map { "\($0.count) countries" }
+            .catchErrorJustReturn("Can't load countries")
+            .subscribe(onNext: { [weak self] placeholder in
                 guard let slf = self else { return }
-                switch event {
-                case .next(let countriesCount):
-                    slf.searchBar.placeholder = "\(countriesCount) countries"
-                case .error(_):
-                    slf.searchBar.placeholder = "Can't load countries"
-                case .completed:
-                    return
-                }
+                slf.searchBar.placeholder = placeholder
             })
+        countriesStream.connect()
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // Where can i get country by indexPath
     }
 
     func updateDataSource(with countries: [Country]) {
@@ -96,10 +100,10 @@ class CountriesRepositoryImpl: CountriesRepository {
     func fetchCountries() -> Observable<[Country]> {
         return Observable.create({ (observer) -> Disposable in
             let fakeCountries = [
-                Country(name: "Russia"),
-                Country(name: "USA"),
-                Country(name: "Austria"),
-                Country(name: "France")
+                Country(name: "Russia", isEnabled: true),
+                Country(name: "USA", isEnabled: true),
+                Country(name: "Austria", isEnabled: false),
+                Country(name: "France", isEnabled: false)
             ]
             let random = Int.random(in: (0...2))
             if random == 2 {
