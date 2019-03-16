@@ -5,6 +5,8 @@ import RxKit
 import Utils
 import PlaygroundSupport
 
+struct SomeError: Error { }
+
 class CountryCell: TableViewCell {
     typealias Model = Country
     func bind(to model: CountryCell.Model) {
@@ -62,13 +64,23 @@ class CountriesViewController: UIViewController, UITableViewDelegate {
         super.viewWillAppear(animated)
 
         let countriesStream = repo.fetchCountries().startWith(element: [])
-        countriesStream.subscribe(onNext: { countries in
-            self.updateDataSource(with: countries)
-            self.tableView.reloadData()
+        countriesStream.subscribe(onNext: { [weak self] countries in
+            guard let slf = self else { return }
+            slf.updateDataSource(with: countries)
+            slf.tableView.reloadData()
         })
         countriesStream.map { $0.count }
-            .subscribe(onNext: { countriesCount in
-                self.searchBar.placeholder = "\(countriesCount) countries"
+            .subscribe(on: { [weak self] event in
+                guard let slf = self else { return }
+                print("Event received \(event)")
+                switch event {
+                case .next(let countriesCount):
+                    slf.searchBar.placeholder = "\(countriesCount) countries"
+                case .error(_):
+                    slf.searchBar.placeholder = "Can't load countries"
+                case .completed:
+                    return
+                }
             })
     }
 
@@ -84,13 +96,23 @@ class CountriesViewController: UIViewController, UITableViewDelegate {
 
 class CountriesRepositoryImpl: CountriesRepository {
     func fetchCountries() -> Observable<[Country]> {
-        let fakeCountries = [
-            Country(name: "Russia"),
-            Country(name: "USA"),
-            Country(name: "Austria"),
-            Country(name: "France")
-        ]
-        return Observable<[Country]>.just(element: fakeCountries)
+        return Observable.create(subscribe: { (observer) -> Disposable in
+            let fakeCountries = [
+                Country(name: "Russia"),
+                Country(name: "USA"),
+                Country(name: "Austria"),
+                Country(name: "France")
+            ]
+            let random = Int.random(in: (0...4))
+            if random == 4 {
+                observer(.error(SomeError()))
+                observer(.completed)
+            } else {
+                observer(.next(fakeCountries))
+                observer(.completed)
+            }
+            return Disposables.create { }
+        })
     }
 }
 
