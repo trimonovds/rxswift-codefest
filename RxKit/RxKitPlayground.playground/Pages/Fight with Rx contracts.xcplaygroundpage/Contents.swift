@@ -38,6 +38,7 @@ class CountriesViewController: UIViewController, UITableViewDelegate {
     }
 
     var tableView: UITableView!
+    var searchBar: UISearchBar!
 
     init(repo: CountriesRepository) {
         self.repo = repo
@@ -51,16 +52,23 @@ class CountriesViewController: UIViewController, UITableViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView = UITableView()
-        tableView.rowHeight = UITableView.automaticDimension
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
+
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.contentInsetAdjustmentBehavior = .never
-        tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        tableView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
-        tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-        tableView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
         tableView.dataSource = dataSource
         tableView.delegate = self
+
+        searchBar = UISearchBar()
+        view.addSubview(searchBar)
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate(
+            tableView.pinToParentSafe(withEdges: [.bottom, .left, .right]) +
+            searchBar.pinToParentSafe(withEdges: [.top, .left, .right]) +
+            [tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor)]
+        )
 
         model = CountriesModel(countries: [])
     }
