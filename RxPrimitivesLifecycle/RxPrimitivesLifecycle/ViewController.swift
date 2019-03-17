@@ -38,16 +38,34 @@ class PrintObserver<T>: ObserverType {
 //    private let active = BehaviorRelay<Bool>(value: false)
 //}
 
+//class ViewController: UIViewController {
+//    override func viewDidLoad() {
+//        super.viewDidLoad()
+//        Observable<Bool>.empty().bind(to: active)
+//        let printObserver = PrintObserver<Bool>()
+//        _ = active.subscribe(printObserver)
+//    }
+//
+//    override func viewDidAppear(_ animated: Bool) {
+//        super.viewDidAppear(animated)
+//        active.onNext(true)
+//    }
+//    override func viewDidDisappear(_ animated: Bool) {
+//        super.viewDidDisappear(animated)
+//        active.onNext(false)
+//    }
+//
+//    private let active = BehaviorSubject<Bool>(value: false)
+//}
+
 class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
-        Observable<Bool>.empty().bind(to: active)
-        let printObserver = PrintObserver<Bool>()
-        _ = active.subscribe(printObserver)
+
+        print("RxSwift Resource.total: \(Resources.total)")
+        let printObserver = PrintObserver<String>()
+        Observable<String>.just("Hello Rx").subscribe(printObserver)
+        print("RxSwift Resource.total: \(Resources.total)")
     }
-
-    ... // Same viewDidAppear and viewDidDisappear
-
-    private let active = BehaviorSubject<Bool>(value: false)
 }
 

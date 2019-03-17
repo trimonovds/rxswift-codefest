@@ -77,7 +77,6 @@
 				1646897C6ED4ECC4F71E8BFB /* Pods-RxPrimitivesLifecycle.debug.xcconfig */,
 				B215DA2BD20FD9A9CD132DBA /* Pods-RxPrimitivesLifecycle.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -368,6 +367,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D TRACE_RESOURCES";
 				PRODUCT_BUNDLE_IDENTIFIER = com.trimonovds.RxPrimitivesLifecycle;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
@@ -387,6 +387,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D TRACE_RESOURCES";
 				PRODUCT_BUNDLE_IDENTIFIER = com.trimonovds.RxPrimitivesLifecycle;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
