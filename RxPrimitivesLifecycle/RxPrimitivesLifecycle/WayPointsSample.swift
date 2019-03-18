@@ -72,14 +72,14 @@ class WayPointViewModel {
     var bag = DisposeBag()
 }
 
-class GenericBindableView<ViewModelType: AnyObject>: BindableView {
-    typealias Model = ViewModelType
+open class GenericBindableView<ViewModelType: AnyObject>: BindableView {
+    public typealias Model = ViewModelType
 
-    func bind(to model: ViewModelType) {
+    open func bind(to model: ViewModelType) {
         viewModel = model
     }
 
-    private var viewModel: ViewModelType? {
+    private(set) var viewModel: ViewModelType? {
         didSet {
             binding = DisposeBag()
         }
@@ -104,11 +104,11 @@ class WayPointCellView: GenericBindableView<WayPointViewModel> {
         makeEmptyButton.setTitle("x", for: .normal)
         makeEmptyButton.setTitleColor(.black, for: .normal)
 
-        nameLabel.font = UIFont.preferredFont(forTextStyle: .subheadline)
-        boundTimesLabel.font = UIFont.preferredFont(forTextStyle: .subheadline)
+        nameLabel.font = UIFont.preferredFont(forTextStyle: .headline)
+        boundTimesLabel.font = UIFont.preferredFont(forTextStyle: .caption1)
 
         nameLabel.textColor = .black
-        boundTimesLabel.textColor = .gray
+        boundTimesLabel.textColor = .blue
 
         NSLayoutConstraint.activate(
             nameLabel.pinToParent(withEdges: [.left, .top]) +
@@ -139,9 +139,11 @@ class WayPointCellView: GenericBindableView<WayPointViewModel> {
 
             switch state {
             case .empty:
+                slf.nameLabel.textColor = UIColor.black.withAlphaComponent(0.6)
                 slf.nameLabel.text = "Неизвестно"
                 slf.makeEmptyButton.alpha = 0.0
             case .filled(let wp):
+                slf.nameLabel.textColor = UIColor.black
                 slf.nameLabel.text = wp.name
                 slf.makeEmptyButton.alpha = 1.0
             }
@@ -160,9 +162,8 @@ class WayPointCell: BindableTableViewCell {
     typealias Model = WayPointViewModel
 
     func bind(to viewModel: WayPointViewModel) {
-        let newView = WayPointCellView(frame: .zero)
-        newView.bind(to: viewModel)
-        view = newView
+        view = WayPointCellView(frame: .zero)
+        view?.bind(to: viewModel)
     }
 
     var view: WayPointCellView? {
@@ -171,9 +172,7 @@ class WayPointCell: BindableTableViewCell {
             if let v = view {
                 v.translatesAutoresizingMaskIntoConstraints = false
                 contentView.addSubview(v)
-                NSLayoutConstraint.activate(
-                    v.pinToParent(withInsets: UIEdgeInsets.init(top: 8.0, left: 8.0, bottom: 8.0, right: 8.0))
-                )
+                NSLayoutConstraint.activate(v.pinToParent(withInsets: UIEdgeInsets.init(top: 8.0, left: 8.0, bottom: 8.0, right: 8.0)))
             }
         }
     }

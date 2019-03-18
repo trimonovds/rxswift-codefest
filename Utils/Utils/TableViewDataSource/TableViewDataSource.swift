@@ -13,8 +13,9 @@ public protocol Bindable {
     func bind(to model: Model)
 }
 
-public typealias BindableTableViewCell = UITableViewCell & Bindable
 public typealias BindableView = UIView & Bindable
+
+public typealias BindableTableViewCell = UITableViewCell & Bindable
 
 public protocol TableViewCellConfigurator {
     static var reuseId: String { get }
