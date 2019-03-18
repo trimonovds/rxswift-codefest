@@ -114,7 +114,7 @@ class WayPointCellView: BindableView<WayPointViewModel> {
             nameLabel.pinToParent(withEdges: [.left, .top]) +
                 boundTimesLabel.pinToParent(withEdges: [.left, .bottom]) +
                 [
-                    nameLabel.bottomAnchor.constraint(equalTo: boundTimesLabel.topAnchor),
+                    boundTimesLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8.0),
                     makeEmptyButton.heightAnchor.constraint(equalToConstant: 20),
                     makeEmptyButton.widthAnchor.constraint(equalToConstant: 20)
                 ] +
@@ -172,7 +172,7 @@ class WayPointCell: TableViewCell {
                 v.translatesAutoresizingMaskIntoConstraints = false
                 contentView.addSubview(v)
                 NSLayoutConstraint.activate(
-                    v.pinToParent()
+                    v.pinToParent(withInsets: UIEdgeInsets.init(top: 8.0, left: 8.0, bottom: 8.0, right: 8.0))
                 )
             }
         }

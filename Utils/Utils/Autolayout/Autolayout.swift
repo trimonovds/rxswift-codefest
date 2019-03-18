@@ -54,6 +54,20 @@ extension UIView {
         return self.pinTo(view: parent, withEdges: .all)
     }
 
+    public func pinTo(view: UIView, withInsets insets: UIEdgeInsets) -> [NSLayoutConstraint] {
+        var result = [NSLayoutConstraint]()
+        result.append(self.leftAnchor.constraint(equalTo: view.leftAnchor, constant: insets.left))
+        result.append(self.topAnchor.constraint(equalTo: view.topAnchor, constant: insets.top))
+        result.append(view.rightAnchor.constraint(equalTo: self.rightAnchor, constant: insets.right))
+        result.append(view.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: insets.bottom))
+        return result
+    }
+
+    public func pinToParent(withInsets insets: UIEdgeInsets) -> [NSLayoutConstraint] {
+        guard let parent = superview else { assert(false); return [] }
+        return self.pinTo(view: parent, withInsets: insets)
+    }
+
     public func pinToParentSafe() -> [NSLayoutConstraint] {
         guard let parent = superview else { assert(false); return [] }
         let layoutGuide = parent.safeAreaLayoutGuide
