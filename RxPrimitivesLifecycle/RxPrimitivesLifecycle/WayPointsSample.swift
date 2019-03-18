@@ -92,8 +92,8 @@ class WayPointCellView: GenericBindableView<WayPointViewModel> {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        makeEmptyButton.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(makeEmptyButton)
+        clearButton.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(clearButton)
 
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(nameLabel)
@@ -101,8 +101,8 @@ class WayPointCellView: GenericBindableView<WayPointViewModel> {
         boundTimesLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(boundTimesLabel)
 
-        makeEmptyButton.setTitle("x", for: .normal)
-        makeEmptyButton.setTitleColor(.black, for: .normal)
+        clearButton.setTitle("x", for: .normal)
+        clearButton.setTitleColor(.black, for: .normal)
 
         nameLabel.font = UIFont.preferredFont(forTextStyle: .headline)
         boundTimesLabel.font = UIFont.preferredFont(forTextStyle: .caption1)
@@ -115,11 +115,11 @@ class WayPointCellView: GenericBindableView<WayPointViewModel> {
                 boundTimesLabel.pinToParent(withEdges: [.left, .bottom]) +
                 [
                     boundTimesLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8.0),
-                    makeEmptyButton.heightAnchor.constraint(equalToConstant: 20),
-                    makeEmptyButton.widthAnchor.constraint(equalToConstant: 20)
+                    clearButton.heightAnchor.constraint(equalToConstant: 20),
+                    clearButton.widthAnchor.constraint(equalToConstant: 20)
                 ] +
-                makeEmptyButton.pinToParent(withEdges: [.right]) +
-                makeEmptyButton.centerInParent(.vertically)
+                clearButton.pinToParent(withEdges: [.right]) +
+                clearButton.centerInParent(.vertically)
         )
 
     }
@@ -141,21 +141,21 @@ class WayPointCellView: GenericBindableView<WayPointViewModel> {
             case .empty:
                 slf.nameLabel.textColor = UIColor.black.withAlphaComponent(0.6)
                 slf.nameLabel.text = "Неизвестно"
-                slf.makeEmptyButton.alpha = 0.0
+                slf.clearButton.alpha = 0.0
             case .filled(let wp):
                 slf.nameLabel.textColor = UIColor.black
                 slf.nameLabel.text = wp.name
-                slf.makeEmptyButton.alpha = 1.0
+                slf.clearButton.alpha = 1.0
             }
         }).disposed(by: binding)
 
-        makeEmptyButton.rx.tap.bind(to: viewModel.taps).disposed(by: binding)
+        clearButton.rx.tap.bind(to: viewModel.taps).disposed(by: binding)
 
     }
 
     private let nameLabel = UILabel()
     private let boundTimesLabel = UILabel()
-    private let makeEmptyButton = UIButton(type: .system)
+    private let clearButton = UIButton(type: .system)
 }
 
 class WayPointCell: BindableTableViewCell {
