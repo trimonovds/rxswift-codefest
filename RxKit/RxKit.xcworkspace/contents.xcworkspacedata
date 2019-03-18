@@ -5,9 +5,6 @@
       location = "group:RxKitPlayground.playground">
    </FileRef>
    <FileRef
-      location = "group:../Utils/Utils.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:RxKit.xcodeproj">
    </FileRef>
 </Workspace>

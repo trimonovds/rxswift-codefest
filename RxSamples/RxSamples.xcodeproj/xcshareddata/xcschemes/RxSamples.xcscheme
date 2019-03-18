@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "871D18B9223E763B00670997"
-               BuildableName = "RxPrimitivesLifecycle.app"
-               BlueprintName = "RxPrimitivesLifecycle"
-               ReferencedContainer = "container:RxPrimitivesLifecycle.xcodeproj">
+               BlueprintIdentifier = "873D6594224008CA0040DAD8"
+               BuildableName = "RxSamples.app"
+               BlueprintName = "RxSamples"
+               ReferencedContainer = "container:RxSamples.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -46,10 +46,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "871D18B9223E763B00670997"
-            BuildableName = "RxPrimitivesLifecycle.app"
-            BlueprintName = "RxPrimitivesLifecycle"
-            ReferencedContainer = "container:RxPrimitivesLifecycle.xcodeproj">
+            BlueprintIdentifier = "873D6594224008CA0040DAD8"
+            BuildableName = "RxSamples.app"
+            BlueprintName = "RxSamples"
+            ReferencedContainer = "container:RxSamples.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -69,10 +69,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "871D18B9223E763B00670997"
-            BuildableName = "RxPrimitivesLifecycle.app"
-            BlueprintName = "RxPrimitivesLifecycle"
-            ReferencedContainer = "container:RxPrimitivesLifecycle.xcodeproj">
+            BlueprintIdentifier = "873D6594224008CA0040DAD8"
+            BuildableName = "RxSamples.app"
+            BlueprintName = "RxSamples"
+            ReferencedContainer = "container:RxSamples.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -88,10 +88,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "871D18B9223E763B00670997"
-            BuildableName = "RxPrimitivesLifecycle.app"
-            BlueprintName = "RxPrimitivesLifecycle"
-            ReferencedContainer = "container:RxPrimitivesLifecycle.xcodeproj">
+            BlueprintIdentifier = "873D6594224008CA0040DAD8"
+            BuildableName = "RxSamples.app"
+            BlueprintName = "RxSamples"
+            ReferencedContainer = "container:RxSamples.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

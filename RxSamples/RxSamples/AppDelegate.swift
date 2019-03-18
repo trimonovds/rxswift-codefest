@@ -1,8 +1,8 @@
 //
 //  AppDelegate.swift
-//  RxPrimitivesLifecycle
+//  RxSamples
 //
-//  Created by Dmitry Trimonov on 17/03/2019.
+//  Created by Dmitry Trimonov on 18/03/2019.
 //  Copyright © 2019 Dmitry Trimonov. All rights reserved.
 //
 

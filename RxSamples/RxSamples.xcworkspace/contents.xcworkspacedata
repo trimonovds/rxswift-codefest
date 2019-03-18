@@ -2,10 +2,10 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:RxPrimitivesLifecycle.xcodeproj">
+      location = "group:../Utils/Utils.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:../Utils/Utils.xcodeproj">
+      location = "group:RxSamples.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">

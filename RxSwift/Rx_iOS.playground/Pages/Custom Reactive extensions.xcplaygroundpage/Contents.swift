@@ -6,8 +6,6 @@ import RxSwift
 import RxCocoa
 import PlaygroundSupport
 
-
-
 public class TimeInfoView: UIView {
     public var date: Date = Date() {
         didSet {

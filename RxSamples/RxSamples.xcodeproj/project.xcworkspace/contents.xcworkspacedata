@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:RxPrimitivesLifecycle.xcodeproj">
+      location = "self:RxSamples.xcodeproj">
    </FileRef>
 </Workspace>

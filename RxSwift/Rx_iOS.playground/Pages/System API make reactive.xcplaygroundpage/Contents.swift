@@ -15,18 +15,19 @@ class StatusBarOrientationObserverWrapper {
 }
 
 extension UIApplication {
-//    public var observableStatusBarOrientation: Observable<UIInterfaceOrientation> {
-//        return Observable<UIInterfaceOrientation>.create { observer in
-//            let wrapper = StatusBarOrientationObserverWrapper(observer: observer)
-//            NotificationCenter.default.addObserver(
-//                wrapper,
-//                selector: #selector(StatusBarOrientationObserverWrapper.handler),
-//                name: UIApplication.didChangeStatusBarOrientationNotification,
-//                object: nil
-//            )
-//            return Disposables.create { NotificationCenter.default.removeObserver(wrapper) }
-//        }
-//    }
+    public var customObservableStatusBarOrientation: Observable<UIInterfaceOrientation> {
+        return Observable<UIInterfaceOrientation>.create { observer in
+            let wrapper = StatusBarOrientationObserverWrapper(observer: observer)
+            NotificationCenter.default.addObserver(
+                wrapper,
+                selector: #selector(StatusBarOrientationObserverWrapper.handler),
+                name: UIApplication.didChangeStatusBarOrientationNotification,
+                object: nil
+            )
+            return Disposables.create { NotificationCenter.default.removeObserver(wrapper) }
+        }
+    }
+
     public var observableStatusBarOrientation: Observable<UIInterfaceOrientation> {
         return NotificationCenter.default.rx
             .notification(UIApplication.didChangeStatusBarOrientationNotification)
@@ -34,16 +35,13 @@ extension UIApplication {
     }
 }
 
-UIApplication.shared.observableStatusBarOrientation.subscribe(onNext: {
+UIApplication.shared.customObservableStatusBarOrientation.subscribe(onNext: {
     print("Custom: \($0.isPortrait)")
 })
 
-NotificationCenter.default.rx
-    .notification(UIApplication.didChangeStatusBarOrientationNotification)
-    .map { _ in UIApplication.shared.statusBarOrientation }
-    .subscribe(onNext: { orientation in
-        print("RxCocoa: \(orientation.isPortrait)")
-    })
+UIApplication.shared.observableStatusBarOrientation.subscribe(onNext: {
+    print("Cocoa: \($0.isPortrait)")
+})
 
 NotificationCenter.default.post(name: UIApplication.didChangeStatusBarOrientationNotification, object: nil)
 
