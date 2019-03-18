@@ -9,12 +9,14 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import Utils
+import CoreLocation
 
-class PrintObserver<T>: ObserverType {
-    typealias E = T
-    deinit { print("PrintObserver<\(T.self)> deallocated") }
-    func on(_ event: Event<T>) { print("PrintObserver<\(T.self)> did receive: \(event)") }
-}
+//class PrintObserver<T>: ObserverType {
+//    typealias E = T
+//    deinit { print("PrintObserver<\(T.self)> deallocated") }
+//    func on(_ event: Event<T>) { print("PrintObserver<\(T.self)> did receive: \(event)") }
+//}
 
 //class ViewController: UIViewController {
 //    override func viewDidLoad() {
@@ -58,14 +60,13 @@ class PrintObserver<T>: ObserverType {
 //    private let active = BehaviorSubject<Bool>(value: false)
 //}
 
-class ViewController: UIViewController {
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        print("RxSwift Resource.total: \(Resources.total)")
-        let printObserver = PrintObserver<String>()
-        Observable<String>.just("Hello Rx").subscribe(printObserver)
-        print("RxSwift Resource.total: \(Resources.total)")
-    }
-}
-
+//class ViewController: UIViewController {
+//    override func viewDidLoad() {
+//        super.viewDidLoad()
+//
+//        print("RxSwift Resource.total: \(Resources.total)")
+//        let printObserver = PrintObserver<String>()
+//        Observable<String>.just("Hello Rx").subscribe(printObserver)
+//        print("RxSwift Resource.total: \(Resources.total)")
+//    }
+//}

@@ -14,6 +14,7 @@ public protocol BindableView {
 }
 
 public typealias TableViewCell = UITableViewCell & BindableView
+public typealias View = UIView & BindableView
 
 public protocol TableViewCellConfigurator {
     static var reuseId: String { get }

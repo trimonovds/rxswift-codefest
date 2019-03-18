@@ -8,6 +8,11 @@
 
 import UIKit
 
+public enum Centering {
+    case horizontally
+    case vertically
+}
+
 extension UIView {
 
     public func pinTo(layoutGuide: UILayoutGuide, withEdges edges: UIRectEdge) -> [NSLayoutConstraint] {
@@ -64,5 +69,21 @@ extension UIView {
         guard let parent = superview else { assert(false); return [] }
         let layoutGuide = parent.safeAreaLayoutGuide
         return self.pinTo(layoutGuide: layoutGuide, withEdges: edges)
+    }
+
+    public func centerIn(view: UIView, _ centering: Centering) -> [NSLayoutConstraint] {
+        var result = [NSLayoutConstraint]()
+        switch centering {
+        case .horizontally:
+            result.append(view.centerXAnchor.constraint(equalTo: self.centerXAnchor))
+        case .vertically:
+            result.append(view.centerYAnchor.constraint(equalTo: self.centerYAnchor))
+        }
+        return result
+    }
+
+    public func centerInParent(_ centering: Centering) -> [NSLayoutConstraint] {
+        guard let parent = superview else { assert(false); return [] }
+        return centerIn(view: parent, centering)
     }
 }

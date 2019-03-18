@@ -9,21 +9,25 @@
 /* Begin PBXBuildFile section */
 		57C908CEF300BE7735C3FF22 /* Pods_RxPrimitivesLifecycle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 98C144965D3971ECAA54EF7A /* Pods_RxPrimitivesLifecycle.framework */; };
 		871D18BE223E763B00670997 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 871D18BD223E763B00670997 /* AppDelegate.swift */; };
-		871D18C0223E763B00670997 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 871D18BF223E763B00670997 /* ViewController.swift */; };
+		871D18C0223E763B00670997 /* LifecycleSamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 871D18BF223E763B00670997 /* LifecycleSamples.swift */; };
 		871D18C3223E763B00670997 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 871D18C1223E763B00670997 /* Main.storyboard */; };
 		871D18C5223E763D00670997 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 871D18C4223E763D00670997 /* Assets.xcassets */; };
 		871D18C8223E763D00670997 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 871D18C6223E763D00670997 /* LaunchScreen.storyboard */; };
+		871D18D1223F5D5400670997 /* Utils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 871D18D0223F5D5400670997 /* Utils.framework */; };
+		871D18D3223F63E100670997 /* WayPointsSample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 871D18D2223F63E100670997 /* WayPointsSample.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		1646897C6ED4ECC4F71E8BFB /* Pods-RxPrimitivesLifecycle.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxPrimitivesLifecycle.debug.xcconfig"; path = "Target Support Files/Pods-RxPrimitivesLifecycle/Pods-RxPrimitivesLifecycle.debug.xcconfig"; sourceTree = "<group>"; };
 		871D18BA223E763B00670997 /* RxPrimitivesLifecycle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RxPrimitivesLifecycle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		871D18BD223E763B00670997 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		871D18BF223E763B00670997 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		871D18BF223E763B00670997 /* LifecycleSamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifecycleSamples.swift; sourceTree = "<group>"; };
 		871D18C2223E763B00670997 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		871D18C4223E763D00670997 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		871D18C7223E763D00670997 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		871D18C9223E763D00670997 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		871D18D0223F5D5400670997 /* Utils.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Utils.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		871D18D2223F63E100670997 /* WayPointsSample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WayPointsSample.swift; sourceTree = "<group>"; };
 		98C144965D3971ECAA54EF7A /* Pods_RxPrimitivesLifecycle.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RxPrimitivesLifecycle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B215DA2BD20FD9A9CD132DBA /* Pods-RxPrimitivesLifecycle.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxPrimitivesLifecycle.release.xcconfig"; path = "Target Support Files/Pods-RxPrimitivesLifecycle/Pods-RxPrimitivesLifecycle.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -33,6 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				871D18D1223F5D5400670997 /* Utils.framework in Frameworks */,
 				57C908CEF300BE7735C3FF22 /* Pods_RxPrimitivesLifecycle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -62,11 +67,12 @@
 			isa = PBXGroup;
 			children = (
 				871D18BD223E763B00670997 /* AppDelegate.swift */,
-				871D18BF223E763B00670997 /* ViewController.swift */,
+				871D18BF223E763B00670997 /* LifecycleSamples.swift */,
 				871D18C1223E763B00670997 /* Main.storyboard */,
 				871D18C4223E763D00670997 /* Assets.xcassets */,
 				871D18C6223E763D00670997 /* LaunchScreen.storyboard */,
 				871D18C9223E763D00670997 /* Info.plist */,
+				871D18D2223F63E100670997 /* WayPointsSample.swift */,
 			);
 			path = RxPrimitivesLifecycle;
 			sourceTree = "<group>";
@@ -83,6 +89,7 @@
 		DFC28DAD45B8C42F4161FD23 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				871D18D0223F5D5400670997 /* Utils.framework */,
 				98C144965D3971ECAA54EF7A /* Pods_RxPrimitivesLifecycle.framework */,
 			);
 			name = Frameworks;
@@ -212,7 +219,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				871D18C0223E763B00670997 /* ViewController.swift in Sources */,
+				871D18D3223F63E100670997 /* WayPointsSample.swift in Sources */,
+				871D18C0223E763B00670997 /* LifecycleSamples.swift in Sources */,
 				871D18BE223E763B00670997 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
