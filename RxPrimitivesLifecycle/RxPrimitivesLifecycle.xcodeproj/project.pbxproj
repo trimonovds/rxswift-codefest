@@ -15,6 +15,7 @@
 		871D18C8223E763D00670997 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 871D18C6223E763D00670997 /* LaunchScreen.storyboard */; };
 		871D18D1223F5D5400670997 /* Utils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 871D18D0223F5D5400670997 /* Utils.framework */; };
 		871D18D3223F63E100670997 /* WayPointsSample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 871D18D2223F63E100670997 /* WayPointsSample.swift */; };
+		871D18D5223F8C7900670997 /* CustomRxExtensionsExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 871D18D4223F8C7900670997 /* CustomRxExtensionsExample.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		871D18C9223E763D00670997 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		871D18D0223F5D5400670997 /* Utils.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Utils.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		871D18D2223F63E100670997 /* WayPointsSample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WayPointsSample.swift; sourceTree = "<group>"; };
+		871D18D4223F8C7900670997 /* CustomRxExtensionsExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomRxExtensionsExample.swift; sourceTree = "<group>"; };
 		98C144965D3971ECAA54EF7A /* Pods_RxPrimitivesLifecycle.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RxPrimitivesLifecycle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B215DA2BD20FD9A9CD132DBA /* Pods-RxPrimitivesLifecycle.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxPrimitivesLifecycle.release.xcconfig"; path = "Target Support Files/Pods-RxPrimitivesLifecycle/Pods-RxPrimitivesLifecycle.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -73,6 +75,7 @@
 				871D18C6223E763D00670997 /* LaunchScreen.storyboard */,
 				871D18C9223E763D00670997 /* Info.plist */,
 				871D18D2223F63E100670997 /* WayPointsSample.swift */,
+				871D18D4223F8C7900670997 /* CustomRxExtensionsExample.swift */,
 			);
 			path = RxPrimitivesLifecycle;
 			sourceTree = "<group>";
@@ -221,6 +224,7 @@
 			files = (
 				871D18D3223F63E100670997 /* WayPointsSample.swift in Sources */,
 				871D18C0223E763B00670997 /* LifecycleSamples.swift in Sources */,
+				871D18D5223F8C7900670997 /* CustomRxExtensionsExample.swift in Sources */,
 				871D18BE223E763B00670997 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

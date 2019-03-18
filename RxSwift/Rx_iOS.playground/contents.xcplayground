@@ -3,5 +3,6 @@
     <pages>
         <page name='Lifecycle'/>
         <page name='Fighting with Rx contracts'/>
+        <page name='Custom Reactive extensions'/>
     </pages>
 </playground>

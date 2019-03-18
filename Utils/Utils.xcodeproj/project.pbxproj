@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		871D18D8223F916700670997 /* ImageBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 871D18D7223F916700670997 /* ImageBuilder.swift */; };
+		871D18DA223F919E00670997 /* CoreGraphics+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 871D18D9223F919E00670997 /* CoreGraphics+Extensions.swift */; };
 		8760FCB5223A35940040BF96 /* Utils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8760FCAB223A35940040BF96 /* Utils.framework */; };
 		8760FCBA223A35940040BF96 /* UtilsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8760FCB9223A35940040BF96 /* UtilsTests.swift */; };
 		8760FCBC223A35940040BF96 /* Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 8760FCAE223A35940040BF96 /* Utils.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -25,6 +27,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		871D18D7223F916700670997 /* ImageBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageBuilder.swift; sourceTree = "<group>"; };
+		871D18D9223F919E00670997 /* CoreGraphics+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreGraphics+Extensions.swift"; sourceTree = "<group>"; };
 		8760FCAB223A35940040BF96 /* Utils.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Utils.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8760FCAE223A35940040BF96 /* Utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
 		8760FCAF223A35940040BF96 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -79,6 +83,8 @@
 				8760FCC5223A35BD0040BF96 /* TableViewDataSource */,
 				8760FCAE223A35940040BF96 /* Utils.h */,
 				8760FCAF223A35940040BF96 /* Info.plist */,
+				871D18D7223F916700670997 /* ImageBuilder.swift */,
+				871D18D9223F919E00670997 /* CoreGraphics+Extensions.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -217,6 +223,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				87EA93C8223CEE7A00C64D16 /* Autolayout.swift in Sources */,
+				871D18DA223F919E00670997 /* CoreGraphics+Extensions.swift in Sources */,
+				871D18D8223F916700670997 /* ImageBuilder.swift in Sources */,
 				8760FCC7223A35BD0040BF96 /* TableViewDataSource.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
