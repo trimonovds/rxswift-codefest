@@ -6,7 +6,7 @@ import PlaygroundSupport
 
 struct SomeError: Error { }
 
-class CountryCell: TableViewCell {
+class CountryCell: BindableTableViewCell {
     typealias Model = Country
     func bind(to model: CountryCell.Model) {
         self.textLabel?.text = model.name

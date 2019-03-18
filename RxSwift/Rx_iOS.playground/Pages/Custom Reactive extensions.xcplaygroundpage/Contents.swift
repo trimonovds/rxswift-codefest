@@ -6,30 +6,7 @@ import RxSwift
 import RxCocoa
 import PlaygroundSupport
 
-class StatusBarOrientationObserverWrapper {
-    let on: (Event<UIInterfaceOrientation>) -> Void
-    init(observer: AnyObserver<UIInterfaceOrientation>) {
-        self.on = observer.on
-    }
-    @objc func handler(notifitation: Notification) {
-        on(.next(UIApplication.shared.statusBarOrientation))
-    }
-}
 
-extension UIApplication {
-    public var didChangeStatusBarOrientation: Observable<UIInterfaceOrientation> {
-        return Observable<UIInterfaceOrientation>.create { observer in
-            let wrapper = StatusBarOrientationObserverWrapper(observer: observer)
-            NotificationCenter.default.addObserver(
-                wrapper,
-                selector: #selector(StatusBarOrientationObserverWrapper.handler),
-                name: UIApplication.didChangeStatusBarOrientationNotification,
-                object: nil
-            )
-            return Disposables.create { NotificationCenter.default.removeObserver(wrapper) }
-        }
-    }
-}
 
 public class TimeInfoView: UIView {
     public var date: Date = Date() {
