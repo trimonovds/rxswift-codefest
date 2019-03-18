@@ -8,13 +8,13 @@
 
 import UIKit
 
-public protocol BindableView {
+public protocol Bindable {
     associatedtype Model
     func bind(to model: Model)
 }
 
-public typealias TableViewCell = UITableViewCell & BindableView
-public typealias View = UIView & BindableView
+public typealias BindableTableViewCell = UITableViewCell & Bindable
+public typealias BindableView = UIView & Bindable
 
 public protocol TableViewCellConfigurator {
     static var reuseId: String { get }
@@ -22,7 +22,7 @@ public protocol TableViewCellConfigurator {
     func configure(cell: UITableViewCell)
 }
 
-public struct CellConfigurator<TCell: TableViewCell, TModel>: TableViewCellConfigurator where TCell.Model == TModel {
+public struct CellConfigurator<TCell: BindableTableViewCell, TModel>: TableViewCellConfigurator where TCell.Model == TModel {
     public static var cellType: UITableViewCell.Type { return TCell.self }
     public static var reuseId: String { return String(describing: cellType) }
 

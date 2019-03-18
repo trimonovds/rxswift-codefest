@@ -72,7 +72,7 @@ class WayPointViewModel {
     var bag = DisposeBag()
 }
 
-class BindableView<ViewModelType: AnyObject>: View {
+class GenericBindableView<ViewModelType: AnyObject>: BindableView {
     typealias Model = ViewModelType
 
     func bind(to model: ViewModelType) {
@@ -88,7 +88,7 @@ class BindableView<ViewModelType: AnyObject>: View {
     private(set) var binding = DisposeBag()
 }
 
-class WayPointCellView: BindableView<WayPointViewModel> {
+class WayPointCellView: GenericBindableView<WayPointViewModel> {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
@@ -156,7 +156,7 @@ class WayPointCellView: BindableView<WayPointViewModel> {
     private let makeEmptyButton = UIButton(type: .system)
 }
 
-class WayPointCell: TableViewCell {
+class WayPointCell: BindableTableViewCell {
     typealias Model = WayPointViewModel
 
     func bind(to viewModel: WayPointViewModel) {
