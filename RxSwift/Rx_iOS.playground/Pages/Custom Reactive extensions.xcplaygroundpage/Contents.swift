@@ -15,21 +15,27 @@ public class TimeInfoView: UIView {
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        addSubview(dateLabel)
-        addSubview(timeLabel)
+
+        // setup UI
+        addSubview(container)
+        container.addSubview(dateLabel)
+        container.addSubview(timeLabel)
+        container.translatesAutoresizingMaskIntoConstraints = false
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         timeLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate(
-            dateLabel.pinToParent(withEdges: [.left, .top, .right]) +
-                timeLabel.pinToParent(withEdges: [.left, .bottom, .right]) +
-                [
-                    timeLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 8.0)
-            ]
+            container.pinToParent(withInsets: UIEdgeInsets.init(top: 8.0, left: 8.0, bottom: 8.0, right: 8.0))
+            + dateLabel.pinToParent(withEdges: [.left, .top, .right])
+            + timeLabel.pinToParent(withEdges: [.left, .bottom, .right])
+            + [timeLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 8.0)]
         )
         dateLabel.font = UIFont.preferredFont(forTextStyle: .caption1)
         timeLabel.font = UIFont.preferredFont(forTextStyle: .caption2)
         dateLabel.textColor = .black
         timeLabel.textColor = .gray
+        self.layer.cornerRadius = 4.0
+        self.layer.borderWidth = 2.0
+        self.layer.borderColor = UIColor.black.cgColor
 
         date = Date()
     }
@@ -41,17 +47,18 @@ public class TimeInfoView: UIView {
     private func update(withNew date: Date) {
         let dateString = DateFormatter.localizedString(from: date, dateStyle: .full, timeStyle: .none)
         let timeString = DateFormatter.localizedString(from: date, dateStyle: .none, timeStyle: .medium)
-        dateLabel.text = "Дата: \(dateString)"
-        timeLabel.text = "Время: \(timeString)"
+        dateLabel.text = "Date: \(dateString)"
+        timeLabel.text = "Time: \(timeString)"
     }
 
+    private let container = UIView()
     private let dateLabel = UILabel()
     private let timeLabel = UILabel()
 }
 
 extension Reactive where Base: TimeInfoView {
 
-    /// Bindable sink for `state` property.
+    /// Bindable sink for `date` property.
     public var date: Binder<Date> {
         return Binder(self.base) { element, value in
             element.date = value
@@ -76,9 +83,7 @@ class TimeInfoViewController: UIViewController {
 
         Observable<Int>
             .interval(1.0, scheduler: MainScheduler.instance)
-            .map { _ in () }
-            .startWith(())
-            .map { Date() }
+            .map { _ in Date() }
             .bind(to: timeInfoView.rx.date)
     }
 
