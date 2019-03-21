@@ -37,7 +37,7 @@ class SimplifiedDrawerHidingBehaviorTests: XCTestCase {
     // * created at virtual time `Defaults.created`           -> 100
     // * subscribed to at virtual time `Defaults.subscribed`  -> 200
     // * subscription will be disposed at `Defaults.disposed` -> 1000
-    func testWhenSpeedExceedsLimitAndAutoRotationIsOnThenDrawerHides_UsingStartWithDefaults() {
+    func testWhenSpeedExceedsLimitAndAutoRotationIsOnThenDrawerHides() {
         let didChangeAutomaticRotationStateEvents: [Recorded<Event<Bool>>] = [
             .next(300, false),
             .next(600, true)
@@ -59,5 +59,51 @@ class SimplifiedDrawerHidingBehaviorTests: XCTestCase {
 
         XCTAssert(hidesObserver.events.count == 1)
         XCTAssert(hidesObserver.events[0].time == 800)
+    }
+
+    func testWhenAutoRotationTurnsOnWhileSpeedIsMoreThanLimitThenDrawerHides() {
+        let didChangeAutomaticRotationStateEvents: [Recorded<Event<Bool>>] = [
+            .next(300, false),
+            .next(900, true)
+        ]
+
+        let didUpdateSpeedEvents: [Recorded<Event<Double>>] = [
+            .next(400, 1.5),
+            .next(700, 2.0),
+            .next(800, 2.51), // Exceeds
+        ]
+
+        let hidesObserver = testScheduler.start { () -> Observable<Void> in
+            return self.makeSut(
+                didChangeAutomaticRotationStateEvents: didChangeAutomaticRotationStateEvents,
+                didUpdateSpeedEvents: didUpdateSpeedEvents,
+                onScheduler: self.testScheduler
+            )
+        }
+
+        XCTAssert(hidesObserver.events.count == 1)
+        XCTAssert(hidesObserver.events[0].time == 900)
+    }
+
+    func testWhenSubscribeOnBehaviorWhileSpeedIsMoreThanLimitAndAutoRotationIsOnThenDrawerRemainsUntouched() {
+        let didChangeAutomaticRotationStateEvents: [Recorded<Event<Bool>>] = [
+            .next(300, false),
+            .next(500, true)
+        ]
+
+        let didUpdateSpeedEvents: [Recorded<Event<Double>>] = [
+            .next(400, 1.5),
+            .next(600, 2.9)
+        ]
+
+        let hidesObserver = testScheduler.start(created: 100, subscribed: 700, disposed: 1000000) {
+            return self.makeSut(
+                didChangeAutomaticRotationStateEvents: didChangeAutomaticRotationStateEvents,
+                didUpdateSpeedEvents: didUpdateSpeedEvents,
+                onScheduler: self.testScheduler
+            )
+        }
+
+        XCTAssert(hidesObserver.events.isEmpty)
     }
 }

@@ -29,16 +29,10 @@ class DrawerHidingBehavior {
     init(drawerInput: DrawerInput, cameraManagerOutput: CameraManagerOutput, locationManagerOutput: LocationManagerOutput) {
         self.drawerInput = drawerInput
 
-        Observable
-            .combineLatest(
-                locationManagerOutput.didUpdateSpeed
-                    .map { $0 > 2.5 }
-                    .distinctUntilChanged(),
-                cameraManagerOutput.didChangeAutomaticRotationState
-                    .distinctUntilChanged()
+        SimplifiedDrawerHidingBehavior.make(
+            didChangeAutomaticRotationState: cameraManagerOutput.didChangeAutomaticRotationState,
+            didUpdateSpeed: locationManagerOutput.didUpdateSpeed
             )
-            .filter { $0.0 && $0.1 }
-            .map { _ in () }
             .bind(onNext: { [weak self] in
                 guard let slf = self else { return }
                 slf.drawerInput.hideIfPossible()
