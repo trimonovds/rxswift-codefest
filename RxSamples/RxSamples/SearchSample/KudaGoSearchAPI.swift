@@ -10,7 +10,6 @@ import Foundation
 import Utils
 
 protocol Task: AnyObject {
-    var taskIdentifier: Int { get }
     func resume()
     func cancel()
 }
@@ -19,7 +18,7 @@ protocol NetworkService {
     func request(with url: URL, completion: @escaping (Result<Data>) -> Void) -> Task
 }
 
-class SearchManager {
+class KudaGoSearchAPI {
 
     struct UnknownResponseError: Error { }
 
@@ -28,8 +27,15 @@ class SearchManager {
     }
 
     func search(withText text: String, completion: @escaping (Result<String>) -> Void) -> Task {
-        let query = text.split(separator: " ").joined(separator: "+")
-        let url = URL(string: "http://www.google.com/search?q=\(query)")!
+        let urlString = { (s: String) -> String in
+            return "https://kudago.com/public-api/v1.4/search/?q=\(s)&location=msk&ctype=event&lat=&lon=&radius="
+        }
+        let url: URL
+        if let query = text.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed), let textURL = URL(string: urlString(query)) {
+            url = textURL
+        } else {
+            url = URL(string: urlString(""))!
+        }
         let task = networkService.request(with: url) { (result) in
             switch result {
             case .success(let data):

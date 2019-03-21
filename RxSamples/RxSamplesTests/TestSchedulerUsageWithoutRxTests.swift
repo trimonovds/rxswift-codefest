@@ -14,12 +14,10 @@ import Utils
 @testable import RxSamples
 
 class TaskMock: Task {
-    let taskIdentifier: Int
     var onResume: (() -> Void)?
     var onCancel: (() -> Void)?
 
-    init(taskIdentifier: Int, onResume: (() -> Void)? = nil, onCancel: (() -> Void)? = nil) {
-        self.taskIdentifier = taskIdentifier
+    init(onResume: (() -> Void)? = nil, onCancel: (() -> Void)? = nil) {
         self.onResume = onResume
         self.onCancel = onCancel
     }
@@ -44,25 +42,24 @@ class NetworkServiceMock: NetworkService {
     }
 }
 
-extension TaskMock {
-    static let NopTask: Task = TaskMock(taskIdentifier: Int.max, onResume: nil, onCancel: nil)
-}
-
-class SearchManagerTests: XCTestCase {
+class GoogleSearchAPITests: XCTestCase {
     func testSearchWhenNetworkServiceRequestSucceedThenReturnsCorrectResutsInCompletion() {
         // Arrange
         let testScheduler = TestScheduler(initialClock: 0)
         let networkServiceMock = NetworkServiceMock { url, completion in
-            let cancellation = testScheduler.scheduleRelativeVirtual((), dueTime: 500, action: { _ -> Disposable in
-                let data = "CodeFest is owesome conference!".data(using: .utf8)!
-                completion(.success(data))
-                return Disposables.create()
+            var schedulingDisposable: Disposable?
+            return TaskMock(onResume: {
+                schedulingDisposable = testScheduler.scheduleRelativeVirtual((), dueTime: 500, action: { _ -> Disposable in
+                    let data = "CodeFest is owesome conference!".data(using: .utf8)!
+                    completion(.success(data))
+                    return Disposables.create()
+                })
+            }, onCancel: {
+                schedulingDisposable!.dispose()
             })
-
-            return TaskMock(taskIdentifier: 1, onCancel: { cancellation.dispose() })
         }
 
-        let sut = SearchManager(networkService: networkServiceMock)
+        let sut = KudaGoSearchAPI(networkService: networkServiceMock)
         var actualResult: String?
 
         // Act
@@ -70,6 +67,7 @@ class SearchManagerTests: XCTestCase {
             let searchTask = sut.search(withText: "CodeFest") { (result) in
                 actualResult = result.value
             }
+            searchTask.resume()
         }
 
         // Assert
@@ -84,25 +82,28 @@ class SearchManagerTests: XCTestCase {
         // Arrange
         let testScheduler = TestScheduler(initialClock: 0)
         let networkServiceMock = NetworkServiceMock { url, completion in
-            let cancellation = testScheduler.scheduleRelativeVirtual((), dueTime: 500, action: { _ -> Disposable in
-                let data = "CodeFest is owesome conference!".data(using: .utf8)!
-                completion(.success(data))
-                return Disposables.create()
+            var schedulingDisposable: Disposable?
+            return TaskMock(onResume: {
+                schedulingDisposable = testScheduler.scheduleRelativeVirtual((), dueTime: 500, action: { _ -> Disposable in
+                    let data = "CodeFest is owesome conference!".data(using: .utf8)!
+                    completion(.success(data))
+                    return Disposables.create()
+                })
+            }, onCancel: {
+                schedulingDisposable!.dispose()
             })
-
-            return TaskMock(taskIdentifier: 1, onCancel: { cancellation.dispose() })
         }
 
-        let sut = SearchManager(networkService: networkServiceMock)
+        let sut = KudaGoSearchAPI(networkService: networkServiceMock)
         var actualResult: String?
 
         // Act
         var searchTask: Task?
-
         testScheduler.scheduleAt(100) {
             searchTask = sut.search(withText: "CodeFest") { (result) in
                 actualResult = result.value
             }
+            searchTask!.resume()
         }
 
         testScheduler.scheduleAt(300) {
