@@ -50,7 +50,12 @@ class GoogleSearchAPITests: XCTestCase {
             var schedulingDisposable: Disposable?
             return TaskMock(onResume: {
                 schedulingDisposable = testScheduler.scheduleRelativeVirtual((), dueTime: 500, action: { _ -> Disposable in
-                    let data = "CodeFest is owesome conference!".data(using: .utf8)!
+                    let reponse = KudaGoEventsPageResponse.init(count: 100, next: nil, previos: nil, results: [
+                        KudaGoEvent(title: "A", description: "B"),
+                        KudaGoEvent(title: "AA", description: "BB")
+                    ])
+
+                    let data = try! JSONEncoder().encode(reponse)
                     completion(.success(data))
                     return Disposables.create()
                 })
@@ -60,11 +65,11 @@ class GoogleSearchAPITests: XCTestCase {
         }
 
         let sut = KudaGoSearchAPI(networkService: networkServiceMock)
-        var actualResult: String?
+        var actualResult: [KudaGoEvent]?
 
         // Act
         testScheduler.scheduleAt(100) {
-            let searchTask = sut.search(withText: "CodeFest") { (result) in
+            let searchTask = sut.searchEvents(withText: "CodeFest") { (result) in
                 actualResult = result.value
             }
             searchTask.resume()
@@ -75,7 +80,7 @@ class GoogleSearchAPITests: XCTestCase {
         XCTAssert(actualResult == nil)
 
         testScheduler.advanceTo(601)
-        XCTAssert(actualResult == "CodeFest is owesome conference!")
+        XCTAssert(actualResult?.count == 2)
     }
 
     func testSearchWhenNetworkServiceRequestCanceledSucceedThenReturnsCorrectResutsInCompletion() {
@@ -85,7 +90,12 @@ class GoogleSearchAPITests: XCTestCase {
             var schedulingDisposable: Disposable?
             return TaskMock(onResume: {
                 schedulingDisposable = testScheduler.scheduleRelativeVirtual((), dueTime: 500, action: { _ -> Disposable in
-                    let data = "CodeFest is owesome conference!".data(using: .utf8)!
+                    let reponse = KudaGoEventsPageResponse.init(count: 100, next: nil, previos: nil, results: [
+                        KudaGoEvent(title: "A", description: "B"),
+                        KudaGoEvent(title: "AA", description: "BB")
+                        ])
+
+                    let data = try! JSONEncoder().encode(reponse)
                     completion(.success(data))
                     return Disposables.create()
                 })
@@ -95,12 +105,12 @@ class GoogleSearchAPITests: XCTestCase {
         }
 
         let sut = KudaGoSearchAPI(networkService: networkServiceMock)
-        var actualResult: String?
+        var actualResult: [KudaGoEvent]?
 
         // Act
         var searchTask: Task?
         testScheduler.scheduleAt(100) {
-            searchTask = sut.search(withText: "CodeFest") { (result) in
+            searchTask = sut.searchEvents(withText: "CodeFest") { (result) in
                 actualResult = result.value
             }
             searchTask!.resume()

@@ -13,35 +13,45 @@ import RxCocoa
 
 class KudaGoSearchViewController: UIViewController, UITableViewDelegate {
 
+    typealias KudaGoEventCellConfigurator = CellConfigurator<KudaGoEventCell, KudaGoEvent>
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.addSubview(pageContentView)
-        pageContentView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.contentInsetAdjustmentBehavior = .never
+        tableView.dataSource = dataSource
+
+        view.addSubview(tableView)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
 
         view.addSubview(searchBar)
         searchBar.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate(
-            pageContentView.pinToParentSafe(withEdges: [.bottom, .left, .right]) +
+            tableView.pinToParentSafe(withEdges: [.bottom, .left, .right]) +
             searchBar.pinToParentSafe(withEdges: [.top, .left, .right]) +
-            [pageContentView.topAnchor.constraint(equalTo: searchBar.bottomAnchor)]
+            [tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor)]
         )
 
         searchBar.rx.text.orEmpty
-            .flatMapLatest { [weak self] searchText -> Observable<Result<String>> in
+            .flatMapLatest { [weak self] searchText -> Observable<Result<[KudaGoEvent]>> in
                 guard let slf = self else { return .empty() }
-                return slf.googleSearchApi.search(with: searchText)
+                return slf.googleSearchApi.searchEvents(with: searchText)
             }
             .observeOn(MainScheduler.instance)
             .bind(onNext: { [weak self] result in
                 guard let slf = self else { return }
                 switch result {
-                case .success(let pageContent):
-                    slf.pageContentView.text = pageContent
+                case .success(let events):
+                    slf.dataSource.sectionConfigurations = [
+                        SectionConfigurator(cellConfigurators: events.map {
+                            KudaGoEventCellConfigurator(model: $0)
+                        })
+                    ]
+                    slf.tableView.reloadData()
                 case .error(let error):
                     print(error)
-                    slf.pageContentView.text = String(describing: error)
                 }
             })
             .disposed(by: bag)
@@ -53,17 +63,17 @@ class KudaGoSearchViewController: UIViewController, UITableViewDelegate {
 
     }
 
-    private var currentSearchTask: Task?
+    private let dataSource = TableViewDataSource()
     private let googleSearchApi = KudaGoSearchAPI(networkService: URLSession.shared)
-    private let pageContentView: UITextView = UITextView()
+    private let tableView: UITableView = UITableView()
     private let searchBar: UISearchBar = UISearchBar()
     private let bag = DisposeBag()
 }
 
 extension KudaGoSearchAPI {
-    func search(with text: String) -> Observable<Result<String>> {
-        let asyncRequest = { (_ completion: @escaping (Result<String>) -> Void) -> Task in
-            return self.search(withText: text, completion: completion)
+    func searchEvents(with text: String) -> Observable<Result<[KudaGoEvent]>> {
+        let asyncRequest = { (_ completion: @escaping (Result<[KudaGoEvent]>) -> Void) -> Task in
+            return self.searchEvents(withText: text, completion: completion)
         }
         return Observable.fromAsync(asyncRequest)
     }
