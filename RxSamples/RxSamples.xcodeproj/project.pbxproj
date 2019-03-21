@@ -24,6 +24,7 @@
 		873D65FD2243A8200040DAD8 /* DrawerHidingBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D65FC2243A8200040DAD8 /* DrawerHidingBehaviorTests.swift */; };
 		873D66052243B8C50040DAD8 /* SimplifiedDrawerHidingBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D66042243B8C50040DAD8 /* SimplifiedDrawerHidingBehavior.swift */; };
 		873D66072243B9B30040DAD8 /* SimplifiedDrawerHidingBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D66062243B9B30040DAD8 /* SimplifiedDrawerHidingBehaviorTests.swift */; };
+		873D66092243C6AD0040DAD8 /* TestSchedulerUsageWithoutRxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D66082243C6AD0040DAD8 /* TestSchedulerUsageWithoutRxTests.swift */; };
 		B41AE3219CF975773186B52C /* Pods_RxSamplesTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B5C2AFAE06168D1563E0CC /* Pods_RxSamplesTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -62,6 +63,7 @@
 		873D65FE2243A8200040DAD8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		873D66042243B8C50040DAD8 /* SimplifiedDrawerHidingBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplifiedDrawerHidingBehavior.swift; sourceTree = "<group>"; };
 		873D66062243B9B30040DAD8 /* SimplifiedDrawerHidingBehaviorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplifiedDrawerHidingBehaviorTests.swift; sourceTree = "<group>"; };
+		873D66082243C6AD0040DAD8 /* TestSchedulerUsageWithoutRxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSchedulerUsageWithoutRxTests.swift; sourceTree = "<group>"; };
 		BD046DC0E3328DA8F83F2CD0 /* Pods-RxSamples.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxSamples.release.xcconfig"; path = "Target Support Files/Pods-RxSamples/Pods-RxSamples.release.xcconfig"; sourceTree = "<group>"; };
 		F834EF785C4B05DDE7BB7098 /* Pods_RxSamples.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RxSamples.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -150,6 +152,7 @@
 				873D65FC2243A8200040DAD8 /* DrawerHidingBehaviorTests.swift */,
 				873D65FE2243A8200040DAD8 /* Info.plist */,
 				873D66062243B9B30040DAD8 /* SimplifiedDrawerHidingBehaviorTests.swift */,
+				873D66082243C6AD0040DAD8 /* TestSchedulerUsageWithoutRxTests.swift */,
 			);
 			path = RxSamplesTests;
 			sourceTree = "<group>";
@@ -401,6 +404,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				873D65FD2243A8200040DAD8 /* DrawerHidingBehaviorTests.swift in Sources */,
+				873D66092243C6AD0040DAD8 /* TestSchedulerUsageWithoutRxTests.swift in Sources */,
 				873D66072243B9B30040DAD8 /* SimplifiedDrawerHidingBehaviorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
