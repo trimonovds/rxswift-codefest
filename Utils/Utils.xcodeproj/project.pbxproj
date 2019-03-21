@@ -11,6 +11,7 @@
 		871D18DA223F919E00670997 /* CoreGraphics+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 871D18D9223F919E00670997 /* CoreGraphics+Extensions.swift */; };
 		873D6576223FCAC80040DAD8 /* Debugging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D6575223FCAC80040DAD8 /* Debugging.swift */; };
 		873D6579224006790040DAD8 /* UIKit+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D6578224006790040DAD8 /* UIKit+Extensions.swift */; };
+		873D660E2243E1F70040DAD8 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D660D2243E1F70040DAD8 /* Result.swift */; };
 		8760FCB5223A35940040BF96 /* Utils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8760FCAB223A35940040BF96 /* Utils.framework */; };
 		8760FCBA223A35940040BF96 /* UtilsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8760FCB9223A35940040BF96 /* UtilsTests.swift */; };
 		8760FCBC223A35940040BF96 /* Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 8760FCAE223A35940040BF96 /* Utils.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -33,6 +34,7 @@
 		871D18D9223F919E00670997 /* CoreGraphics+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreGraphics+Extensions.swift"; sourceTree = "<group>"; };
 		873D6575223FCAC80040DAD8 /* Debugging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debugging.swift; sourceTree = "<group>"; };
 		873D6578224006790040DAD8 /* UIKit+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKit+Extensions.swift"; sourceTree = "<group>"; };
+		873D660D2243E1F70040DAD8 /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		8760FCAB223A35940040BF96 /* Utils.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Utils.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8760FCAE223A35940040BF96 /* Utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
 		8760FCAF223A35940040BF96 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -91,6 +93,7 @@
 				871D18D9223F919E00670997 /* CoreGraphics+Extensions.swift */,
 				873D6575223FCAC80040DAD8 /* Debugging.swift */,
 				873D6578224006790040DAD8 /* UIKit+Extensions.swift */,
+				873D660D2243E1F70040DAD8 /* Result.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -232,6 +235,7 @@
 				871D18DA223F919E00670997 /* CoreGraphics+Extensions.swift in Sources */,
 				873D6579224006790040DAD8 /* UIKit+Extensions.swift in Sources */,
 				873D6576223FCAC80040DAD8 /* Debugging.swift in Sources */,
+				873D660E2243E1F70040DAD8 /* Result.swift in Sources */,
 				871D18D8223F916700670997 /* ImageBuilder.swift in Sources */,
 				8760FCC7223A35BD0040BF96 /* TableViewDataSource.swift in Sources */,
 			);
