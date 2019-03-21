@@ -10,6 +10,7 @@ import Foundation
 import XCTest
 import RxSwift
 import RxTest
+import RxCocoa
 @testable import RxSamples
 
 class SimplifiedDrawerHidingBehaviorTests: XCTestCase {
@@ -105,5 +106,40 @@ class SimplifiedDrawerHidingBehaviorTests: XCTestCase {
         }
 
         XCTAssert(hidesObserver.events.isEmpty)
+    }
+
+    func testManualSchedulerManagement() {
+        let didChangeAutomaticRotationState = BehaviorRelay<Bool>(value: false)
+        let didUpdateSpeed = BehaviorRelay<Double>(value: 1.0)
+
+        let hidesObserver = testScheduler.createObserver(Void.self)
+        let sut = SimplifiedDrawerHidingBehavior.make(
+            didChangeAutomaticRotationState: didChangeAutomaticRotationState.asObservable(),
+            didUpdateSpeed: didUpdateSpeed.asObservable()
+        )
+
+        testScheduler.scheduleAt(300, action: {
+            _ = sut.subscribe(hidesObserver)
+        })
+
+        testScheduler.scheduleAt(500, action: {
+            didChangeAutomaticRotationState.accept(true)
+        })
+
+        testScheduler.scheduleAt(700, action: {
+            didUpdateSpeed.accept(3.2)
+        })
+
+        testScheduler.advanceTo(499) // Before automaticRotation turns on
+        XCTAssert(hidesObserver.events.isEmpty)
+
+        testScheduler.advanceTo(501) // After automaticRotation turns on
+        XCTAssert(hidesObserver.events.isEmpty)
+
+        testScheduler.advanceTo(699) // Before speed exceeds limit
+        XCTAssert(hidesObserver.events.isEmpty)
+
+        testScheduler.start() // Resumes all remain scheduled items (speed limit exceed at 700)
+        XCTAssert(hidesObserver.events[0].time == 700)
     }
 }
