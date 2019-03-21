@@ -14,6 +14,13 @@
 		873D65A3224008CB0040DAD8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873D65A1224008CB0040DAD8 /* LaunchScreen.storyboard */; };
 		873D65B5224008F60040DAD8 /* CustomRxExtensionsSample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D65B3224008F60040DAD8 /* CustomRxExtensionsSample.swift */; };
 		873D65B6224008F60040DAD8 /* BrokenPublishSubjectSample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D65B4224008F60040DAD8 /* BrokenPublishSubjectSample.swift */; };
+		873D65E5224388E00040DAD8 /* ShapeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D65DF224388E00040DAD8 /* ShapeCell.swift */; };
+		873D65E6224388E00040DAD8 /* CardHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D65E0224388E00040DAD8 /* CardHeaderView.swift */; };
+		873D65E7224388E00040DAD8 /* CardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D65E1224388E00040DAD8 /* CardViewController.swift */; };
+		873D65E8224388E00040DAD8 /* ShapesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D65E2224388E00040DAD8 /* ShapesDataSource.swift */; };
+		873D65EA224388E00040DAD8 /* UIKit+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D65E4224388E00040DAD8 /* UIKit+Extensions.swift */; };
+		873D65EC2243968D0040DAD8 /* DrawerHideBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D65EB2243968D0040DAD8 /* DrawerHideBehavior.swift */; };
+		873D65EF224399E30040DAD8 /* Adapters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D65EE224399E30040DAD8 /* Adapters.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +33,13 @@
 		873D65A4224008CB0040DAD8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		873D65B3224008F60040DAD8 /* CustomRxExtensionsSample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomRxExtensionsSample.swift; sourceTree = "<group>"; };
 		873D65B4224008F60040DAD8 /* BrokenPublishSubjectSample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrokenPublishSubjectSample.swift; sourceTree = "<group>"; };
+		873D65DF224388E00040DAD8 /* ShapeCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShapeCell.swift; sourceTree = "<group>"; };
+		873D65E0224388E00040DAD8 /* CardHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardHeaderView.swift; sourceTree = "<group>"; };
+		873D65E1224388E00040DAD8 /* CardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardViewController.swift; sourceTree = "<group>"; };
+		873D65E2224388E00040DAD8 /* ShapesDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShapesDataSource.swift; sourceTree = "<group>"; };
+		873D65E4224388E00040DAD8 /* UIKit+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIKit+Extensions.swift"; sourceTree = "<group>"; };
+		873D65EB2243968D0040DAD8 /* DrawerHideBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawerHideBehavior.swift; sourceTree = "<group>"; };
+		873D65EE224399E30040DAD8 /* Adapters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Adapters.swift; sourceTree = "<group>"; };
 		BD046DC0E3328DA8F83F2CD0 /* Pods-RxSamples.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxSamples.release.xcconfig"; path = "Target Support Files/Pods-RxSamples/Pods-RxSamples.release.xcconfig"; sourceTree = "<group>"; };
 		F834EF785C4B05DDE7BB7098 /* Pods_RxSamples.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RxSamples.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -63,6 +77,7 @@
 		873D6597224008CA0040DAD8 /* RxSamples */ = {
 			isa = PBXGroup;
 			children = (
+				873D65DD224388B50040DAD8 /* CardCollapsingSample */,
 				873D65B3224008F60040DAD8 /* CustomRxExtensionsSample.swift */,
 				873D65B4224008F60040DAD8 /* BrokenPublishSubjectSample.swift */,
 				873D6598224008CA0040DAD8 /* AppDelegate.swift */,
@@ -72,6 +87,28 @@
 				873D65A4224008CB0040DAD8 /* Info.plist */,
 			);
 			path = RxSamples;
+			sourceTree = "<group>";
+		};
+		873D65DD224388B50040DAD8 /* CardCollapsingSample */ = {
+			isa = PBXGroup;
+			children = (
+				873D65ED224399B20040DAD8 /* DrawerHidingBehavior */,
+				873D65DF224388E00040DAD8 /* ShapeCell.swift */,
+				873D65E0224388E00040DAD8 /* CardHeaderView.swift */,
+				873D65E1224388E00040DAD8 /* CardViewController.swift */,
+				873D65E2224388E00040DAD8 /* ShapesDataSource.swift */,
+				873D65E4224388E00040DAD8 /* UIKit+Extensions.swift */,
+			);
+			path = CardCollapsingSample;
+			sourceTree = "<group>";
+		};
+		873D65ED224399B20040DAD8 /* DrawerHidingBehavior */ = {
+			isa = PBXGroup;
+			children = (
+				873D65EB2243968D0040DAD8 /* DrawerHideBehavior.swift */,
+				873D65EE224399E30040DAD8 /* Adapters.swift */,
+			);
+			path = DrawerHidingBehavior;
 			sourceTree = "<group>";
 		};
 		8D10D9BCBA3E724FCF4601C8 /* Frameworks */ = {
@@ -194,6 +231,8 @@
 				"${BUILT_PRODUCTS_DIR}/RxAtomic/RxAtomic.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/UltraDrawerView/UltraDrawerView.framework",
+				"${BUILT_PRODUCTS_DIR}/pop/pop.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
@@ -202,6 +241,8 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxAtomic.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/UltraDrawerView.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/pop.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -216,8 +257,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				873D65B6224008F60040DAD8 /* BrokenPublishSubjectSample.swift in Sources */,
+				873D65E8224388E00040DAD8 /* ShapesDataSource.swift in Sources */,
 				873D65B5224008F60040DAD8 /* CustomRxExtensionsSample.swift in Sources */,
+				873D65EF224399E30040DAD8 /* Adapters.swift in Sources */,
+				873D65EA224388E00040DAD8 /* UIKit+Extensions.swift in Sources */,
+				873D65EC2243968D0040DAD8 /* DrawerHideBehavior.swift in Sources */,
 				873D6599224008CA0040DAD8 /* AppDelegate.swift in Sources */,
+				873D65E6224388E00040DAD8 /* CardHeaderView.swift in Sources */,
+				873D65E7224388E00040DAD8 /* CardViewController.swift in Sources */,
+				873D65E5224388E00040DAD8 /* ShapeCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

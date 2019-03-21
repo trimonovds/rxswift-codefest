@@ -9,6 +9,7 @@ target 'RxSamples' do
 
   pod 'RxSwift'
   pod 'RxCocoa'
+  pod 'UltraDrawerView'
 
 end
 
