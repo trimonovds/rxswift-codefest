@@ -53,32 +53,21 @@ class SearchManagerTests: XCTestCase {
         // Arrange
         let testScheduler = TestScheduler(initialClock: 0)
         let networkServiceMock = NetworkServiceMock { url, completion in
-            guard url.absoluteString.contains("CodeFest") else {
-                return TaskMock.NopTask
-            }
-
-            let response = "CodeFest is owesome conference!"
-            let data = response.data(using: .utf8)!
-
             let cancellation = testScheduler.scheduleRelativeVirtual((), dueTime: 500, action: { _ -> Disposable in
+                let data = "CodeFest is owesome conference!".data(using: .utf8)!
                 completion(.success(data))
                 return Disposables.create()
             })
 
-            return TaskMock(taskIdentifier: 1, onResume: nil, onCancel: {
-                cancellation.dispose()
-            })
+            return TaskMock(taskIdentifier: 1, onCancel: { cancellation.dispose() })
         }
 
         let sut = SearchManager(networkService: networkServiceMock)
         var actualResult: String?
-        let expectedResult = "CodeFest is owesome conference!"
 
         // Act
-        var searchTask: Task?
-
         testScheduler.scheduleAt(100) {
-            searchTask = sut.search(withText: "CodeFest") { (result) in
+            let searchTask = sut.search(withText: "CodeFest") { (result) in
                 actualResult = result.value
             }
         }
@@ -88,33 +77,24 @@ class SearchManagerTests: XCTestCase {
         XCTAssert(actualResult == nil)
 
         testScheduler.advanceTo(601)
-        XCTAssert(actualResult == expectedResult)
+        XCTAssert(actualResult == "CodeFest is owesome conference!")
     }
 
     func testSearchWhenNetworkServiceRequestCanceledSucceedThenReturnsCorrectResutsInCompletion() {
         // Arrange
         let testScheduler = TestScheduler(initialClock: 0)
         let networkServiceMock = NetworkServiceMock { url, completion in
-            guard url.absoluteString.contains("CodeFest") else {
-                return TaskMock.NopTask
-            }
-
-            let response = "CodeFest is owesome conference!"
-            let data = response.data(using: .utf8)!
-
             let cancellation = testScheduler.scheduleRelativeVirtual((), dueTime: 500, action: { _ -> Disposable in
+                let data = "CodeFest is owesome conference!".data(using: .utf8)!
                 completion(.success(data))
                 return Disposables.create()
             })
 
-            return TaskMock(taskIdentifier: 1, onResume: nil, onCancel: {
-                cancellation.dispose()
-            })
+            return TaskMock(taskIdentifier: 1, onCancel: { cancellation.dispose() })
         }
 
         let sut = SearchManager(networkService: networkServiceMock)
         var actualResult: String?
-        let expectedResult = "CodeFest is owesome conference!"
 
         // Act
         var searchTask: Task?
