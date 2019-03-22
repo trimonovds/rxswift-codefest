@@ -34,29 +34,41 @@ class KudaGoSearchViewController: UIViewController, UITableViewDelegate {
         errorBarTopConstraint = errorBar.topAnchor.constraint(equalTo: searchBar.bottomAnchor)
         updateErrorBarPosition(forIsError: false, animated: false)
 
+        let anotherConstraints = [
+            errorBarTopConstraint!,
+            tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
+            errorBar.heightAnchor.constraint(equalToConstant: L.errorBarHeight)
+        ]
         NSLayoutConstraint.activate(
-            searchBar.pinToParentSafe(withEdges: [.top, .left, .right]) +
-            tableView.pinToParentSafe(withEdges: [.bottom, .left, .right]) +
-            errorBar.pinToParentSafe(withEdges: [.left, .right]) +
-            [
-                errorBarTopConstraint,
-                tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
-                errorBar.heightAnchor.constraint(equalToConstant: L.errorBarHeight)
-            ]
+            searchBar.pinToParentSafe(withEdges: [.top, .left, .right])
+            + tableView.pinToParentSafe(withEdges: [.bottom, .left, .right])
+            + errorBar.pinToParentSafe(withEdges: [.left, .right])
+            + anotherConstraints
         )
 
         searchBar.rx.text.orEmpty
-            .debounce(0.25, scheduler: MainScheduler.instance)
             .do(onNext: { [weak self] _ in
                 self?.updateErrorBarPosition(forIsError: false, animated: true)
             })
+            .debounce(0.25, scheduler: MainScheduler.instance)
             .flatMapLatest { [weak self] searchText -> Observable<Result<[KudaGoEvent]>> in
                 guard let slf = self else { return .empty() }
+                slf.update(withIsLoading: true)
                 return slf.searchApi.searchEvents(with: searchText)
+                    .timeout(5.0, scheduler: MainScheduler.instance)
+                    .catchError({ (err) -> Observable<Result<[KudaGoEvent]>> in
+                        guard case RxError.timeout = err else {
+                            assert(false)
+                            return .just(.error(err))
+                        }
+                        return .just(.error(NetworkError.timeout))
+                    })
             }
             .observeOn(MainScheduler.instance)
             .bind(onNext: { [weak self] result in
                 guard let slf = self else { return }
+                slf.updateErrorBarPosition(forIsError: result.isError, animated: true)
+                slf.update(withIsLoading: false)
                 switch result {
                 case .success(let events):
                     slf.updateTableView(with: events)
@@ -64,7 +76,6 @@ class KudaGoSearchViewController: UIViewController, UITableViewDelegate {
                     slf.updateTableView(with: [])
                     slf.errorBar.text = (error as? NetworkError)?.description ?? error.localizedDescription
                 }
-                slf.updateErrorBarPosition(forIsError: result.isError, animated: true)
             })
             .disposed(by: bag)
     }
@@ -90,6 +101,11 @@ fileprivate extension KudaGoSearchViewController {
             })
         ]
         tableView.reloadData()
+    }
+
+    private func update(withIsLoading isLoading: Bool) {
+        searchBar.isLoading = isLoading
+        UIApplication.shared.isNetworkActivityIndicatorVisible = isLoading
     }
 
     private func updateErrorBarPosition(forIsError isError: Bool, animated: Bool) {
@@ -185,4 +201,40 @@ class ErrorBar: UIView {
     private var left: NSLayoutConstraint!
     private var bottom: NSLayoutConstraint!
     private var right: NSLayoutConstraint!
+}
+
+
+extension UISearchBar {
+
+    public var textField: UITextField? {
+        let subViews = subviews.flatMap { $0.subviews }
+        guard let textField = (subViews.filter { $0 is UITextField }).first as? UITextField else {
+            return nil
+        }
+        return textField
+    }
+
+    public var activityIndicator: UIActivityIndicatorView? {
+        return textField?.leftView?.subviews.compactMap{ $0 as? UIActivityIndicatorView }.first
+    }
+
+    var isLoading: Bool {
+        get {
+            return activityIndicator != nil
+        } set {
+            if newValue {
+                if activityIndicator == nil {
+                    let newActivityIndicator = UIActivityIndicatorView(style: .gray)
+                    newActivityIndicator.transform = CGAffineTransform(scaleX: 0.7, y: 0.7)
+                    newActivityIndicator.startAnimating()
+                    newActivityIndicator.backgroundColor = UIColor.white
+                    textField?.leftView?.addSubview(newActivityIndicator)
+                    let leftViewSize = textField?.leftView?.frame.size ?? CGSize.zero
+                    newActivityIndicator.center = CGPoint(x: leftViewSize.width/2, y: leftViewSize.height/2)
+                }
+            } else {
+                activityIndicator?.removeFromSuperview()
+            }
+        }
+    }
 }

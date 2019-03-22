@@ -34,6 +34,8 @@ public enum NetworkError: Swift.Error {
     case httpRequestFailed(response: HTTPURLResponse, data: Data?)
     /// Deserialization error.
     case deserializationError(error: Swift.Error)
+    /// Timeout error.
+    case timeout
 
     var description: String {
         switch self {
@@ -45,6 +47,8 @@ public enum NetworkError: Swift.Error {
             return "Не удалось получить данные"
         case .deserializationError(_):
             return "Ошибка сериализации"
+        case .timeout:
+            return "Время ожидания вышло"
         }
     }
 }
