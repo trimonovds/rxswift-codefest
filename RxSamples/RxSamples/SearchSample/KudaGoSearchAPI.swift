@@ -25,11 +25,33 @@ struct KudaGoEventsPageResponse: Codable {
     var results: [KudaGoEvent]
 }
 
+public enum NetworkError: Swift.Error {
+    /// Unknown error occurred.
+    case unknown
+    /// Response is not NSHTTPURLResponse
+    case nonHTTPResponse(response: URLResponse)
+    /// Response is not successful. (not in `200 ..< 300` range)
+    case httpRequestFailed(response: HTTPURLResponse, data: Data?)
+    /// Deserialization error.
+    case deserializationError(error: Swift.Error)
+
+    var description: String {
+        switch self {
+        case .unknown:
+            return "Неизвестная ошибка"
+        case .nonHTTPResponse(_):
+            return "Ошибка сервера"
+        case .httpRequestFailed(_):
+            return "Не удалось получить данные"
+        case .deserializationError(_):
+            return "Ошибка сериализации"
+        }
+    }
+}
+
 class KudaGoSearchAPI {
 
     typealias Response = KudaGoEventsPageResponse
-
-    struct SerializationError: Error { }
 
     init(networkService: NetworkService) {
         self.networkService = networkService
@@ -40,11 +62,12 @@ class KudaGoSearchAPI {
         let task = networkService.request(with: url) { (result) in
             switch result {
             case .success(let data):
-                guard let response: Response = try? JSONDecoder().decode(Response.self, from: data) else {
-                    completion(.error(SerializationError()))
-                    return
+                do {
+                    let response: Response = try JSONDecoder().decode(Response.self, from: data)
+                    completion(.success(response.results))
+                } catch {
+                    completion(.error(NetworkError.deserializationError(error: error)))
                 }
-                completion(.success(response.results))
             case .error(let err):
                 completion(.error(err))
             }
@@ -74,10 +97,21 @@ extension URLSessionTask: Task { }
 extension URLSession: NetworkService {
     func request(with url: URL, completion: @escaping (Result<Data>) -> Void) -> Task {
         let urlSessionTask = self.dataTask(with: url) { (data, response, error) in
-            if let err = error {
-                completion(.error(err))
-            } else {
-                completion(.success(data!))
+            guard let response = response, let data = data else {
+                completion(.error(error ?? NetworkError.unknown))
+                return
+            }
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                completion(.error(NetworkError.nonHTTPResponse(response: response)))
+                return
+            }
+
+            if 200 ..< 300 ~= httpResponse.statusCode {
+                completion(.success(data))
+            }
+            else {
+                completion(.error(NetworkError.httpRequestFailed(response: httpResponse, data: data)))
             }
         }
         return urlSessionTask

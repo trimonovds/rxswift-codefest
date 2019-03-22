@@ -126,14 +126,3 @@ class KudaGoSearchAPITests: XCTestCase {
         XCTAssert(actualResult == nil)
     }
 }
-
-extension Result {
-    var value: T? {
-        switch self {
-        case .success(let result):
-            return result
-        case .error(_):
-            return nil
-        }
-    }
-}

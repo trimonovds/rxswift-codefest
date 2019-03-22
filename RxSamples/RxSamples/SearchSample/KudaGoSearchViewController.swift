@@ -18,26 +18,41 @@ class KudaGoSearchViewController: UIViewController, UITableViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        view.addSubview(tableView)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.rowHeight = UITableView.automaticDimension
         tableView.contentInsetAdjustmentBehavior = .never
         tableView.dataSource = dataSource
 
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(errorBar)
+        errorBar.translatesAutoresizingMaskIntoConstraints = false
+        errorBar.numberOfLines = 2
+        errorBar.font = UIFont.systemFont(ofSize: 14.0)
+        errorBar.backgroundColor = UIColor.red.withAlphaComponent(0.8)
+        errorBar.textColor = UIColor.white
 
         view.addSubview(searchBar)
         searchBar.translatesAutoresizingMaskIntoConstraints = false
 
+        errorBarTopConstraint = errorBar.topAnchor.constraint(equalTo: searchBar.bottomAnchor)
+        updateErrorBar(forIsError: false)
+
         NSLayoutConstraint.activate(
-            tableView.pinToParentSafe(withEdges: [.bottom, .left, .right]) +
             searchBar.pinToParentSafe(withEdges: [.top, .left, .right]) +
-            [tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor)]
+            tableView.pinToParentSafe(withEdges: [.bottom, .left, .right]) +
+            errorBar.pinToParentSafe(withEdges: [.left, .right]) +
+            [
+                errorBarTopConstraint,
+                tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
+                errorBar.heightAnchor.constraint(equalToConstant: L.errorBarHeight)
+            ]
         )
 
         searchBar.rx.text.orEmpty
+            .debounce(0.25, scheduler: MainScheduler.instance)
             .flatMapLatest { [weak self] searchText -> Observable<Result<[KudaGoEvent]>> in
                 guard let slf = self else { return .empty() }
-                return slf.googleSearchApi.searchEvents(with: searchText)
+                return slf.searchApi.searchEvents(with: searchText)
             }
             .observeOn(MainScheduler.instance)
             .bind(onNext: { [weak self] result in
@@ -51,23 +66,49 @@ class KudaGoSearchViewController: UIViewController, UITableViewDelegate {
                     ]
                     slf.tableView.reloadData()
                 case .error(let error):
-                    print(error)
+                    slf.dataSource.sectionConfigurations = []
+                    slf.tableView.reloadData()
+                    slf.errorBar.text = (error as? NetworkError)?.description ?? error.localizedDescription
                 }
+
+                slf.view.layoutIfNeeded()
+                UIView.animate(
+                    withDuration: 0.25,
+                    delay: 0.0,
+                    options: UIView.AnimationOptions.beginFromCurrentState,
+                    animations: {
+                        slf.updateErrorBar(forIsError: result.isError)
+                        slf.view.layoutIfNeeded()
+                    },
+                    completion: nil
+                )
             })
             .disposed(by: bag)
-
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    func updateErrorBar(forIsError isError: Bool) {
+        errorBarTopConstraint.constant = KudaGoSearchViewController
+            .calculateErrorBarTopConstraintConstant(forIsError: isError)
+    }
 
+    // errorBar.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: ?)
+    static func calculateErrorBarTopConstraintConstant(forIsError isError: Bool) -> CGFloat {
+        return isError ? 0.0 : -L.errorBarHeight
     }
 
     private let dataSource = TableViewDataSource()
-    private let googleSearchApi = KudaGoSearchAPI(networkService: URLSession.shared)
+    private let searchApi = KudaGoSearchAPI(networkService: URLSession.shared)
     private let tableView: UITableView = UITableView()
     private let searchBar: UISearchBar = UISearchBar()
+    private let errorBar: UILabel = UILabel()
+    private var errorBarTopConstraint: NSLayoutConstraint!
     private let bag = DisposeBag()
+}
+
+fileprivate extension KudaGoSearchViewController {
+    enum L {
+        static let errorBarHeight: CGFloat = 20.0
+    }
 }
 
 extension KudaGoSearchAPI {
