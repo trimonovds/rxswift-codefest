@@ -35,7 +35,7 @@ class KudaGoSearchViewController: UIViewController, UITableViewDelegate {
         searchBar.translatesAutoresizingMaskIntoConstraints = false
 
         errorBarTopConstraint = errorBar.topAnchor.constraint(equalTo: searchBar.bottomAnchor)
-        updateErrorBar(forIsError: false)
+        updateErrorBarTopConstraint(forIsError: false)
 
         NSLayoutConstraint.activate(
             searchBar.pinToParentSafe(withEdges: [.top, .left, .right]) +
@@ -77,23 +77,13 @@ class KudaGoSearchViewController: UIViewController, UITableViewDelegate {
                     delay: 0.0,
                     options: UIView.AnimationOptions.beginFromCurrentState,
                     animations: {
-                        slf.updateErrorBar(forIsError: result.isError)
+                        slf.updateErrorBarTopConstraint(forIsError: result.isError)
                         slf.view.layoutIfNeeded()
                     },
                     completion: nil
                 )
             })
             .disposed(by: bag)
-    }
-
-    func updateErrorBar(forIsError isError: Bool) {
-        errorBarTopConstraint.constant = KudaGoSearchViewController
-            .calculateErrorBarTopConstraintConstant(forIsError: isError)
-    }
-
-    // errorBar.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: ?)
-    static func calculateErrorBarTopConstraintConstant(forIsError isError: Bool) -> CGFloat {
-        return isError ? 0.0 : -L.errorBarHeight
     }
 
     private let dataSource = TableViewDataSource()
@@ -108,6 +98,10 @@ class KudaGoSearchViewController: UIViewController, UITableViewDelegate {
 fileprivate extension KudaGoSearchViewController {
     enum L {
         static let errorBarHeight: CGFloat = 20.0
+    }
+
+    private func updateErrorBarTopConstraint(forIsError isError: Bool) {
+        errorBarTopConstraint.constant = isError ? 0.0 : -L.errorBarHeight
     }
 }
 
