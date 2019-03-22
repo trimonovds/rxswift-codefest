@@ -53,21 +53,11 @@ final class CardViewController: UIViewController {
         view.addSubview(drawerView)
         
         setupSettings()
-        setupLayout()
+        setupDrawerLayout()
         
         drawerView.setState(.middle, animated: false)
 
         setupBehaviors()
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
-        if isFirstLayout {
-            isFirstLayout = false
-            updateLayoutWithCurrentOrientation()
-            drawerView.setState(UIDevice.current.orientation.isLandscape ? .top : .middle, animated: false)
-        }
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -75,7 +65,7 @@ final class CardViewController: UIViewController {
         
         let prevState = drawerView.state
         
-        updateLayoutWithCurrentOrientation()
+        updateDrawerLayout(for: UIDevice.current.orientation)
         
         coordinator.animate(alongsideTransition: { [weak self] context in
             let newState: DrawerView.State = (prevState == .bottom) ? .bottom : .top
@@ -96,6 +86,10 @@ final class CardViewController: UIViewController {
         let center = CLLocationCoordinate2D(latitude: 55.69454914, longitude: 37.60688340)
         let camera = MKMapCamera(lookingAtCenter: center, fromDistance: 67523, pitch: 0, heading: 0)
         mapView.setCamera(camera, animated: true)
+
+        let orientation = UIDevice.current.orientation
+        updateDrawerLayout(for: orientation)
+        drawerView.setState(orientation.isLandscape ? .top : .middle, animated: false)
     }
     
     // MARK: - Private
@@ -120,7 +114,7 @@ final class CardViewController: UIViewController {
         )
     }
     
-    private func setupLayout() {
+    private func setupDrawerLayout() {
         drawerView.translatesAutoresizingMaskIntoConstraints = false
     
         portraitConstraints = [
@@ -138,15 +132,13 @@ final class CardViewController: UIViewController {
         ]
     }
     
-    private func updateLayoutWithCurrentOrientation() {
-        let orientation = UIDevice.current.orientation
-        
+    private func updateDrawerLayout(for orientation: UIDeviceOrientation) {
         if orientation.isLandscape {
             portraitConstraints.forEach { $0.isActive = false }
             landscapeConstraints.forEach { $0.isActive = true }
             drawerView.topPosition = .fromTop(Layout.topInsetLandscape)
             drawerView.availableStates = [.top, .bottom]
-        } else if orientation.isPortrait {
+        } else {
             landscapeConstraints.forEach { $0.isActive = false }
             portraitConstraints.forEach { $0.isActive = true }
             drawerView.topPosition = .fromTop(Layout.topInsetPortrait)
