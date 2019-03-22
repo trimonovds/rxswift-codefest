@@ -13,7 +13,7 @@ import RxSwift
 import Utils
 @testable import RxSamples
 
-class TaskMock: Task {
+class URLSessionTaskMock: URLSessionTaskProtocol {
     var onResume: (() -> Void)?
     var onCancel: (() -> Void)?
 
@@ -30,14 +30,14 @@ class TaskMock: Task {
     }
 }
 
-class NetworkServiceMock: NetworkService {
-    let requestImplementation: (URL, @escaping (Data?, URLResponse?, Error?) -> Void) -> Task
+class URLSessionMock: URLSessionProtocol {
+    let requestImplementation: (URL, @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionTaskProtocol
 
-    init(requestImplementation: @escaping (URL, @escaping (Data?, URLResponse?, Error?) -> Void) -> Task) {
+    init(requestImplementation: @escaping (URL, @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionTaskProtocol) {
         self.requestImplementation = requestImplementation
     }
 
-    func request(with url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> Void) -> Task {
+    func request(with url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionTaskProtocol {
         return requestImplementation(url, completion)
     }
 }
@@ -46,9 +46,9 @@ class KudaGoSearchAPITests: XCTestCase {
     func testSearchWhenNetworkServiceRequestSucceedThenReturnsCorrectResutsInCompletion() {
         // Arrange
         let testScheduler = TestScheduler(initialClock: 0)
-        let networkServiceMock = NetworkServiceMock { url, completion in
+        let networkServiceMock = URLSessionMock { url, completion in
             var schedulingDisposable: Disposable?
-            return TaskMock(onResume: {
+            return URLSessionTaskMock(onResume: {
                 schedulingDisposable = testScheduler.scheduleRelativeVirtual((), dueTime: 500, action: { _ -> Disposable in
                     let reponse = KudaGoEventsPageResponse(count: 1, next: nil, previos: nil, results: [
                         KudaGoEvent(title: "Codefest X", description: "Лучшая конференция за Уралом")
@@ -63,7 +63,7 @@ class KudaGoSearchAPITests: XCTestCase {
             })
         }
 
-        let sut = KudaGoSearchAPI(networkService: networkServiceMock)
+        let sut = KudaGoSearchAPI(session: networkServiceMock)
         var actualResult: [KudaGoEvent]?
 
         // Act
@@ -85,9 +85,9 @@ class KudaGoSearchAPITests: XCTestCase {
     func testSearchWhenNetworkServiceRequestCanceledSucceedThenReturnsCorrectResutsInCompletion() {
         // Arrange
         let testScheduler = TestScheduler(initialClock: 0)
-        let networkServiceMock = NetworkServiceMock { url, completion in
+        let networkServiceMock = URLSessionMock { url, completion in
             var schedulingDisposable: Disposable?
-            return TaskMock(onResume: {
+            return URLSessionTaskMock(onResume: {
                 schedulingDisposable = testScheduler.scheduleRelativeVirtual((), dueTime: 500, action: { _ -> Disposable in
                     let reponse = KudaGoEventsPageResponse(count: 1, next: nil, previos: nil, results: [
                         KudaGoEvent(title: "Codefest X", description: "Лучшая конференция за Уралом")
@@ -102,11 +102,11 @@ class KudaGoSearchAPITests: XCTestCase {
             })
         }
 
-        let sut = KudaGoSearchAPI(networkService: networkServiceMock)
+        let sut = KudaGoSearchAPI(session: networkServiceMock)
         var actualResult: [KudaGoEvent]?
 
         // Act
-        var searchTask: Task?
+        var searchTask: URLSessionTaskProtocol?
         testScheduler.scheduleAt(100) {
             searchTask = sut.searchEvents(withText: "Конференция") { (result) in
                 actualResult = result.value

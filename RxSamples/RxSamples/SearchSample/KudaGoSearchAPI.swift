@@ -9,13 +9,13 @@
 import Foundation
 import Utils
 
-protocol Task: AnyObject {
+protocol URLSessionTaskProtocol: AnyObject {
     func resume()
     func cancel()
 }
 
-protocol NetworkService {
-    func request(with url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> Void) -> Task
+protocol URLSessionProtocol {
+    func request(with url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionTaskProtocol
 }
 
 struct KudaGoEventsPageResponse: Codable {
@@ -57,13 +57,13 @@ class KudaGoSearchAPI {
 
     typealias Response = KudaGoEventsPageResponse
 
-    init(networkService: NetworkService) {
-        self.networkService = networkService
+    init(session: URLSessionProtocol) {
+        self.session = session
     }
 
-    func searchEvents(withText searchText: String, completion: @escaping (Result<[KudaGoEvent], APIError>) -> Void) -> Task {
+    func searchEvents(withText searchText: String, completion: @escaping (Result<[KudaGoEvent], APIError>) -> Void) -> URLSessionTaskProtocol {
         let url = KudaGoSearchAPI.makeURL(for: searchText)
-        let task = networkService.request(with: url) { (data, response, error) in
+        let task = session.request(with: url) { (data, response, error) in
             guard let response = response, let data = data else {
                 completion(.error(error.flatMap { APIError.URLSessionError(error: $0) } ?? APIError.unknown))
                 return
@@ -90,7 +90,7 @@ class KudaGoSearchAPI {
         return task
     }
 
-    private let networkService: NetworkService
+    private let session: URLSessionProtocol
 }
 
 fileprivate extension KudaGoSearchAPI {
@@ -108,9 +108,9 @@ fileprivate extension KudaGoSearchAPI {
     }
 }
 
-extension URLSessionTask: Task { }
-extension URLSession: NetworkService {
-    func request(with url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> Void) -> Task {
+extension URLSessionTask: URLSessionTaskProtocol { }
+extension URLSession: URLSessionProtocol {
+    func request(with url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionTaskProtocol {
         let urlSessionTask = self.dataTask(with: url) { (data, response, error) in
             completion(data, response, error)
         }

@@ -105,7 +105,7 @@ class KudaGoSearchViewController: UIViewController, UITableViewDelegate {
     }
 
     private let dataSource = TableViewDataSource()
-    private let searchApi = KudaGoSearchAPI(networkService: URLSession.shared)
+    private let searchApi = KudaGoSearchAPI(session: URLSession.shared)
     private let tableView: UITableView = UITableView()
     private let searchBar: UISearchBar = UISearchBar()
     private let errorBar: ErrorBar = ErrorBar()
@@ -160,7 +160,7 @@ fileprivate extension KudaGoSearchViewController {
 
 extension KudaGoSearchAPI {
     func searchEvents(with text: String) -> Observable<Result<[KudaGoEvent], APIError>> {
-        let asyncRequest = { (_ completion: @escaping (Result<[KudaGoEvent], APIError>) -> Void) -> Task in
+        let asyncRequest = { (_ completion: @escaping (Result<[KudaGoEvent], APIError>) -> Void) -> URLSessionTaskProtocol in
             return self.searchEvents(withText: text, completion: completion)
         }
         return Observable.fromAsync(asyncRequest)
@@ -168,7 +168,7 @@ extension KudaGoSearchAPI {
 }
 
 extension Observable {
-    static func fromAsync(_ asyncRequest: @escaping (@escaping (Element) -> Void) -> Task) -> Observable<Element> {
+    static func fromAsync(_ asyncRequest: @escaping (@escaping (Element) -> Void) -> URLSessionTaskProtocol) -> Observable<Element> {
         return Observable.create({ (o) -> Disposable in
             let task = asyncRequest({ (result) in
                 o.onNext(result)
