@@ -40,9 +40,7 @@ final class CardViewController: UIViewController {
         
         tableView.backgroundColor = .white
         tableView.dataSource = shapesDataSource
-        if #available(iOS 11.0, *) {
-            tableView.contentInsetAdjustmentBehavior = .never
-        }
+        tableView.contentInsetAdjustmentBehavior = .never
         
         drawerView = DrawerView(scrollView: tableView, delegate: self, headerView: headerView)
         drawerView.middlePosition = .fromBottom(Layout.middleInsetFromBottom)

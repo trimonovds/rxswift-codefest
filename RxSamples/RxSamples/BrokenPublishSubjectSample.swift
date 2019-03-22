@@ -101,8 +101,8 @@ class WayPointCellView: GenericBindableView<WayPointViewModel> {
         boundTimesLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(boundTimesLabel)
 
-        clearButton.setTitle("x", for: .normal)
-        clearButton.setTitleColor(.black, for: .normal)
+        clearButton.setImage(UIImage.init(named: "close_icon")!, for: .normal)
+        clearButton.tintColor = .black
 
         nameLabel.font = UIFont.preferredFont(forTextStyle: .headline)
         boundTimesLabel.font = UIFont.preferredFont(forTextStyle: .caption1)
