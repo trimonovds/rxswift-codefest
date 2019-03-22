@@ -8,15 +8,6 @@
 
 import UIKit
 
-public protocol Bindable {
-    associatedtype Model
-    func bind(to model: Model)
-}
-
-public typealias BindableView = UIView & Bindable
-
-public typealias BindableTableViewCell = UITableViewCell & Bindable
-
 public protocol TableViewCellConfigurator {
     static var reuseId: String { get }
     static var cellType: UITableViewCell.Type { get }

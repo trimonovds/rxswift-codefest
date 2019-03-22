@@ -26,16 +26,13 @@ class KudaGoSearchViewController: UIViewController, UITableViewDelegate {
 
         view.addSubview(errorBar)
         errorBar.translatesAutoresizingMaskIntoConstraints = false
-        errorBar.numberOfLines = 2
-        errorBar.font = UIFont.systemFont(ofSize: 14.0)
-        errorBar.backgroundColor = UIColor.red.withAlphaComponent(0.8)
-        errorBar.textColor = UIColor.white
+        errorBar.textInsets = UIEdgeInsets(top: 4.0, left: 8.0, bottom: 4.0, right: 8.0)
 
         view.addSubview(searchBar)
         searchBar.translatesAutoresizingMaskIntoConstraints = false
 
         errorBarTopConstraint = errorBar.topAnchor.constraint(equalTo: searchBar.bottomAnchor)
-        updateErrorBarTopConstraint(forIsError: false)
+        updateErrorBarPosition(forIsError: false, animated: false)
 
         NSLayoutConstraint.activate(
             searchBar.pinToParentSafe(withEdges: [.top, .left, .right]) +
@@ -50,6 +47,9 @@ class KudaGoSearchViewController: UIViewController, UITableViewDelegate {
 
         searchBar.rx.text.orEmpty
             .debounce(0.25, scheduler: MainScheduler.instance)
+            .do(onNext: { [weak self] _ in
+                self?.updateErrorBarPosition(forIsError: false, animated: true)
+            })
             .flatMapLatest { [weak self] searchText -> Observable<Result<[KudaGoEvent]>> in
                 guard let slf = self else { return .empty() }
                 return slf.searchApi.searchEvents(with: searchText)
@@ -59,29 +59,12 @@ class KudaGoSearchViewController: UIViewController, UITableViewDelegate {
                 guard let slf = self else { return }
                 switch result {
                 case .success(let events):
-                    slf.dataSource.sectionConfigurations = [
-                        SectionConfigurator(cellConfigurators: events.map {
-                            KudaGoEventCellConfigurator(model: $0)
-                        })
-                    ]
-                    slf.tableView.reloadData()
+                    slf.updateTableView(with: events)
                 case .error(let error):
-                    slf.dataSource.sectionConfigurations = []
-                    slf.tableView.reloadData()
+                    slf.updateTableView(with: [])
                     slf.errorBar.text = (error as? NetworkError)?.description ?? error.localizedDescription
                 }
-
-                slf.view.layoutIfNeeded()
-                UIView.animate(
-                    withDuration: 0.25,
-                    delay: 0.0,
-                    options: UIView.AnimationOptions.beginFromCurrentState,
-                    animations: {
-                        slf.updateErrorBarTopConstraint(forIsError: result.isError)
-                        slf.view.layoutIfNeeded()
-                    },
-                    completion: nil
-                )
+                slf.updateErrorBarPosition(forIsError: result.isError, animated: true)
             })
             .disposed(by: bag)
     }
@@ -90,18 +73,48 @@ class KudaGoSearchViewController: UIViewController, UITableViewDelegate {
     private let searchApi = KudaGoSearchAPI(networkService: URLSession.shared)
     private let tableView: UITableView = UITableView()
     private let searchBar: UISearchBar = UISearchBar()
-    private let errorBar: UILabel = UILabel()
+    private let errorBar: ErrorBar = ErrorBar()
     private var errorBarTopConstraint: NSLayoutConstraint!
     private let bag = DisposeBag()
 }
 
 fileprivate extension KudaGoSearchViewController {
     enum L {
-        static let errorBarHeight: CGFloat = 20.0
+        static let errorBarHeight: CGFloat = 28.0 // 20 + 4 + 4
     }
 
-    private func updateErrorBarTopConstraint(forIsError isError: Bool) {
-        errorBarTopConstraint.constant = isError ? 0.0 : -L.errorBarHeight
+    private func updateTableView(with events: [KudaGoEvent]) {
+        dataSource.sectionConfigurations = [
+            SectionConfigurator(cellConfigurators: events.map {
+                KudaGoEventCellConfigurator(model: $0)
+            })
+        ]
+        tableView.reloadData()
+    }
+
+    private func updateErrorBarPosition(forIsError isError: Bool, animated: Bool) {
+        let constant = isError ? 0.0 : -L.errorBarHeight
+        guard errorBarTopConstraint.constant != constant else { return }
+        
+        let updates = {
+            self.errorBarTopConstraint.constant = constant
+        }
+
+        if animated {
+            view.layoutIfNeeded()
+            UIView.animate(
+                withDuration: 0.25,
+                delay: 0.0,
+                options: UIView.AnimationOptions.beginFromCurrentState,
+                animations: {
+                    updates()
+                    self.view.layoutIfNeeded()
+                },
+                completion: nil
+            )
+        } else {
+            updates()
+        }
     }
 }
 
@@ -127,4 +140,49 @@ extension Observable {
             }
         })
     }
+}
+
+class ErrorBar: UIView {
+    var text: String = "" {
+        didSet {
+            label.text = text
+        }
+    }
+
+    var textInsets: UIEdgeInsets = .zero {
+        didSet {
+            top.constant = textInsets.top
+            left.constant = textInsets.left
+            bottom.constant = textInsets.bottom
+            right.constant = textInsets.right
+        }
+    }
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        addSubview(label)
+
+        backgroundColor = UIColor.red.withAlphaComponent(0.8)
+
+        label.textColor = UIColor.white
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.systemFont(ofSize: 14.0)
+
+        top = label.topAnchor.constraint(equalTo: topAnchor, constant: textInsets.top)
+        left = label.leftAnchor.constraint(equalTo: leftAnchor, constant: textInsets.left)
+        bottom = bottomAnchor.constraint(equalTo: label.bottomAnchor, constant: textInsets.bottom)
+        right = rightAnchor.constraint(equalTo: label.rightAnchor, constant: textInsets.right)
+        NSLayoutConstraint.activate([top, left, bottom, right])
+    }
+
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private let label: UILabel = UILabel()
+    private var top: NSLayoutConstraint!
+    private var left: NSLayoutConstraint!
+    private var bottom: NSLayoutConstraint!
+    private var right: NSLayoutConstraint!
 }
