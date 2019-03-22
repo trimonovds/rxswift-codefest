@@ -40,3 +40,10 @@ extension UIColor {
         return CGFloat(arc4random()) / CGFloat(UInt32.max)
     }
 }
+
+
+extension UIEdgeInsets {
+    public static func all(_ value: CGFloat) -> UIEdgeInsets {
+        return UIEdgeInsets(top: value, left: value, bottom: value, right: value)
+    }
+}

@@ -126,23 +126,16 @@ final class CardViewController: UIViewController {
         drawerView.translatesAutoresizingMaskIntoConstraints = false
     
         portraitConstraints = [
-            drawerView.topAnchor.constraint(equalTo: view.topAnchor),
-            drawerView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            drawerView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            drawerView.rightAnchor.constraint(equalTo: view.rightAnchor)
+            drawerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            drawerView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
+            drawerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            drawerView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor)
         ]
         
-        let landscapeLeftAnchor: NSLayoutXAxisAnchor
-        if #available(iOS 11.0, *) {
-            landscapeLeftAnchor = view.safeAreaLayoutGuide.leftAnchor
-        } else {
-            landscapeLeftAnchor = view.leftAnchor
-        }
-        
         landscapeConstraints = [
-            drawerView.topAnchor.constraint(equalTo: view.topAnchor),
-            drawerView.leftAnchor.constraint(equalTo: landscapeLeftAnchor, constant: 16),
-            drawerView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            drawerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            drawerView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16),
+            drawerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             drawerView.widthAnchor.constraint(equalToConstant: 320)
         ]
     }
@@ -184,14 +177,14 @@ extension CardViewController {
         settingsView.spacing = 8.0
         settingsView.translatesAutoresizingMaskIntoConstraints = false
         settingsView.axis = .vertical
-        settingsView.topAnchor.constraint(equalTo: view.topAnchor, constant: 8.0).isActive = true
-        settingsView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -8.0).isActive = true
+        settingsView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8.0).isActive = true
+        settingsView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -8.0).isActive = true
     }
 
     func makeButton(withTitle title: String, action: Selector) -> UIView {
         let button = UIButton(type: .system)
         button.backgroundColor = .darkGray
-        button.titleLabel?.font = .boldSystemFont(ofSize: UIFont.systemFontSize)
+        button.titleLabel?.font = .boldSystemFont(ofSize: UIFont.buttonFontSize)
         button.tintColor = .white
         button.layer.cornerRadius = 8
         button.layer.masksToBounds = true
@@ -207,14 +200,22 @@ extension CardViewController {
         uiSwitch.addTarget(self, action: action, for: .valueChanged)
         let title = UILabel()
         title.translatesAutoresizingMaskIntoConstraints = false
-        title.backgroundColor = .white
         title.text = name
-        title.textColor = .black
-        let uiSwitchContainer = UIStackView(arrangedSubviews: [title, uiSwitch])
-        uiSwitchContainer.axis = .horizontal
-        uiSwitchContainer.alignment = .center
-        uiSwitchContainer.distribution = .fillProportionally
-        return uiSwitchContainer
+        title.textColor = .white
+        let stackView = UIStackView(arrangedSubviews: [title, uiSwitch])
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.distribution = .fillProportionally
+        stackView.spacing = 8.0
+
+        let stackViewContainer = UIView()
+        stackViewContainer.layer.cornerRadius = 8.0
+        stackViewContainer.layer.masksToBounds = true
+        stackViewContainer.backgroundColor = .darkGray
+        stackViewContainer.addSubview(stackView)
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate(stackView.pinToParent(withInsets: .all(8.0)))
+        return stackViewContainer
     }
 
     @objc private func handleResetButton() {
