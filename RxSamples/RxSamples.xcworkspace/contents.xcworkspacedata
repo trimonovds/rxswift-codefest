@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:/Users/trimonovds/Documents/WorkDocs/rxswift-codefest/RxSamples/RxSamplesPlayground.playground">
+   </FileRef>
+   <FileRef
       location = "group:../Utils/Utils.xcodeproj">
    </FileRef>
    <FileRef
