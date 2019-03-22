@@ -42,7 +42,7 @@ class NetworkServiceMock: NetworkService {
     }
 }
 
-class GoogleSearchAPITests: XCTestCase {
+class KudaGoSearchAPITests: XCTestCase {
     func testSearchWhenNetworkServiceRequestSucceedThenReturnsCorrectResutsInCompletion() {
         // Arrange
         let testScheduler = TestScheduler(initialClock: 0)
@@ -50,9 +50,8 @@ class GoogleSearchAPITests: XCTestCase {
             var schedulingDisposable: Disposable?
             return TaskMock(onResume: {
                 schedulingDisposable = testScheduler.scheduleRelativeVirtual((), dueTime: 500, action: { _ -> Disposable in
-                    let reponse = KudaGoEventsPageResponse.init(count: 100, next: nil, previos: nil, results: [
-                        KudaGoEvent(title: "A", description: "B"),
-                        KudaGoEvent(title: "AA", description: "BB")
+                    let reponse = KudaGoEventsPageResponse(count: 1, next: nil, previos: nil, results: [
+                        KudaGoEvent(title: "Codefest X", description: "Лучшая конференция за Уралом")
                     ])
 
                     let data = try! JSONEncoder().encode(reponse)
@@ -69,7 +68,7 @@ class GoogleSearchAPITests: XCTestCase {
 
         // Act
         testScheduler.scheduleAt(100) {
-            let searchTask = sut.searchEvents(withText: "CodeFest") { (result) in
+            let searchTask = sut.searchEvents(withText: "Конференция") { (result) in
                 actualResult = result.value
             }
             searchTask.resume()
@@ -80,7 +79,7 @@ class GoogleSearchAPITests: XCTestCase {
         XCTAssert(actualResult == nil)
 
         testScheduler.advanceTo(601)
-        XCTAssert(actualResult?.count == 2)
+        XCTAssert(actualResult?.count == 1)
     }
 
     func testSearchWhenNetworkServiceRequestCanceledSucceedThenReturnsCorrectResutsInCompletion() {
@@ -90,9 +89,8 @@ class GoogleSearchAPITests: XCTestCase {
             var schedulingDisposable: Disposable?
             return TaskMock(onResume: {
                 schedulingDisposable = testScheduler.scheduleRelativeVirtual((), dueTime: 500, action: { _ -> Disposable in
-                    let reponse = KudaGoEventsPageResponse.init(count: 100, next: nil, previos: nil, results: [
-                        KudaGoEvent(title: "A", description: "B"),
-                        KudaGoEvent(title: "AA", description: "BB")
+                    let reponse = KudaGoEventsPageResponse(count: 1, next: nil, previos: nil, results: [
+                        KudaGoEvent(title: "Codefest X", description: "Лучшая конференция за Уралом")
                         ])
 
                     let data = try! JSONEncoder().encode(reponse)
@@ -110,7 +108,7 @@ class GoogleSearchAPITests: XCTestCase {
         // Act
         var searchTask: Task?
         testScheduler.scheduleAt(100) {
-            searchTask = sut.searchEvents(withText: "CodeFest") { (result) in
+            searchTask = sut.searchEvents(withText: "Конференция") { (result) in
                 actualResult = result.value
             }
             searchTask!.resume()
