@@ -13,6 +13,23 @@ import RxCocoa
 
 class KudaGoSearchViewController: UIViewController, UITableViewDelegate {
 
+    enum ScreenError: Swift.Error {
+        case api(APIError)
+        case timeout
+        case unknown(error: Swift.Error)
+
+        var description: String {
+            switch self {
+            case .api(let apiError):
+                return apiError.description
+            case .timeout:
+                return "Истекло время ожидания"
+            case .unknown(let error):
+                return "Неизвестная системная ошибка. \(error.localizedDescription)"
+            }
+        }
+    }
+
     typealias KudaGoEventCellConfigurator = CellConfigurator<KudaGoEventCell, KudaGoEvent>
 
     override func viewDidLoad() {
@@ -51,17 +68,24 @@ class KudaGoSearchViewController: UIViewController, UITableViewDelegate {
                 self?.updateErrorBarPosition(forIsError: false, animated: true)
             })
             .debounce(0.25, scheduler: MainScheduler.instance)
-            .flatMapLatest { [weak self] searchText -> Observable<Result<[KudaGoEvent]>> in
+            .flatMapLatest { [weak self] searchText -> Observable<Result<[KudaGoEvent], ScreenError>> in
                 guard let slf = self else { return .empty() }
+                guard !searchText.isEmpty else { return .just(.success([])) }
                 slf.update(withIsLoading: true)
                 return slf.searchApi.searchEvents(with: searchText)
+                    .map {
+                        switch $0 {
+                        case .success(let events): return .success(events)
+                        case .error(let apiError): return .error(.api(apiError))
+                        }
+                    }
                     .timeout(5.0, scheduler: MainScheduler.instance)
-                    .catchError({ (err) -> Observable<Result<[KudaGoEvent]>> in
+                    .catchError({ (err) -> Observable<Result<[KudaGoEvent], ScreenError>> in
                         guard case RxError.timeout = err else {
                             assert(false)
-                            return .just(.error(err))
+                            return .just(.error(.api(.unknown)))
                         }
-                        return .just(.error(NetworkError.timeout))
+                        return .just(.error(.timeout))
                     })
             }
             .observeOn(MainScheduler.instance)
@@ -74,7 +98,7 @@ class KudaGoSearchViewController: UIViewController, UITableViewDelegate {
                     slf.updateTableView(with: events)
                 case .error(let error):
                     slf.updateTableView(with: [])
-                    slf.errorBar.text = (error as? NetworkError)?.description ?? error.localizedDescription
+                    slf.errorBar.text = error.description
                 }
             })
             .disposed(by: bag)
@@ -135,8 +159,8 @@ fileprivate extension KudaGoSearchViewController {
 }
 
 extension KudaGoSearchAPI {
-    func searchEvents(with text: String) -> Observable<Result<[KudaGoEvent]>> {
-        let asyncRequest = { (_ completion: @escaping (Result<[KudaGoEvent]>) -> Void) -> Task in
+    func searchEvents(with text: String) -> Observable<Result<[KudaGoEvent], APIError>> {
+        let asyncRequest = { (_ completion: @escaping (Result<[KudaGoEvent], APIError>) -> Void) -> Task in
             return self.searchEvents(withText: text, completion: completion)
         }
         return Observable.fromAsync(asyncRequest)

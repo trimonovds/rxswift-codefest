@@ -31,13 +31,13 @@ class TaskMock: Task {
 }
 
 class NetworkServiceMock: NetworkService {
-    let requestImplementation: (URL, @escaping (Result<Data>) -> Void) -> Task
+    let requestImplementation: (URL, @escaping (Data?, URLResponse?, Error?) -> Void) -> Task
 
-    init(requestImplementation: @escaping (URL, @escaping (Result<Data>) -> Void) -> Task) {
+    init(requestImplementation: @escaping (URL, @escaping (Data?, URLResponse?, Error?) -> Void) -> Task) {
         self.requestImplementation = requestImplementation
     }
 
-    func request(with url: URL, completion: @escaping (Result<Data>) -> Void) -> Task {
+    func request(with url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> Void) -> Task {
         return requestImplementation(url, completion)
     }
 }
@@ -55,7 +55,7 @@ class KudaGoSearchAPITests: XCTestCase {
                     ])
 
                     let data = try! JSONEncoder().encode(reponse)
-                    completion(.success(data))
+                    completion(data, HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil), nil)
                     return Disposables.create()
                 })
             }, onCancel: {
@@ -94,7 +94,7 @@ class KudaGoSearchAPITests: XCTestCase {
                         ])
 
                     let data = try! JSONEncoder().encode(reponse)
-                    completion(.success(data))
+                    completion(data, HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil), nil)
                     return Disposables.create()
                 })
             }, onCancel: {

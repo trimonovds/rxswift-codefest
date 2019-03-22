@@ -8,9 +8,9 @@
 
 import Foundation
 
-public enum Result<T> {
+public enum Result<T, E: Error> {
     case success(T)
-    case error(Error)
+    case error(E)
 }
 
 public extension Result {
@@ -27,7 +27,7 @@ public extension Result {
         }
     }
 
-    var error: Error? {
+    var error: E? {
         switch self {
         case .success(_):
             return nil
