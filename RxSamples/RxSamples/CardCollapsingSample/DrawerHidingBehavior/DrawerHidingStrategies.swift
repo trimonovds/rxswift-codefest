@@ -35,7 +35,6 @@ struct SmartDrawerHidingStrategy: DrawerHidingStrategy {
     }
 
     func hideEvents(didChangeAutoRotationMode: Observable<Bool>, didUpdateSpeed: Observable<Double>) -> Observable<Void> {
-        let sheduler = timerScheduler
         let autoRotationIsOn = didChangeAutoRotationMode.distinctUntilChanged()
         let autoRotationDidTurnOn = autoRotationIsOn.filter { $0 }.mapTo(())
         let autoRotationDidTurnOff = autoRotationIsOn.filter { !$0 }.mapTo(())
@@ -49,10 +48,10 @@ struct SmartDrawerHidingStrategy: DrawerHidingStrategy {
             .filter { $0 }
             .mapTo(())
 
+        let timerFor5Sec = Observable<Int>.timer(5.0, period: nil, scheduler: timerScheduler).mapTo(())
+        let timeShouldStop = Observable<Void>.merge(autoRotationDidTurnOff, speedDidFallBelowThreshold)
         let speedConditionDidSucceed = speedDidExceedThresholdWhileAutorotationIsOn
             .flatMapLatest { _ -> Observable<Void> in
-                let timeShouldStop = Observable<Void>.merge(autoRotationDidTurnOff, speedDidFallBelowThreshold)
-                let timerFor5Sec = Observable<Int>.timer(5.0, period: nil, scheduler: sheduler).mapTo(())
                 return timerFor5Sec.takeUntil(timeShouldStop)
             }
 
