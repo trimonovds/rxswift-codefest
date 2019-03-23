@@ -33,6 +33,7 @@ class DrawerHidingBehavior {
     var isOn: Bool = false {
         didSet {
             guard oldValue != isOn else { return }
+            // Выолняет подписку/отписку на strategy.hideEvents и закрывает шторку как side-effect
             if isOn {
                 subscription.disposable = strategy
                     .hideEvents(

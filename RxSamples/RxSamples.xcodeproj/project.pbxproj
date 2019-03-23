@@ -33,6 +33,7 @@
 		878A62AF224514D200E608B0 /* WayPointCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878A62AE224514D200E608B0 /* WayPointCell.swift */; };
 		878A62BA2245163F00E608B0 /* GenericBindableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878A62B92245163F00E608B0 /* GenericBindableView.swift */; };
 		8797BDF922464B6B00C1E0BE /* SmartDrawerHidingStrategyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8797BDF822464B6B00C1E0BE /* SmartDrawerHidingStrategyTests.swift */; };
+		8797BDFF224680FE00C1E0BE /* StyleKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 8797BDFE224680FE00C1E0BE /* StyleKit.m */; };
 		87A1BC3F2244F58600E3C5C7 /* RootSamplesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A1BC3E2244F58600E3C5C7 /* RootSamplesViewController.swift */; };
 		B41AE3219CF975773186B52C /* Pods_RxSamplesTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B5C2AFAE06168D1563E0CC /* Pods_RxSamplesTests.framework */; };
 /* End PBXBuildFile section */
@@ -81,6 +82,9 @@
 		878A62AE224514D200E608B0 /* WayPointCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WayPointCell.swift; sourceTree = "<group>"; };
 		878A62B92245163F00E608B0 /* GenericBindableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericBindableView.swift; sourceTree = "<group>"; };
 		8797BDF822464B6B00C1E0BE /* SmartDrawerHidingStrategyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartDrawerHidingStrategyTests.swift; sourceTree = "<group>"; };
+		8797BDFC2246805000C1E0BE /* StyleKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StyleKit.h; sourceTree = "<group>"; };
+		8797BDFD224680FD00C1E0BE /* RxSamples-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RxSamples-Bridging-Header.h"; sourceTree = "<group>"; };
+		8797BDFE224680FE00C1E0BE /* StyleKit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StyleKit.m; sourceTree = "<group>"; };
 		87A1BC3E2244F58600E3C5C7 /* RootSamplesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootSamplesViewController.swift; sourceTree = "<group>"; };
 		BD046DC0E3328DA8F83F2CD0 /* Pods-RxSamples.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxSamples.release.xcconfig"; path = "Target Support Files/Pods-RxSamples/Pods-RxSamples.release.xcconfig"; sourceTree = "<group>"; };
 		F834EF785C4B05DDE7BB7098 /* Pods_RxSamples.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RxSamples.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -161,6 +165,9 @@
 				873D66042243B8C50040DAD8 /* DrawerHidingStrategies.swift */,
 				873D65EB2243968D0040DAD8 /* DrawerHidingBehavior.swift */,
 				873D65EE224399E30040DAD8 /* Adapters.swift */,
+				8797BDFC2246805000C1E0BE /* StyleKit.h */,
+				8797BDFE224680FE00C1E0BE /* StyleKit.m */,
+				8797BDFD224680FD00C1E0BE /* RxSamples-Bridging-Header.h */,
 			);
 			path = DrawerHidingBehavior;
 			sourceTree = "<group>";
@@ -274,6 +281,7 @@
 				TargetAttributes = {
 					873D6594224008CA0040DAD8 = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1010;
 					};
 					873D65F92243A8200040DAD8 = {
 						CreatedOnToolsVersion = 10.1;
@@ -429,6 +437,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				873D65B6224008F60040DAD8 /* WayPointsViewController.swift in Sources */,
+				8797BDFF224680FE00C1E0BE /* StyleKit.m in Sources */,
 				873D65E8224388E00040DAD8 /* ShapesDataSource.swift in Sources */,
 				873D66052243B8C50040DAD8 /* DrawerHidingStrategies.swift in Sources */,
 				873D660C2243E1810040DAD8 /* KudaGoSearchAPI.swift in Sources */,
@@ -612,6 +621,7 @@
 			baseConfigurationReference = 82C951E326D1955D0016BA86 /* Pods-RxSamples.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = ZT4G28N837;
 				INFOPLIST_FILE = RxSamples/Info.plist;
@@ -622,6 +632,8 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -D TRACE_RESOURCES";
 				PRODUCT_BUNDLE_IDENTIFIER = com.trimonovds.RxSamples;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "RxSamples/CardCollapsingSample/DrawerHidingBehavior/RxSamples-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -632,6 +644,7 @@
 			baseConfigurationReference = BD046DC0E3328DA8F83F2CD0 /* Pods-RxSamples.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = ZT4G28N837;
 				INFOPLIST_FILE = RxSamples/Info.plist;
@@ -642,6 +655,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -D TRACE_RESOURCES";
 				PRODUCT_BUNDLE_IDENTIFIER = com.trimonovds.RxSamples;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "RxSamples/CardCollapsingSample/DrawerHidingBehavior/RxSamples-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

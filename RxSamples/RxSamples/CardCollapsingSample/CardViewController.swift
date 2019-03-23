@@ -3,6 +3,7 @@ import UltraDrawerView
 import Utils
 import MapKit
 import RxSwift
+import RxCocoa
 
 final class CardViewController: UIViewController {
 
@@ -18,9 +19,12 @@ final class CardViewController: UIViewController {
         NSLayoutConstraint.activate(mapView.pinToParent())
         
         let headerView = CardHeaderView()
-        headerView.title = "Shapes"
+        headerView.title = "Карточка"
         headerView.translatesAutoresizingMaskIntoConstraints = false
         headerView.heightAnchor.constraint(equalToConstant: Constants.Header.headerHeight).isActive = true
+        headerView.onButtonTap = { [weak self] in
+            self?.handleResetButton()
+        }
 
         shapesDataSource.sectionConfigurations = [
             SectionConfigurator(cellConfigurators:
@@ -51,7 +55,7 @@ final class CardViewController: UIViewController {
             drawerInput: drawerView,
             cameraManagerOutput: fakeCameraManager,
             locationManagerOutput: fakeLocationManager,
-            strategy: SmartDrawerHidingStrategy(timerScheduler: MainScheduler.instance)
+            strategy: SimpleDrawerHidingStrategy() //SmartDrawerHidingStrategy(timerScheduler: MainScheduler.instance)
         )
     }
 
@@ -165,11 +169,8 @@ extension CardViewController {
     // MARK: - Buttons
     
     private func setupSettings() {
-        let settingsViews = [
-            makeButton(withTitle: "Reset", action: #selector(handleResetButton)),
-            makeButton(withTitle: "Speed +", action: #selector(handleSpeedUpButton)),
-            makeButton(withTitle: "Speed -", action: #selector(handleSlowDownButton)),
-            makeSwitch(initialValue: fakeCameraManager.isOn.value, name: "AutoRotation", action: #selector(handleAutorotationSwitch))
+        let settingsViews: [UIView] = [
+            makeSpeedView(speed: fakeLocationManager.didUpdateSpeed),
         ]
 
         let settingsView = UIStackView(arrangedSubviews: settingsViews)
@@ -181,7 +182,59 @@ extension CardViewController {
         settingsView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -8.0).isActive = true
     }
 
-    func makeButton(withTitle title: String, action: Selector) -> UIView {
+    func makeSpeedView(speed: Observable<Double>) -> UIView {
+        let increaseSpeed = makeButton(withTitle: "+", action: #selector(handleSpeedUpButton))
+        let decreaseSpeed = makeButton(withTitle: "-", action: #selector(handleSlowDownButton))
+        let autoRotationSwitch = UISwitch()
+        autoRotationSwitch.translatesAutoresizingMaskIntoConstraints = false
+        autoRotationSwitch.isOn = fakeCameraManager.isOn.value
+        autoRotationSwitch.addTarget(self, action: #selector(handleAutorotationSwitch), for: .valueChanged)
+
+        let buttonsStackView = UIStackView(arrangedSubviews: [increaseSpeed, decreaseSpeed, autoRotationSwitch])
+        buttonsStackView.axis = .vertical
+        buttonsStackView.alignment = .fill
+        buttonsStackView.spacing = 8.0
+        buttonsStackView.distribution = .fillEqually
+
+        let speedLabel = UILabel()
+        speedLabel.font = .boldSystemFont(ofSize: UIFont.labelFontSize)
+        speedLabel.textColor = .black
+        speedLabel.textAlignment = .center
+        speedLabel.numberOfLines = 1
+        _ = speed.map { s -> String? in "\(s) м/с" }.bind(to: speedLabel.rx.text)
+
+
+        let speedView = UIImageView()
+        speedView.image = StyleKit.imageOfIntro_guidance_camera()
+        speedView.addSubview(speedLabel)
+
+        speedLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            speedLabel.centerXAnchor.constraint(equalTo: speedView.centerXAnchor),
+            speedLabel.centerYAnchor.constraint(equalTo: speedView.centerYAnchor),
+        ])
+
+        speedView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            speedView.heightAnchor.constraint(equalToConstant: 112),
+            speedView.widthAnchor.constraint(equalToConstant: 112)
+        ])
+
+        let stackView = UIStackView(arrangedSubviews: [speedView, buttonsStackView])
+        stackView.axis = .horizontal
+        stackView.alignment = .fill
+
+        let backgroundView = UIView()
+        backgroundView.addSubview(stackView)
+        backgroundView.backgroundColor = UIColor.gray.withAlphaComponent(0.2)
+        backgroundView.layer.cornerRadius = 8.0
+        backgroundView.layer.masksToBounds = true
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate(stackView.pinToParent(withInsets: .all(8.0)))
+        return backgroundView
+    }
+
+    func makeButton(withTitle title: String, action: Selector, contentInsets: UIEdgeInsets? = nil) -> UIView {
         let button = UIButton(type: .system)
         button.backgroundColor = .darkGray
         button.titleLabel?.font = .boldSystemFont(ofSize: UIFont.buttonFontSize)
@@ -190,32 +243,10 @@ extension CardViewController {
         button.layer.masksToBounds = true
         button.setTitle(title, for: .normal)
         button.addTarget(self, action: action, for: .touchUpInside)
+        if let contentInsets = contentInsets {
+            button.contentEdgeInsets = contentInsets
+        }
         return button
-    }
-
-    func makeSwitch(initialValue: Bool, name: String, action: Selector) -> UIView {
-        let uiSwitch = UISwitch()
-        uiSwitch.translatesAutoresizingMaskIntoConstraints = false
-        uiSwitch.isOn = initialValue
-        uiSwitch.addTarget(self, action: action, for: .valueChanged)
-        let title = UILabel()
-        title.translatesAutoresizingMaskIntoConstraints = false
-        title.text = name
-        title.textColor = .white
-        let stackView = UIStackView(arrangedSubviews: [title, uiSwitch])
-        stackView.axis = .horizontal
-        stackView.alignment = .center
-        stackView.distribution = .fillProportionally
-        stackView.spacing = 8.0
-
-        let stackViewContainer = UIView()
-        stackViewContainer.layer.cornerRadius = 8.0
-        stackViewContainer.layer.masksToBounds = true
-        stackViewContainer.backgroundColor = .darkGray
-        stackViewContainer.addSubview(stackView)
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate(stackView.pinToParent(withInsets: .all(8.0)))
-        return stackViewContainer
     }
 
     @objc private func handleResetButton() {

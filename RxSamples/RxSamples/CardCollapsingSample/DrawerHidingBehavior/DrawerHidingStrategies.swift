@@ -17,9 +17,13 @@ import RxSwift
 /// 2. Был включен режим автовращения при скорости выше 2.5 м/с
 struct SimpleDrawerHidingStrategy: DrawerHidingStrategy {
     func hideEvents(didChangeAutoRotationMode: Observable<Bool>, didUpdateSpeed: Observable<Double>) -> Observable<Void> {
-        let speedIsAboveThreshold = didUpdateSpeed.map { $0 > 2.5 }.distinctUntilChanged()
-        let autoRotationIsOn = didChangeAutoRotationMode.distinctUntilChanged()
-        return Observable.combineLatest(speedIsAboveThreshold, autoRotationIsOn).filter { $0.0 && $0.1 }.mapTo(())
+        let speedIsAboveThreshold = didUpdateSpeed.map { $0 > 2.5 }
+            .distinctUntilChanged()
+        let autoRotationIsOn = didChangeAutoRotationMode
+            .distinctUntilChanged()
+        return Observable.combineLatest(speedIsAboveThreshold, autoRotationIsOn)
+            .filter { $0.0 && $0.1 }
+            .mapTo(())
     }
 }
 
