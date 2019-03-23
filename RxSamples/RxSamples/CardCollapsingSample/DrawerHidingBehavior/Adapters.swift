@@ -25,7 +25,7 @@ class FakeCameraManagerOutput: CameraManagerOutput {
 
     let isOn = BehaviorRelay<Bool>(value: false)
 
-    var didChangeAutomaticRotationState: Observable<Bool> {
+    var didChangeAutoRotationMode: Observable<Bool> {
         return isOn.asObservable().debug("AutomaticRotation isOn", trimOutput: false)
     }
 }

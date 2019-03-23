@@ -2,6 +2,7 @@ import UIKit
 import UltraDrawerView
 import Utils
 import MapKit
+import RxSwift
 
 final class CardViewController: UIViewController {
 
@@ -46,7 +47,12 @@ final class CardViewController: UIViewController {
         
         drawerView.setState(.middle, animated: false)
 
-        setupBehaviors()
+        drawerHidingBehavior = DrawerHidingBehavior(
+            drawerInput: drawerView,
+            cameraManagerOutput: fakeCameraManager,
+            locationManagerOutput: fakeLocationManager,
+            strategy: SmartDrawerHidingStrategy(timerScheduler: MainScheduler.instance)
+        )
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -78,6 +84,14 @@ final class CardViewController: UIViewController {
         let orientation = UIDevice.current.orientation
         updateDrawerLayout(for: orientation)
         drawerView.setState(orientation.isLandscape ? .top : .middle, animated: false)
+
+        drawerHidingBehavior?.isOn = true
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        drawerHidingBehavior?.isOn = false
     }
     
     // MARK: - Private
@@ -109,15 +123,6 @@ fileprivate extension CardViewController {
         enum Header {
             static let headerHeight: CGFloat = 64
         }
-    }
-
-
-    private func setupBehaviors() {
-        drawerHidingBehavior = DrawerHidingBehavior(
-            drawerInput: drawerView,
-            cameraManagerOutput: fakeCameraManager,
-            locationManagerOutput: fakeLocationManager
-        )
     }
 
     private func setupDrawerLayout() {

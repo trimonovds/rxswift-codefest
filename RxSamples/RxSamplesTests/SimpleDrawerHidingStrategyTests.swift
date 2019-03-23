@@ -13,7 +13,7 @@ import RxTest
 import RxCocoa
 @testable import RxSamples
 
-class SimplifiedDrawerHidingBehaviorTests: XCTestCase {
+class SimpleDrawerHidingStrategyTests: XCTestCase {
 
     var testScheduler: TestScheduler!
 
@@ -22,14 +22,14 @@ class SimplifiedDrawerHidingBehaviorTests: XCTestCase {
         testScheduler = TestScheduler(initialClock: 0)
     }
 
-    func makeSut(didChangeAutomaticRotationStateEvents: [Recorded<Event<Bool>>],
+    func makeSut(didChangeAutoRotationModeEvents: [Recorded<Event<Bool>>],
                  didUpdateSpeedEvents: [Recorded<Event<Double>>],
                  onScheduler testScheduler: TestScheduler) -> Observable<Void>
     {
-        let didChangeAutomaticRotationState = testScheduler.createHotObservable(didChangeAutomaticRotationStateEvents)
+        let didChangeAutoRotationMode = testScheduler.createHotObservable(didChangeAutoRotationModeEvents)
         let didUpdateSpeed = testScheduler.createHotObservable(didUpdateSpeedEvents)
-        return SimplifiedDrawerHidingBehavior.make(
-            didChangeAutomaticRotationState: didChangeAutomaticRotationState.asObservable(),
+        return SimpleDrawerHidingStrategy().hideEvents(
+            didChangeAutoRotationMode: didChangeAutoRotationMode.asObservable(),
             didUpdateSpeed: didUpdateSpeed.asObservable()
         )
     }
@@ -38,8 +38,8 @@ class SimplifiedDrawerHidingBehaviorTests: XCTestCase {
     // * created at virtual time `Defaults.created`           -> 100
     // * subscribed to at virtual time `Defaults.subscribed`  -> 200
     // * subscription will be disposed at `Defaults.disposed` -> 1000
-    func testWhenSpeedExceedsLimitAndAutoRotationIsOnThenDrawerHides() {
-        let didChangeAutomaticRotationStateEvents: [Recorded<Event<Bool>>] = [
+    func testWhenSpeedExceedsThresholdAndAutoRotationIsOnThenDrawerHides() {
+        let didChangeAutoRotationModeEvents: [Recorded<Event<Bool>>] = [
             .next(300, false),
             .next(600, true)
         ]
@@ -52,7 +52,7 @@ class SimplifiedDrawerHidingBehaviorTests: XCTestCase {
 
         let hidesObserver = testScheduler.start { () -> Observable<Void> in
             return self.makeSut(
-                didChangeAutomaticRotationStateEvents: didChangeAutomaticRotationStateEvents,
+                didChangeAutoRotationModeEvents: didChangeAutoRotationModeEvents,
                 didUpdateSpeedEvents: didUpdateSpeedEvents,
                 onScheduler: self.testScheduler
             )
@@ -62,8 +62,8 @@ class SimplifiedDrawerHidingBehaviorTests: XCTestCase {
         XCTAssert(hidesObserver.events[0].time == 800)
     }
 
-    func testWhenAutoRotationTurnsOnWhileSpeedIsMoreThanLimitThenDrawerHides() {
-        let didChangeAutomaticRotationStateEvents: [Recorded<Event<Bool>>] = [
+    func testWhenAutoRotationTurnsOnWhileSpeedIsAboveThresholdThenDrawerHides() {
+        let didChangeAutoRotationModeEvents: [Recorded<Event<Bool>>] = [
             .next(300, false),
             .next(900, true)
         ]
@@ -76,7 +76,7 @@ class SimplifiedDrawerHidingBehaviorTests: XCTestCase {
 
         let hidesObserver = testScheduler.start { () -> Observable<Void> in
             return self.makeSut(
-                didChangeAutomaticRotationStateEvents: didChangeAutomaticRotationStateEvents,
+                didChangeAutoRotationModeEvents: didChangeAutoRotationModeEvents,
                 didUpdateSpeedEvents: didUpdateSpeedEvents,
                 onScheduler: self.testScheduler
             )
@@ -86,8 +86,8 @@ class SimplifiedDrawerHidingBehaviorTests: XCTestCase {
         XCTAssert(hidesObserver.events[0].time == 900)
     }
 
-    func testWhenSubscribeOnBehaviorWhileSpeedIsMoreThanLimitAndAutoRotationIsOnThenDrawerRemainsUntouched() {
-        let didChangeAutomaticRotationStateEvents: [Recorded<Event<Bool>>] = [
+    func testWhenSubscribeOnStrategyEventsWhileSpeedIsMoreThanThresholdAndAutoRotationIsOnThenDrawerRemainsUntouched() {
+        let didChangeAutoRotationModeEvents: [Recorded<Event<Bool>>] = [
             .next(300, false),
             .next(500, true)
         ]
@@ -99,7 +99,7 @@ class SimplifiedDrawerHidingBehaviorTests: XCTestCase {
 
         let hidesObserver = testScheduler.start(created: 100, subscribed: 700, disposed: 1000000) {
             return self.makeSut(
-                didChangeAutomaticRotationStateEvents: didChangeAutomaticRotationStateEvents,
+                didChangeAutoRotationModeEvents: didChangeAutoRotationModeEvents,
                 didUpdateSpeedEvents: didUpdateSpeedEvents,
                 onScheduler: self.testScheduler
             )
@@ -109,12 +109,12 @@ class SimplifiedDrawerHidingBehaviorTests: XCTestCase {
     }
 
     func testManualSchedulerManagement() {
-        let didChangeAutomaticRotationState = BehaviorRelay<Bool>(value: false)
+        let didChangeAutoRotationMode = BehaviorRelay<Bool>(value: false)
         let didUpdateSpeed = BehaviorRelay<Double>(value: 1.0)
 
         let hidesObserver = testScheduler.createObserver(Void.self)
-        let sut = SimplifiedDrawerHidingBehavior.make(
-            didChangeAutomaticRotationState: didChangeAutomaticRotationState.asObservable(),
+        let sut = SimpleDrawerHidingStrategy().hideEvents(
+            didChangeAutoRotationMode: didChangeAutoRotationMode.asObservable(),
             didUpdateSpeed: didUpdateSpeed.asObservable()
         )
 
@@ -123,23 +123,23 @@ class SimplifiedDrawerHidingBehaviorTests: XCTestCase {
         })
 
         testScheduler.scheduleAt(500, action: {
-            didChangeAutomaticRotationState.accept(true)
+            didChangeAutoRotationMode.accept(true)
         })
 
         testScheduler.scheduleAt(700, action: {
             didUpdateSpeed.accept(3.2)
         })
 
-        testScheduler.advanceTo(499) // Before automaticRotation turns on
+        testScheduler.advanceTo(499) // Before autoRotation turns on
         XCTAssert(hidesObserver.events.isEmpty)
 
-        testScheduler.advanceTo(501) // After automaticRotation turns on
+        testScheduler.advanceTo(501) // After autoRotation turns on
         XCTAssert(hidesObserver.events.isEmpty)
 
-        testScheduler.advanceTo(699) // Before speed exceeds limit
+        testScheduler.advanceTo(699) // Before speed exceeds threshold
         XCTAssert(hidesObserver.events.isEmpty)
 
-        testScheduler.start() // Resumes all remain scheduled items (speed limit exceed at 700)
+        testScheduler.start() // Resumes all remain scheduled items (speed exceeds threshold at 700)
         XCTAssert(hidesObserver.events[0].time == 700)
     }
 }

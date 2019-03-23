@@ -13,10 +13,10 @@ import RxCocoa
 @testable import RxSamples
 
 class CameraManagerOutputMock: CameraManagerOutput {
-    let didChangeAutomaticRotationState: Observable<Bool>
+    let didChangeAutoRotationMode: Observable<Bool>
 
-    init(didChangeAutomaticRotationState: Observable<Bool>) {
-        self.didChangeAutomaticRotationState = didChangeAutomaticRotationState
+    init(didChangeAutoRotationMode: Observable<Bool>) {
+        self.didChangeAutoRotationMode = didChangeAutoRotationMode
     }
 }
 
@@ -43,15 +43,15 @@ class DrawerInputMock: DrawerInput {
 
 class DrawerHidingBehaviorTests: XCTestCase {
 
-    func testWhenSpeedExceedsLimitAndAutoRotationIsOnThenDrawerHides_UsingStartWithManualTimes() {
+    func testWhenSpeedExceedsThresholdAndAutoRotationIsOnThenDrawerHides_UsingStartWithManualTimes() {
         let testScheduler = TestScheduler(initialClock: 0)
-        let didChangeAutomaticRotationStateEvents: [Recorded<Event<Bool>>] = [
+        let didChangeAutoRotationModeEvents: [Recorded<Event<Bool>>] = [
             .next(3, false),
             .next(6, true)
         ]
-        let didChangeAutomaticRotationState = testScheduler.createHotObservable(didChangeAutomaticRotationStateEvents)
+        let didChangeAutoRotationMode = testScheduler.createHotObservable(didChangeAutoRotationModeEvents)
         let cameraManagerMock = CameraManagerOutputMock(
-            didChangeAutomaticRotationState: didChangeAutomaticRotationState.asObservable()
+            didChangeAutoRotationMode: didChangeAutoRotationMode.asObservable()
         )
 
         let didUpdateSpeedEvents: [Recorded<Event<Double>>] = [
@@ -66,8 +66,10 @@ class DrawerHidingBehaviorTests: XCTestCase {
         let sut = DrawerHidingBehavior(
             drawerInput: drawerInputMock,
             cameraManagerOutput: cameraManagerMock,
-            locationManagerOutput: locationManagerMock
+            locationManagerOutput: locationManagerMock,
+            strategy: SimpleDrawerHidingStrategy()
         )
+        sut.isOn = true
 
         let hidesObserver = testScheduler.start(created: 0, subscribed: 1, disposed: 100000) { () -> Observable<Void> in
             return drawerInputMock.hides
@@ -80,15 +82,15 @@ class DrawerHidingBehaviorTests: XCTestCase {
     // * created at virtual time `Defaults.created`           -> 100
     // * subscribed to at virtual time `Defaults.subscribed`  -> 200
     // * subscription will be disposed at `Defaults.disposed` -> 1000
-    func testWhenSpeedExceedsLimitAndAutoRotationIsOnThenDrawerHides_UsingStartWithDefaults() {
+    func testWhenSpeedExceedsThresholdAndAutoRotationIsOnThenDrawerHides_UsingStartWithDefaults() {
         let testScheduler = TestScheduler(initialClock: 0)
-        let didChangeAutomaticRotationStateEvents: [Recorded<Event<Bool>>] = [
+        let didChangeAutoRotationModeEvents: [Recorded<Event<Bool>>] = [
             .next(300, false),
             .next(600, true)
         ]
-        let didChangeAutomaticRotationState = testScheduler.createHotObservable(didChangeAutomaticRotationStateEvents)
+        let didChangeAutoRotationMode = testScheduler.createHotObservable(didChangeAutoRotationModeEvents)
         let cameraManagerMock = CameraManagerOutputMock(
-            didChangeAutomaticRotationState: didChangeAutomaticRotationState.asObservable()
+            didChangeAutoRotationMode: didChangeAutoRotationMode.asObservable()
         )
 
         let didUpdateSpeedEvents: [Recorded<Event<Double>>] = [
@@ -103,8 +105,10 @@ class DrawerHidingBehaviorTests: XCTestCase {
         let sut = DrawerHidingBehavior(
             drawerInput: drawerInputMock,
             cameraManagerOutput: cameraManagerMock,
-            locationManagerOutput: locationManagerMock
+            locationManagerOutput: locationManagerMock,
+            strategy: SimpleDrawerHidingStrategy()
         )
+        sut.isOn = true
 
         let hidesObserver = testScheduler.start { () -> Observable<Void> in
             return drawerInputMock.hides

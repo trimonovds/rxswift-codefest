@@ -15,18 +15,11 @@ import RxSwift
 /// Нужно закрывать шторку при возникновении одного из 2-х событий
 /// 1. Скорость пользователя стала выше 2.5 м/с при включенном режиме автовращения
 /// 2. Был включен режим автовращения при скорости выше 2.5 м/с
-class SimplifiedDrawerHidingBehavior {
-    static func make(didChangeAutomaticRotationState: Observable<Bool>, didUpdateSpeed: Observable<Double>) -> Observable<Void> {
-        return Observable
-            .combineLatest(
-                didUpdateSpeed
-                    .map { $0 > 2.5 }
-                    .distinctUntilChanged(),
-                didChangeAutomaticRotationState
-                    .distinctUntilChanged()
-            )
-            .filter { $0.0 && $0.1 }
-            .map { _ in () }
+struct SimpleDrawerHidingStrategy: DrawerHidingStrategy {
+    func hideEvents(didChangeAutoRotationMode: Observable<Bool>, didUpdateSpeed: Observable<Double>) -> Observable<Void> {
+        let speedIsAboveThreshold = didUpdateSpeed.map { $0 > 2.5 }.distinctUntilChanged()
+        let autoRotationIsOn = didChangeAutoRotationMode.distinctUntilChanged()
+        return Observable.combineLatest(speedIsAboveThreshold, autoRotationIsOn).filter { $0.0 && $0.1 }.mapTo(())
     }
 }
 
@@ -36,11 +29,14 @@ class SimplifiedDrawerHidingBehavior {
 /// 1. Скорость пользователя стала выше 2.5 м/с при включенном режиме автовращения и продержалась
 ///    на этом уровне (> 2.5 м/с) 5 секунд при этом режим автовращения не был выключен за эти 5 секунд
 /// 2. Был включен режим автовращения при скорости выше 2.5 м/с
-class SmartDrawerHidingBehavior {
-    static func make(didChangeAutomaticRotationState: Observable<Bool>,
-                     didUpdateSpeed: Observable<Double>, timerScheduler: SchedulerType) -> Observable<Void>
-    {
-        let autoRotationIsOn = didChangeAutomaticRotationState.distinctUntilChanged()
+struct SmartDrawerHidingStrategy: DrawerHidingStrategy {
+    init(timerScheduler: SchedulerType) {
+        self.timerScheduler = timerScheduler
+    }
+
+    func hideEvents(didChangeAutoRotationMode: Observable<Bool>, didUpdateSpeed: Observable<Double>) -> Observable<Void> {
+        let sheduler = timerScheduler
+        let autoRotationIsOn = didChangeAutoRotationMode.distinctUntilChanged()
         let autoRotationDidTurnOn = autoRotationIsOn.filter { $0 }.mapTo(())
         let autoRotationDidTurnOff = autoRotationIsOn.filter { !$0 }.mapTo(())
 
@@ -56,7 +52,7 @@ class SmartDrawerHidingBehavior {
         let speedConditionDidSucceed = speedDidExceedThresholdWhileAutorotationIsOn
             .flatMapLatest { _ -> Observable<Void> in
                 let timeShouldStop = Observable<Void>.merge(autoRotationDidTurnOff, speedDidFallBelowThreshold)
-                let timerFor5Sec = Observable<Int>.timer(5.0, period: nil, scheduler: timerScheduler).mapTo(())
+                let timerFor5Sec = Observable<Int>.timer(5.0, period: nil, scheduler: sheduler).mapTo(())
                 return timerFor5Sec.takeUntil(timeShouldStop)
             }
 
@@ -67,6 +63,8 @@ class SmartDrawerHidingBehavior {
 
         return Observable.merge(autoRotationConditionDidSucceed, speedConditionDidSucceed)
     }
+
+    private let timerScheduler: SchedulerType
 }
 
 extension ObservableType {

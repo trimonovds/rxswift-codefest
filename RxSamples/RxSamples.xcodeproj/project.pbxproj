@@ -21,8 +21,8 @@
 		873D65EC2243968D0040DAD8 /* DrawerHideBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D65EB2243968D0040DAD8 /* DrawerHideBehavior.swift */; };
 		873D65EF224399E30040DAD8 /* Adapters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D65EE224399E30040DAD8 /* Adapters.swift */; };
 		873D65FD2243A8200040DAD8 /* DrawerHidingBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D65FC2243A8200040DAD8 /* DrawerHidingBehaviorTests.swift */; };
-		873D66052243B8C50040DAD8 /* SimplifiedDrawerHidingBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D66042243B8C50040DAD8 /* SimplifiedDrawerHidingBehavior.swift */; };
-		873D66072243B9B30040DAD8 /* SimplifiedDrawerHidingBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D66062243B9B30040DAD8 /* SimplifiedDrawerHidingBehaviorTests.swift */; };
+		873D66052243B8C50040DAD8 /* DrawerHidingStrategies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D66042243B8C50040DAD8 /* DrawerHidingStrategies.swift */; };
+		873D66072243B9B30040DAD8 /* SimpleDrawerHidingStrategyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D66062243B9B30040DAD8 /* SimpleDrawerHidingStrategyTests.swift */; };
 		873D66092243C6AD0040DAD8 /* TestSchedulerUsageWithoutRxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D66082243C6AD0040DAD8 /* TestSchedulerUsageWithoutRxTests.swift */; };
 		873D660C2243E1810040DAD8 /* KudaGoSearchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D660B2243E1810040DAD8 /* KudaGoSearchAPI.swift */; };
 		873D66102243E5940040DAD8 /* KudaGoSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873D660F2243E5940040DAD8 /* KudaGoSearchViewController.swift */; };
@@ -32,7 +32,7 @@
 		878A62AD2245147B00E608B0 /* WayPointCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878A62AC2245147B00E608B0 /* WayPointCellView.swift */; };
 		878A62AF224514D200E608B0 /* WayPointCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878A62AE224514D200E608B0 /* WayPointCell.swift */; };
 		878A62BA2245163F00E608B0 /* GenericBindableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878A62B92245163F00E608B0 /* GenericBindableView.swift */; };
-		8797BDF922464B6B00C1E0BE /* SmartDrawerHidingBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8797BDF822464B6B00C1E0BE /* SmartDrawerHidingBehaviorTests.swift */; };
+		8797BDF922464B6B00C1E0BE /* SmartDrawerHidingStrategyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8797BDF822464B6B00C1E0BE /* SmartDrawerHidingStrategyTests.swift */; };
 		87A1BC3F2244F58600E3C5C7 /* RootSamplesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A1BC3E2244F58600E3C5C7 /* RootSamplesViewController.swift */; };
 		B41AE3219CF975773186B52C /* Pods_RxSamplesTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B5C2AFAE06168D1563E0CC /* Pods_RxSamplesTests.framework */; };
 /* End PBXBuildFile section */
@@ -69,8 +69,8 @@
 		873D65FA2243A8200040DAD8 /* RxSamplesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RxSamplesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		873D65FC2243A8200040DAD8 /* DrawerHidingBehaviorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawerHidingBehaviorTests.swift; sourceTree = "<group>"; };
 		873D65FE2243A8200040DAD8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		873D66042243B8C50040DAD8 /* SimplifiedDrawerHidingBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplifiedDrawerHidingBehavior.swift; sourceTree = "<group>"; };
-		873D66062243B9B30040DAD8 /* SimplifiedDrawerHidingBehaviorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplifiedDrawerHidingBehaviorTests.swift; sourceTree = "<group>"; };
+		873D66042243B8C50040DAD8 /* DrawerHidingStrategies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawerHidingStrategies.swift; sourceTree = "<group>"; };
+		873D66062243B9B30040DAD8 /* SimpleDrawerHidingStrategyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleDrawerHidingStrategyTests.swift; sourceTree = "<group>"; };
 		873D66082243C6AD0040DAD8 /* TestSchedulerUsageWithoutRxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSchedulerUsageWithoutRxTests.swift; sourceTree = "<group>"; };
 		873D660B2243E1810040DAD8 /* KudaGoSearchAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KudaGoSearchAPI.swift; sourceTree = "<group>"; };
 		873D660F2243E5940040DAD8 /* KudaGoSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KudaGoSearchViewController.swift; sourceTree = "<group>"; };
@@ -80,7 +80,7 @@
 		878A62AC2245147B00E608B0 /* WayPointCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WayPointCellView.swift; sourceTree = "<group>"; };
 		878A62AE224514D200E608B0 /* WayPointCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WayPointCell.swift; sourceTree = "<group>"; };
 		878A62B92245163F00E608B0 /* GenericBindableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericBindableView.swift; sourceTree = "<group>"; };
-		8797BDF822464B6B00C1E0BE /* SmartDrawerHidingBehaviorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartDrawerHidingBehaviorTests.swift; sourceTree = "<group>"; };
+		8797BDF822464B6B00C1E0BE /* SmartDrawerHidingStrategyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartDrawerHidingStrategyTests.swift; sourceTree = "<group>"; };
 		87A1BC3E2244F58600E3C5C7 /* RootSamplesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootSamplesViewController.swift; sourceTree = "<group>"; };
 		BD046DC0E3328DA8F83F2CD0 /* Pods-RxSamples.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxSamples.release.xcconfig"; path = "Target Support Files/Pods-RxSamples/Pods-RxSamples.release.xcconfig"; sourceTree = "<group>"; };
 		F834EF785C4B05DDE7BB7098 /* Pods_RxSamples.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RxSamples.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -158,9 +158,9 @@
 		873D65ED224399B20040DAD8 /* DrawerHidingBehavior */ = {
 			isa = PBXGroup;
 			children = (
+				873D66042243B8C50040DAD8 /* DrawerHidingStrategies.swift */,
 				873D65EB2243968D0040DAD8 /* DrawerHideBehavior.swift */,
 				873D65EE224399E30040DAD8 /* Adapters.swift */,
-				873D66042243B8C50040DAD8 /* SimplifiedDrawerHidingBehavior.swift */,
 			);
 			path = DrawerHidingBehavior;
 			sourceTree = "<group>";
@@ -170,9 +170,9 @@
 			children = (
 				873D65FE2243A8200040DAD8 /* Info.plist */,
 				873D65FC2243A8200040DAD8 /* DrawerHidingBehaviorTests.swift */,
-				873D66062243B9B30040DAD8 /* SimplifiedDrawerHidingBehaviorTests.swift */,
+				873D66062243B9B30040DAD8 /* SimpleDrawerHidingStrategyTests.swift */,
+				8797BDF822464B6B00C1E0BE /* SmartDrawerHidingStrategyTests.swift */,
 				873D66082243C6AD0040DAD8 /* TestSchedulerUsageWithoutRxTests.swift */,
-				8797BDF822464B6B00C1E0BE /* SmartDrawerHidingBehaviorTests.swift */,
 			);
 			path = RxSamplesTests;
 			sourceTree = "<group>";
@@ -430,7 +430,7 @@
 			files = (
 				873D65B6224008F60040DAD8 /* WayPointsViewController.swift in Sources */,
 				873D65E8224388E00040DAD8 /* ShapesDataSource.swift in Sources */,
-				873D66052243B8C50040DAD8 /* SimplifiedDrawerHidingBehavior.swift in Sources */,
+				873D66052243B8C50040DAD8 /* DrawerHidingStrategies.swift in Sources */,
 				873D660C2243E1810040DAD8 /* KudaGoSearchAPI.swift in Sources */,
 				878A62A92245141E00E608B0 /* WayPoint.swift in Sources */,
 				873D65EF224399E30040DAD8 /* Adapters.swift in Sources */,
@@ -455,9 +455,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				873D65FD2243A8200040DAD8 /* DrawerHidingBehaviorTests.swift in Sources */,
-				8797BDF922464B6B00C1E0BE /* SmartDrawerHidingBehaviorTests.swift in Sources */,
+				8797BDF922464B6B00C1E0BE /* SmartDrawerHidingStrategyTests.swift in Sources */,
 				873D66092243C6AD0040DAD8 /* TestSchedulerUsageWithoutRxTests.swift in Sources */,
-				873D66072243B9B30040DAD8 /* SimplifiedDrawerHidingBehaviorTests.swift in Sources */,
+				873D66072243B9B30040DAD8 /* SimpleDrawerHidingStrategyTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

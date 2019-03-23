@@ -13,7 +13,7 @@ import RxTest
 import RxCocoa
 @testable import RxSamples
 
-class SmartDrawerHidingBehaviorTests: XCTestCase {
+class SmartDrawerHidingStrategyTests: XCTestCase {
 
     var testScheduler: TestScheduler!
 
@@ -22,21 +22,20 @@ class SmartDrawerHidingBehaviorTests: XCTestCase {
         testScheduler = TestScheduler(initialClock: 0)
     }
 
-    func makeSut(didChangeAutomaticRotationStateEvents: [Recorded<Event<Bool>>],
+    func makeSut(didChangeAutoRotationModeEvents: [Recorded<Event<Bool>>],
                  didUpdateSpeedEvents: [Recorded<Event<Double>>],
                  onScheduler testScheduler: TestScheduler) -> Observable<Void>
     {
-        let didChangeAutomaticRotationState = testScheduler.createHotObservable(didChangeAutomaticRotationStateEvents)
+        let didChangeAutoRotationMode = testScheduler.createHotObservable(didChangeAutoRotationModeEvents)
         let didUpdateSpeed = testScheduler.createHotObservable(didUpdateSpeedEvents)
-        return SmartDrawerHidingBehavior.make(
-            didChangeAutomaticRotationState: didChangeAutomaticRotationState.asObservable(),
-            didUpdateSpeed: didUpdateSpeed.asObservable(),
-            timerScheduler: testScheduler
+        return SmartDrawerHidingStrategy(timerScheduler: testScheduler).hideEvents(
+            didChangeAutoRotationMode: didChangeAutoRotationMode.asObservable(),
+            didUpdateSpeed: didUpdateSpeed.asObservable()
         )
     }
 
     func testWhenSpeedExceedsThresholdWhileAutoRotationIsOnThenDrawerHidesIn5SecIfNoSpeedFallsAndAutorotationTurnOffs() {
-        let didChangeAutomaticRotationStateEvents: [Recorded<Event<Bool>>] = [
+        let didChangeAutoRotationModeEvents: [Recorded<Event<Bool>>] = [
             .next(300, false),
             .next(600, true)
         ]
@@ -49,7 +48,7 @@ class SmartDrawerHidingBehaviorTests: XCTestCase {
 
         let hidesObserver = testScheduler.start { () -> Observable<Void> in
             return self.makeSut(
-                didChangeAutomaticRotationStateEvents: didChangeAutomaticRotationStateEvents,
+                didChangeAutoRotationModeEvents: didChangeAutoRotationModeEvents,
                 didUpdateSpeedEvents: didUpdateSpeedEvents,
                 onScheduler: self.testScheduler
             )
@@ -60,7 +59,7 @@ class SmartDrawerHidingBehaviorTests: XCTestCase {
     }
 
     func testWhenSpeedExceedsThresholdWhileAutoRotationIsOnThenIfSpeedFallsBelowThresholdIn5SecIntervalThenDrawerDoesntHide() {
-        let didChangeAutomaticRotationStateEvents: [Recorded<Event<Bool>>] = [
+        let didChangeAutoRotationModeEvents: [Recorded<Event<Bool>>] = [
             .next(300, false),
             .next(600, true)
         ]
@@ -74,7 +73,7 @@ class SmartDrawerHidingBehaviorTests: XCTestCase {
 
         let hidesObserver = testScheduler.start { () -> Observable<Void> in
             return self.makeSut(
-                didChangeAutomaticRotationStateEvents: didChangeAutomaticRotationStateEvents,
+                didChangeAutoRotationModeEvents: didChangeAutoRotationModeEvents,
                 didUpdateSpeedEvents: didUpdateSpeedEvents,
                 onScheduler: self.testScheduler
             )
@@ -84,7 +83,7 @@ class SmartDrawerHidingBehaviorTests: XCTestCase {
     }
 
     func testWhenSpeedExceedsThresholdWhileAutoRotationIsOnThenIfAutorotationTurnsOffIn5SecIntervalThenDrawerDoesntHide() {
-        let didChangeAutomaticRotationStateEvents: [Recorded<Event<Bool>>] = [
+        let didChangeAutoRotationModeEvents: [Recorded<Event<Bool>>] = [
             .next(300, false),
             .next(600, true),
             .next(804, false) // Autorotation turns off in 5 sec interval (started at 800)
@@ -98,7 +97,7 @@ class SmartDrawerHidingBehaviorTests: XCTestCase {
 
         let hidesObserver = testScheduler.start { () -> Observable<Void> in
             return self.makeSut(
-                didChangeAutomaticRotationStateEvents: didChangeAutomaticRotationStateEvents,
+                didChangeAutoRotationModeEvents: didChangeAutoRotationModeEvents,
                 didUpdateSpeedEvents: didUpdateSpeedEvents,
                 onScheduler: self.testScheduler
             )
@@ -108,7 +107,7 @@ class SmartDrawerHidingBehaviorTests: XCTestCase {
     }
 
     func testWhenAutoRotationTurnsOnWhileSpeedIsMoreThanThresholdThenDrawerHides() {
-        let didChangeAutomaticRotationStateEvents: [Recorded<Event<Bool>>] = [
+        let didChangeAutoRotationModeEvents: [Recorded<Event<Bool>>] = [
             .next(300, false),
             .next(900, true)
         ]
@@ -121,7 +120,7 @@ class SmartDrawerHidingBehaviorTests: XCTestCase {
 
         let hidesObserver = testScheduler.start { () -> Observable<Void> in
             return self.makeSut(
-                didChangeAutomaticRotationStateEvents: didChangeAutomaticRotationStateEvents,
+                didChangeAutoRotationModeEvents: didChangeAutoRotationModeEvents,
                 didUpdateSpeedEvents: didUpdateSpeedEvents,
                 onScheduler: self.testScheduler
             )
@@ -132,7 +131,7 @@ class SmartDrawerHidingBehaviorTests: XCTestCase {
     }
 
     func testWhenSubscribeOnBehaviorWhileSpeedIsMoreThanThresholdAndAutoRotationIsOnThenDrawerRemainsUntouched() {
-        let didChangeAutomaticRotationStateEvents: [Recorded<Event<Bool>>] = [
+        let didChangeAutoRotationModeEvents: [Recorded<Event<Bool>>] = [
             .next(300, false),
             .next(500, true)
         ]
@@ -144,7 +143,7 @@ class SmartDrawerHidingBehaviorTests: XCTestCase {
 
         let hidesObserver = testScheduler.start(created: 100, subscribed: 700, disposed: 1000000) {
             return self.makeSut(
-                didChangeAutomaticRotationStateEvents: didChangeAutomaticRotationStateEvents,
+                didChangeAutoRotationModeEvents: didChangeAutoRotationModeEvents,
                 didUpdateSpeedEvents: didUpdateSpeedEvents,
                 onScheduler: self.testScheduler
             )
