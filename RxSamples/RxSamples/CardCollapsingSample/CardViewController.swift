@@ -169,15 +169,9 @@ extension CardViewController {
     // MARK: - Buttons
     
     private func setupSettings() {
-        let settingsViews: [UIView] = [
-            makeSpeedView(speed: fakeLocationManager.didUpdateSpeed),
-        ]
-
-        let settingsView = UIStackView(arrangedSubviews: settingsViews)
+        let settingsView = makeSpeedView(speed: fakeLocationManager.didUpdateSpeed)
         view.addSubview(settingsView)
-        settingsView.spacing = 8.0
         settingsView.translatesAutoresizingMaskIntoConstraints = false
-        settingsView.axis = .vertical
         settingsView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8.0).isActive = true
         settingsView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -8.0).isActive = true
     }
@@ -189,6 +183,7 @@ extension CardViewController {
         autoRotationSwitch.translatesAutoresizingMaskIntoConstraints = false
         autoRotationSwitch.isOn = fakeCameraManager.isOn.value
         autoRotationSwitch.addTarget(self, action: #selector(handleAutorotationSwitch), for: .valueChanged)
+        autoRotationSwitch.tintColor = UIColor.darkGray
 
         let buttonsStackView = UIStackView(arrangedSubviews: [increaseSpeed, decreaseSpeed, autoRotationSwitch])
         buttonsStackView.axis = .vertical
@@ -222,7 +217,6 @@ extension CardViewController {
 
         let stackView = UIStackView(arrangedSubviews: [speedView, buttonsStackView])
         stackView.axis = .horizontal
-        stackView.alignment = .fill
 
         let backgroundView = UIView()
         backgroundView.addSubview(stackView)
