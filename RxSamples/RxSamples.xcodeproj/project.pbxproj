@@ -32,6 +32,7 @@
 		878A62AD2245147B00E608B0 /* WayPointCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878A62AC2245147B00E608B0 /* WayPointCellView.swift */; };
 		878A62AF224514D200E608B0 /* WayPointCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878A62AE224514D200E608B0 /* WayPointCell.swift */; };
 		878A62BA2245163F00E608B0 /* GenericBindableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878A62B92245163F00E608B0 /* GenericBindableView.swift */; };
+		8797BDF922464B6B00C1E0BE /* SmartDrawerHidingBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8797BDF822464B6B00C1E0BE /* SmartDrawerHidingBehaviorTests.swift */; };
 		87A1BC3F2244F58600E3C5C7 /* RootSamplesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A1BC3E2244F58600E3C5C7 /* RootSamplesViewController.swift */; };
 		B41AE3219CF975773186B52C /* Pods_RxSamplesTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B5C2AFAE06168D1563E0CC /* Pods_RxSamplesTests.framework */; };
 /* End PBXBuildFile section */
@@ -79,6 +80,7 @@
 		878A62AC2245147B00E608B0 /* WayPointCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WayPointCellView.swift; sourceTree = "<group>"; };
 		878A62AE224514D200E608B0 /* WayPointCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WayPointCell.swift; sourceTree = "<group>"; };
 		878A62B92245163F00E608B0 /* GenericBindableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericBindableView.swift; sourceTree = "<group>"; };
+		8797BDF822464B6B00C1E0BE /* SmartDrawerHidingBehaviorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartDrawerHidingBehaviorTests.swift; sourceTree = "<group>"; };
 		87A1BC3E2244F58600E3C5C7 /* RootSamplesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootSamplesViewController.swift; sourceTree = "<group>"; };
 		BD046DC0E3328DA8F83F2CD0 /* Pods-RxSamples.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxSamples.release.xcconfig"; path = "Target Support Files/Pods-RxSamples/Pods-RxSamples.release.xcconfig"; sourceTree = "<group>"; };
 		F834EF785C4B05DDE7BB7098 /* Pods_RxSamples.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RxSamples.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -170,6 +172,7 @@
 				873D65FC2243A8200040DAD8 /* DrawerHidingBehaviorTests.swift */,
 				873D66062243B9B30040DAD8 /* SimplifiedDrawerHidingBehaviorTests.swift */,
 				873D66082243C6AD0040DAD8 /* TestSchedulerUsageWithoutRxTests.swift */,
+				8797BDF822464B6B00C1E0BE /* SmartDrawerHidingBehaviorTests.swift */,
 			);
 			path = RxSamplesTests;
 			sourceTree = "<group>";
@@ -452,6 +455,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				873D65FD2243A8200040DAD8 /* DrawerHidingBehaviorTests.swift in Sources */,
+				8797BDF922464B6B00C1E0BE /* SmartDrawerHidingBehaviorTests.swift in Sources */,
 				873D66092243C6AD0040DAD8 /* TestSchedulerUsageWithoutRxTests.swift in Sources */,
 				873D66072243B9B30040DAD8 /* SimplifiedDrawerHidingBehaviorTests.swift in Sources */,
 			);

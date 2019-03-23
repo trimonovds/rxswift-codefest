@@ -7,17 +7,6 @@ final class CardViewController: UIViewController {
 
     typealias ShapeCellConfigurator = CellConfigurator<ShapeCell, ShapeCellModel>
 
-    private struct Layout {
-        static let topInsetPortrait: CGFloat = 36
-        static let topInsetLandscape: CGFloat = 20
-        static let middleInsetFromBottom: CGFloat = 280
-        static let headerHeight: CGFloat = 64
-        static let cornerRadius: CGFloat = 16
-        static let shadowRadius: CGFloat = 4
-        static let shadowOpacity: Float = 0.2
-        static let shadowOffset = CGSize.zero
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -30,7 +19,7 @@ final class CardViewController: UIViewController {
         let headerView = CardHeaderView()
         headerView.title = "Shapes"
         headerView.translatesAutoresizingMaskIntoConstraints = false
-        headerView.heightAnchor.constraint(equalToConstant: Layout.headerHeight).isActive = true
+        headerView.heightAnchor.constraint(equalToConstant: Constants.Header.headerHeight).isActive = true
 
         shapesDataSource.sectionConfigurations = [
             SectionConfigurator(cellConfigurators:
@@ -43,12 +32,12 @@ final class CardViewController: UIViewController {
         tableView.contentInsetAdjustmentBehavior = .never
         
         drawerView = DrawerView(scrollView: tableView, delegate: self, headerView: headerView)
-        drawerView.middlePosition = .fromBottom(Layout.middleInsetFromBottom)
-        drawerView.cornerRadius = Layout.cornerRadius
+        drawerView.middlePosition = .fromBottom(Constants.Drawer.middleInsetFromBottom)
+        drawerView.cornerRadius = Constants.Drawer.cornerRadius
         drawerView.containerView.backgroundColor = .white
-        drawerView.layer.shadowRadius = Layout.shadowRadius
-        drawerView.layer.shadowOpacity = Layout.shadowOpacity
-        drawerView.layer.shadowOffset = Layout.shadowOffset
+        drawerView.layer.shadowRadius = Constants.Drawer.shadowRadius
+        drawerView.layer.shadowOpacity = Constants.Drawer.shadowOpacity
+        drawerView.layer.shadowOffset = Constants.Drawer.shadowOffset
 
         view.addSubview(drawerView)
         
@@ -72,8 +61,7 @@ final class CardViewController: UIViewController {
             self?.drawerView.setState(newState, animated: context.isAnimated)
         })
     }
-    
-    @available(iOS 11.0, *)
+
     override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
         tableView.contentInset.bottom = view.safeAreaInsets.bottom
@@ -105,6 +93,24 @@ final class CardViewController: UIViewController {
     private var drawerHidingBehavior: DrawerHidingBehavior?
     private let fakeLocationManager = FakeLocationManagerOutput()
     private let fakeCameraManager = FakeCameraManagerOutput()
+}
+
+fileprivate extension CardViewController {
+    private enum Constants {
+        enum Drawer {
+            static let topInsetPortrait: CGFloat = 36
+            static let topInsetLandscape: CGFloat = 20
+            static let middleInsetFromBottom: CGFloat = 280
+            static let cornerRadius: CGFloat = 16
+            static let shadowRadius: CGFloat = 4
+            static let shadowOpacity: Float = 0.2
+            static let shadowOffset = CGSize.zero
+        }
+        enum Header {
+            static let headerHeight: CGFloat = 64
+        }
+    }
+
 
     private func setupBehaviors() {
         drawerHidingBehavior = DrawerHidingBehavior(
@@ -113,17 +119,17 @@ final class CardViewController: UIViewController {
             locationManagerOutput: fakeLocationManager
         )
     }
-    
+
     private func setupDrawerLayout() {
         drawerView.translatesAutoresizingMaskIntoConstraints = false
-    
+
         portraitConstraints = [
             drawerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             drawerView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
             drawerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             drawerView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor)
         ]
-        
+
         landscapeConstraints = [
             drawerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             drawerView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16),
@@ -131,21 +137,20 @@ final class CardViewController: UIViewController {
             drawerView.widthAnchor.constraint(equalToConstant: 320)
         ]
     }
-    
+
     private func updateDrawerLayout(for orientation: UIDeviceOrientation) {
         if orientation.isLandscape {
             portraitConstraints.forEach { $0.isActive = false }
             landscapeConstraints.forEach { $0.isActive = true }
-            drawerView.topPosition = .fromTop(Layout.topInsetLandscape)
+            drawerView.topPosition = .fromTop(Constants.Drawer.topInsetLandscape)
             drawerView.availableStates = [.top, .bottom]
         } else {
             landscapeConstraints.forEach { $0.isActive = false }
             portraitConstraints.forEach { $0.isActive = true }
-            drawerView.topPosition = .fromTop(Layout.topInsetPortrait)
+            drawerView.topPosition = .fromTop(Constants.Drawer.topInsetPortrait)
             drawerView.availableStates = [.top, .middle, .bottom]
         }
     }
-
 }
 
 extension CardViewController: UIScrollViewDelegate { }

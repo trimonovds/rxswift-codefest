@@ -29,9 +29,10 @@ class DrawerHidingBehavior {
     init(drawerInput: DrawerInput, cameraManagerOutput: CameraManagerOutput, locationManagerOutput: LocationManagerOutput) {
         self.drawerInput = drawerInput
 
-        SimplifiedDrawerHidingBehavior.make(
-            didChangeAutomaticRotationState: cameraManagerOutput.didChangeAutomaticRotationState,
-            didUpdateSpeed: locationManagerOutput.didUpdateSpeed
+        SimplifiedDrawerHidingBehavior
+            .make(
+                didChangeAutomaticRotationState: cameraManagerOutput.didChangeAutomaticRotationState,
+                didUpdateSpeed: locationManagerOutput.didUpdateSpeed
             )
             .bind(onNext: { [weak self] in
                 guard let slf = self else { return }
