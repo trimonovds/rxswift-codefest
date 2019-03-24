@@ -41,9 +41,9 @@ class SmartDrawerHidingStrategy: DrawerHidingStrategy {
     var timerTickHandler: TimerTickHandler?
     var timerResetHandler: TimerResetHandler?
 
-    init(timerScheduler: SchedulerType, timeIntervalInSeconds: Int) {
+    init(timerScheduler: SchedulerType, timeInSeconds: Int) {
         self.timerScheduler = timerScheduler
-        self.timeIntervalInSeconds = timeIntervalInSeconds
+        self.timeInSeconds = timeInSeconds
     }
 
     func hideEvents(didChangeAutoRotationMode: Observable<Bool>, didUpdateSpeed: Observable<Double>) -> Observable<Void> {
@@ -60,8 +60,10 @@ class SmartDrawerHidingStrategy: DrawerHidingStrategy {
             .filter { $0 }
             .mapTo(())
 
-        let seconds = timeIntervalInSeconds
+        let seconds = timeInSeconds
 
+        // Implementation below is for presentation video recording purposes. In production just use
+        // let timerFor5Sec = Observable<Int>.timer(5.0, period: nil, scheduler: timerScheduler).mapTo(())
         let timerFor5Sec = Observable<Int>.interval(1.0, scheduler: timerScheduler)
             .map { $0 + 1 }
             .startWith(0)
@@ -70,8 +72,6 @@ class SmartDrawerHidingStrategy: DrawerHidingStrategy {
             .do(onNext: timerTickHandler, onDispose: timerResetHandler)
             .mapTo(())
             .takeLast(1)
-
-        //let timerFor5Sec = Observable<Int>.timer(5.0, period: nil, scheduler: timerScheduler).mapTo(()) // production
 
         let timeShouldStop = Observable<Void>.merge(autoRotationDidTurnOff, speedDidFallBelowThreshold)
         let speedConditionDidSucceed = speedDidExceedThresholdWhileAutoRotationIsOn
@@ -88,7 +88,7 @@ class SmartDrawerHidingStrategy: DrawerHidingStrategy {
     }
 
     private let timerScheduler: SchedulerType
-    private let timeIntervalInSeconds: Int
+    private let timeInSeconds: Int
 }
 
 extension ObservableType {

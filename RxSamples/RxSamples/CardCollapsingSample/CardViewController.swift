@@ -71,7 +71,7 @@ final class CardViewController: UIViewController {
                 return SimpleDrawerHidingStrategy()
             case .smart:
                 let smartStrategy = SmartDrawerHidingStrategy(timerScheduler: MainScheduler.instance,
-                                                              timeIntervalInSeconds: 5)
+                                                              timeInSeconds: 5)
                 smartStrategy.timerTickHandler = { [weak self] timeRemains -> Void in
                     self?.headerView.title = "Закроется через \(timeRemains) сек"
                 }
@@ -274,7 +274,7 @@ extension CardViewController {
     }
 
     @objc private func handleResetButton() {
-        drawerView.setState(.top, animated: true)
+        drawerView.setState(UIDevice.current.orientation.isLandscape ? .top : .middle, animated: true)
         fakeLocationManager.speed.accept(0.0)
         fakeCameraManager.isOn.accept(false)
     }
