@@ -28,7 +28,7 @@ class SmartDrawerHidingStrategyTests: XCTestCase {
     {
         let didChangeAutoRotationMode = testScheduler.createHotObservable(didChangeAutoRotationModeEvents)
         let didUpdateSpeed = testScheduler.createHotObservable(didUpdateSpeedEvents)
-        return SmartDrawerHidingStrategy(timerScheduler: testScheduler).hideEvents(
+        return SmartDrawerHidingStrategy(timerScheduler: testScheduler, timeIntervalInSeconds: 5).hideEvents(
             didChangeAutoRotationMode: didChangeAutoRotationMode.asObservable(),
             didUpdateSpeed: didUpdateSpeed.asObservable()
         )

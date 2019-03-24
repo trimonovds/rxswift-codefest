@@ -15,7 +15,7 @@ import RxSwift
 /// Нужно закрывать шторку при возникновении одного из 2-х событий
 /// 1. Скорость пользователя стала выше 2.5 м/с при включенном режиме автовращения
 /// 2. Был включен режим автовращения при скорости выше 2.5 м/с
-struct SimpleDrawerHidingStrategy: DrawerHidingStrategy {
+class SimpleDrawerHidingStrategy: DrawerHidingStrategy {
     func hideEvents(didChangeAutoRotationMode: Observable<Bool>, didUpdateSpeed: Observable<Double>) -> Observable<Void> {
         let speedIsAboveThreshold = didUpdateSpeed.map { $0 > 2.5 }
             .distinctUntilChanged()
@@ -33,9 +33,17 @@ struct SimpleDrawerHidingStrategy: DrawerHidingStrategy {
 /// 1. Скорость пользователя стала выше 2.5 м/с при включенном режиме автовращения и продержалась
 ///    на этом уровне (> 2.5 м/с) 5 секунд при этом режим автовращения не был выключен за эти 5 секунд
 /// 2. Был включен режим автовращения при скорости выше 2.5 м/с
-struct SmartDrawerHidingStrategy: DrawerHidingStrategy {
-    init(timerScheduler: SchedulerType) {
+class SmartDrawerHidingStrategy: DrawerHidingStrategy {
+
+    typealias TimerTickHandler = (_ timeRemains: Int) -> Void
+    typealias TimerResetHandler = () -> Void
+
+    var timerTickHandler: TimerTickHandler?
+    var timerResetHandler: TimerResetHandler?
+
+    init(timerScheduler: SchedulerType, timeIntervalInSeconds: Int) {
         self.timerScheduler = timerScheduler
+        self.timeIntervalInSeconds = timeIntervalInSeconds
     }
 
     func hideEvents(didChangeAutoRotationMode: Observable<Bool>, didUpdateSpeed: Observable<Double>) -> Observable<Void> {
@@ -47,14 +55,26 @@ struct SmartDrawerHidingStrategy: DrawerHidingStrategy {
         let speedDidExceedThreshold = speedIsAboveThreshold.filter { $0 }.mapTo(())
         let speedDidFallBelowThreshold = speedIsAboveThreshold.filter { !$0 }.mapTo(())
 
-        let speedDidExceedThresholdWhileAutorotationIsOn = speedDidExceedThreshold
+        let speedDidExceedThresholdWhileAutoRotationIsOn = speedDidExceedThreshold
             .withLatestFrom(autoRotationIsOn)
             .filter { $0 }
             .mapTo(())
 
-        let timerFor5Sec = Observable<Int>.timer(5.0, period: nil, scheduler: timerScheduler).mapTo(())
+        let seconds = timeIntervalInSeconds
+
+        let timerFor5Sec = Observable<Int>.interval(1.0, scheduler: timerScheduler)
+            .map { $0 + 1 }
+            .startWith(0)
+            .take(seconds + 1)
+            .map { seconds - $0 }
+            .do(onNext: timerTickHandler, onDispose: timerResetHandler)
+            .mapTo(())
+            .takeLast(1)
+
+        //let timerFor5Sec = Observable<Int>.timer(5.0, period: nil, scheduler: timerScheduler).mapTo(()) // production
+
         let timeShouldStop = Observable<Void>.merge(autoRotationDidTurnOff, speedDidFallBelowThreshold)
-        let speedConditionDidSucceed = speedDidExceedThresholdWhileAutorotationIsOn
+        let speedConditionDidSucceed = speedDidExceedThresholdWhileAutoRotationIsOn
             .flatMapLatest { _ -> Observable<Void> in
                 return timerFor5Sec.takeUntil(timeShouldStop)
             }
@@ -68,6 +88,7 @@ struct SmartDrawerHidingStrategy: DrawerHidingStrategy {
     }
 
     private let timerScheduler: SchedulerType
+    private let timeIntervalInSeconds: Int
 }
 
 extension ObservableType {

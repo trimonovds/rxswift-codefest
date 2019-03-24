@@ -5,7 +5,9 @@ final class CardHeaderView: UIView {
 
     var title: String = "" {
         didSet {
-            button.setTitle(title, for: .normal)
+            UIView.performWithoutAnimation {
+                button.setTitle(title, for: .normal)
+            }
         }
     }
 

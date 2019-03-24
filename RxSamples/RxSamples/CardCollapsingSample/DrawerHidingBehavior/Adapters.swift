@@ -17,7 +17,7 @@ class FakeLocationManagerOutput: LocationManagerOutput {
     let speed = BehaviorRelay<Double>(value: 0)
 
     var didUpdateSpeed: Observable<Double> {
-        return speed.asObservable().debug("Speed", trimOutput: false)
+        return speed.asObservable()
     }
 }
 
@@ -26,7 +26,7 @@ class FakeCameraManagerOutput: CameraManagerOutput {
     let isOn = BehaviorRelay<Bool>(value: false)
 
     var didChangeAutoRotationMode: Observable<Bool> {
-        return isOn.asObservable().debug("AutomaticRotation isOn", trimOutput: false)
+        return isOn.asObservable()
     }
 }
 

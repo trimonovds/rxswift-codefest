@@ -11,15 +11,18 @@ import Utils
 
 enum Sample: CaseIterable {
     case search
-    case cardCollapsing
+    case cardCollapsingSimple
+    case cardCollapsingSmart
     case brokenPublishSubject
 
     var name: String {
         switch self {
         case .search:
             return "Поиск KudaGo"
-        case .cardCollapsing:
-            return "Скрывание карточки"
+        case .cardCollapsingSimple:
+            return "Скрывание карточки - простая логика"
+        case .cardCollapsingSmart:
+            return "Скрывание карточки - сложная логика"
         case .brokenPublishSubject:
             return "Сломанный PublishSubject"
         }
@@ -66,8 +69,10 @@ class RootSamplesViewController: UIViewController, UITableViewDelegate {
         switch selectedSample {
         case .search:
             vc = KudaGoSearchViewController()
-        case .cardCollapsing:
-            vc = CardViewController()
+        case .cardCollapsingSimple:
+            vc = CardViewController(kind: .simple)
+        case .cardCollapsingSmart:
+            vc = CardViewController(kind: .smart)
         case .brokenPublishSubject:
             vc = WayPointsViewController()
         }

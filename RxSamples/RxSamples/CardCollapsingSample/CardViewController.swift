@@ -9,6 +9,20 @@ final class CardViewController: UIViewController {
 
     typealias ShapeCellConfigurator = CellConfigurator<ShapeCell, ShapeCellModel>
 
+    enum Kind {
+        case simple
+        case smart
+    }
+
+    init(kind: Kind) {
+        self.kind = kind
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -18,8 +32,8 @@ final class CardViewController: UIViewController {
         mapView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate(mapView.pinToParent())
         
-        let headerView = CardHeaderView()
-        headerView.title = "Карточка"
+        headerView = CardHeaderView()
+        headerView.title = Constants.Header.headerTitle
         headerView.translatesAutoresizingMaskIntoConstraints = false
         headerView.heightAnchor.constraint(equalToConstant: Constants.Header.headerHeight).isActive = true
         headerView.onButtonTap = { [weak self] in
@@ -51,11 +65,27 @@ final class CardViewController: UIViewController {
         
         drawerView.setState(.middle, animated: false)
 
-        drawerHidingBehavior = DrawerHidingBehavior(
+        let strategy: DrawerHidingStrategy = {
+            switch kind {
+            case .simple:
+                return SimpleDrawerHidingStrategy()
+            case .smart:
+                let smartStrategy = SmartDrawerHidingStrategy(timerScheduler: MainScheduler.instance,
+                                                              timeIntervalInSeconds: 5)
+                smartStrategy.timerTickHandler = { [weak self] timeRemains -> Void in
+                    self?.headerView.title = "Закроется через \(timeRemains) сек"
+                }
+                smartStrategy.timerResetHandler = { [weak self] in
+                    self?.headerView.title = Constants.Header.headerTitle
+                }
+                return smartStrategy
+            }
+        }()
+        self.drawerHidingBehavior = DrawerHidingBehavior(
             drawerInput: drawerView,
             cameraManagerOutput: fakeCameraManager,
             locationManagerOutput: fakeLocationManager,
-            strategy: SimpleDrawerHidingStrategy() //SmartDrawerHidingStrategy(timerScheduler: MainScheduler.instance)
+            strategy: strategy
         )
     }
 
@@ -89,26 +119,28 @@ final class CardViewController: UIViewController {
         updateDrawerLayout(for: orientation)
         drawerView.setState(orientation.isLandscape ? .top : .middle, animated: false)
 
-        drawerHidingBehavior?.isOn = true
+        drawerHidingBehavior.isOn = true
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        drawerHidingBehavior?.isOn = false
+        drawerHidingBehavior.isOn = false
     }
     
     // MARK: - Private
 
     private let mapView = MKMapView()
     private let tableView = UITableView()
+    private var headerView: CardHeaderView!
     private var drawerView: DrawerView!
     private let shapesDataSource = TableViewDataSource()
     private var isFirstLayout = true
     private var portraitConstraints: [NSLayoutConstraint] = []
     private var landscapeConstraints: [NSLayoutConstraint] = []
 
-    private var drawerHidingBehavior: DrawerHidingBehavior?
+    private let kind: Kind
+    private var drawerHidingBehavior: DrawerHidingBehavior!
     private let fakeLocationManager = FakeLocationManagerOutput()
     private let fakeCameraManager = FakeCameraManagerOutput()
 }
@@ -126,6 +158,7 @@ fileprivate extension CardViewController {
         }
         enum Header {
             static let headerHeight: CGFloat = 64
+            static let headerTitle: String = "Карточка"
         }
     }
 
@@ -181,7 +214,7 @@ extension CardViewController {
         let decreaseSpeed = makeButton(withTitle: "-", action: #selector(handleSlowDownButton))
         let autoRotationSwitch = UISwitch()
         autoRotationSwitch.translatesAutoresizingMaskIntoConstraints = false
-        autoRotationSwitch.isOn = fakeCameraManager.isOn.value
+        _ = fakeCameraManager.isOn.bind(to: autoRotationSwitch.rx.isOn)
         autoRotationSwitch.addTarget(self, action: #selector(handleAutorotationSwitch), for: .valueChanged)
         autoRotationSwitch.tintColor = UIColor.darkGray
 
@@ -228,7 +261,7 @@ extension CardViewController {
         return backgroundView
     }
 
-    func makeButton(withTitle title: String, action: Selector, contentInsets: UIEdgeInsets? = nil) -> UIView {
+    func makeButton(withTitle title: String, action: Selector) -> UIView {
         let button = UIButton(type: .system)
         button.backgroundColor = .darkGray
         button.titleLabel?.font = .boldSystemFont(ofSize: UIFont.buttonFontSize)
@@ -237,14 +270,13 @@ extension CardViewController {
         button.layer.masksToBounds = true
         button.setTitle(title, for: .normal)
         button.addTarget(self, action: action, for: .touchUpInside)
-        if let contentInsets = contentInsets {
-            button.contentEdgeInsets = contentInsets
-        }
         return button
     }
 
     @objc private func handleResetButton() {
         drawerView.setState(.top, animated: true)
+        fakeLocationManager.speed.accept(0.0)
+        fakeCameraManager.isOn.accept(false)
     }
 
     @objc private func handleSpeedUpButton() {
@@ -252,7 +284,8 @@ extension CardViewController {
     }
     
     @objc private func handleSlowDownButton() {
-        fakeLocationManager.speed.accept(fakeLocationManager.speed.value - 1)
+        let newSpeed = fakeLocationManager.speed.value - 1
+        fakeLocationManager.speed.accept(newSpeed >= 0 ? newSpeed : 0.0)
     }
 
     @objc private func handleAutorotationSwitch(_ sender: UISwitch) {
