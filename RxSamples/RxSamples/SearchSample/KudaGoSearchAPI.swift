@@ -8,6 +8,7 @@
 
 import Foundation
 import Utils
+import CoreLocation
 
 protocol URLSessionTaskProtocol: AnyObject {
     func resume()
@@ -62,38 +63,64 @@ class KudaGoSearchAPI {
     }
 
     func searchEvents(withText searchText: String, completion: @escaping (Result<[KudaGoEvent], APIError>) -> Void) -> URLSessionTaskProtocol {
-        let url = makeKudaGoURL(for: searchText)
+        let url = makeSearchEventsURL(for: searchText)
         let task = session.request(with: url) { (data, response, error) in
-            guard let response = response, let data = data else {
-                completion(.error(error.flatMap { APIError.URLSessionError(error: $0) } ?? APIError.unknown))
-                return
-            }
-
-            guard let httpResponse = response as? HTTPURLResponse else {
-                completion(.error(APIError.nonHTTPResponse(response: response)))
-                return
-            }
-
-            if 200 ..< 300 ~= httpResponse.statusCode {
-                do {
-                    let response: Response = try JSONDecoder().decode(Response.self, from: data)
-                    completion(.success(response.results))
-                } catch {
-                    completion(.error(APIError.deserializationError(error: error)))
-                }
-            }
-            else {
-                completion(.error(APIError.httpRequestFailed(response: httpResponse, data: data)))
-            }
-
+            KudaGoSearchAPI.handleResponse(data: data, response: response, error: error, completion: completion)
         }
         return task
+    }
+
+    func searchEvents(withText searchText: String, coordinate: CLLocationCoordinate2D, completion: @escaping (Result<[KudaGoEvent], APIError>) -> Void) -> URLSessionTaskProtocol {
+        let url = makeSearchEventsByCoordURL(for: searchText, coordinate: coordinate)
+        let task = session.request(with: url) { (data, response, error) in
+            KudaGoSearchAPI.handleResponse(data: data, response: response, error: error, completion: completion)
+        }
+        return task
+    }
+
+    private static func handleResponse(data: Data?, response: URLResponse?, error: Error?,
+                                completion: @escaping (Result<[KudaGoEvent], APIError>) -> Void) {
+        guard let response = response, let data = data else {
+            completion(.error(error.flatMap { APIError.URLSessionError(error: $0) } ?? APIError.unknown))
+            return
+        }
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            completion(.error(APIError.nonHTTPResponse(response: response)))
+            return
+        }
+
+        if 200 ..< 300 ~= httpResponse.statusCode {
+            do {
+                let response: Response = try JSONDecoder().decode(Response.self, from: data)
+                completion(.success(response.results))
+            } catch {
+                completion(.error(APIError.deserializationError(error: error)))
+            }
+        }
+        else {
+            completion(.error(APIError.httpRequestFailed(response: httpResponse, data: data)))
+        }
     }
 
     private let session: URLSessionProtocol
 }
 
-fileprivate func makeKudaGoURL(for searchText: String) -> URL {
+fileprivate func makeSearchEventsByCoordURL(for searchText: String, coordinate: CLLocationCoordinate2D) -> URL {
+    let urlString = { (s: String, coord: CLLocationCoordinate2D?) -> String in
+        return "https://kudago.com/public-api/v1.4/search/?q=\(s)&ctype=event" +
+            (coord.flatMap { "&lat=\($0.latitude)&lon=\($0.longitude)&radius=5000" } ?? "")
+    }
+    let url: URL
+    if let query = searchText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed), let textURL = URL(string: urlString(query, coordinate)) {
+        url = textURL
+    } else {
+        url = URL(string: urlString("", nil))!
+    }
+    return url
+}
+
+fileprivate func makeSearchEventsURL(for searchText: String) -> URL {
     let urlString = { (s: String) -> String in
         return "https://kudago.com/public-api/v1.4/search/?q=\(s)&location=msk&ctype=event"
     }
@@ -105,6 +132,7 @@ fileprivate func makeKudaGoURL(for searchText: String) -> URL {
     }
     return url
 }
+
 extension URLSessionTask: URLSessionTaskProtocol { }
 extension URLSession: URLSessionProtocol {
     func request(with url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionTaskProtocol {

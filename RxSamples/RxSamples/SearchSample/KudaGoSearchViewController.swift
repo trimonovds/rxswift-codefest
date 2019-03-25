@@ -11,26 +11,26 @@ import Utils
 import RxSwift
 import RxCocoa
 
-class KudaGoSearchViewController: UIViewController, UITableViewDelegate {
+typealias KudaGoEventCellConfigurator = CellConfigurator<KudaGoEventCell, KudaGoEvent>
 
-    enum ScreenError: Swift.Error {
-        case api(APIError)
-        case timeout
-        case unknown(error: Swift.Error)
+enum SearchScreenError: Swift.Error {
+    case api(APIError)
+    case timeout
+    case unknown(error: Swift.Error)
 
-        var description: String {
-            switch self {
-            case .api(let apiError):
-                return apiError.description
-            case .timeout:
-                return "Истекло время ожидания"
-            case .unknown(let error):
-                return "Неизвестная системная ошибка. \(error.localizedDescription)"
-            }
+    var description: String {
+        switch self {
+        case .api(let apiError):
+            return apiError.description
+        case .timeout:
+            return "Истекло время ожидания"
+        case .unknown(let error):
+            return "Неизвестная системная ошибка. \(error.localizedDescription)"
         }
     }
+}
 
-    typealias KudaGoEventCellConfigurator = CellConfigurator<KudaGoEventCell, KudaGoEvent>
+class KudaGoSearchViewController: UIViewController, UITableViewDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,7 +68,7 @@ class KudaGoSearchViewController: UIViewController, UITableViewDelegate {
                 self?.updateErrorBarPosition(forIsError: false, animated: true)
             })
             .debounce(0.25, scheduler: MainScheduler.instance)
-            .flatMapLatest { [weak self] searchText -> Observable<Result<[KudaGoEvent], ScreenError>> in
+            .flatMapLatest { [weak self] searchText -> Observable<Result<[KudaGoEvent], SearchScreenError>> in
                 guard let slf = self else { return .empty() }
                 guard !searchText.isEmpty else { return .just(.success([])) }
                 slf.update(withIsLoading: true)
@@ -80,7 +80,7 @@ class KudaGoSearchViewController: UIViewController, UITableViewDelegate {
                         }
                     }
                     .timeout(5.0, scheduler: MainScheduler.instance)
-                    .catchError({ (err) -> Observable<Result<[KudaGoEvent], ScreenError>> in
+                    .catchError({ (err) -> Observable<Result<[KudaGoEvent], SearchScreenError>> in
                         guard case RxError.timeout = err else {
                             assert(false)
                             return .just(.error(.api(.unknown)))

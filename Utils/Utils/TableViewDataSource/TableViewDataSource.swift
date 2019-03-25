@@ -47,7 +47,9 @@ public class TableViewDataSource: NSObject, UITableViewDataSource {
     public var sectionConfigurations: [TableViewSectionConfigurator] = []
 
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cellConfigurator = sectionConfigurations[indexPath.section].cellConfigurators[indexPath.row]
+        guard let cellConfigurator = sectionConfigurations[safe: indexPath.section]?.cellConfigurators[safe: indexPath.row] else {
+            return UITableViewCell()
+        }
         let cellConfiguratorType = type(of: cellConfigurator)
         tableView.register(cellConfiguratorType.cellType, forCellReuseIdentifier: cellConfiguratorType.reuseId)
         let cell = tableView.dequeueReusableCell(withIdentifier: cellConfiguratorType.reuseId, for: indexPath)
@@ -63,3 +65,5 @@ public class TableViewDataSource: NSObject, UITableViewDataSource {
         return sectionConfigurations[section].cellConfigurators.count
     }
 }
+
+

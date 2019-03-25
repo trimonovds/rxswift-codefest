@@ -34,6 +34,9 @@
 		878A62BA2245163F00E608B0 /* GenericBindableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878A62B92245163F00E608B0 /* GenericBindableView.swift */; };
 		8797BDF922464B6B00C1E0BE /* SmartDrawerHidingStrategyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8797BDF822464B6B00C1E0BE /* SmartDrawerHidingStrategyTests.swift */; };
 		8797BDFF224680FE00C1E0BE /* StyleKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 8797BDFE224680FE00C1E0BE /* StyleKit.m */; };
+		8797BE052248D8C600C1E0BE /* MapKudaGoSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8797BE042248D8C600C1E0BE /* MapKudaGoSearchViewController.swift */; };
+		8797BE082248DA8700C1E0BE /* DrawerConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8797BE072248DA8700C1E0BE /* DrawerConstants.swift */; };
+		8797BE0A2248DB2F00C1E0BE /* MapDrawerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8797BE092248DB2F00C1E0BE /* MapDrawerViewController.swift */; };
 		87A1BC3F2244F58600E3C5C7 /* RootSamplesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A1BC3E2244F58600E3C5C7 /* RootSamplesViewController.swift */; };
 		B41AE3219CF975773186B52C /* Pods_RxSamplesTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B5C2AFAE06168D1563E0CC /* Pods_RxSamplesTests.framework */; };
 /* End PBXBuildFile section */
@@ -85,6 +88,9 @@
 		8797BDFC2246805000C1E0BE /* StyleKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StyleKit.h; sourceTree = "<group>"; };
 		8797BDFD224680FD00C1E0BE /* RxSamples-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RxSamples-Bridging-Header.h"; sourceTree = "<group>"; };
 		8797BDFE224680FE00C1E0BE /* StyleKit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StyleKit.m; sourceTree = "<group>"; };
+		8797BE042248D8C600C1E0BE /* MapKudaGoSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapKudaGoSearchViewController.swift; sourceTree = "<group>"; };
+		8797BE072248DA8700C1E0BE /* DrawerConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawerConstants.swift; sourceTree = "<group>"; };
+		8797BE092248DB2F00C1E0BE /* MapDrawerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapDrawerViewController.swift; sourceTree = "<group>"; };
 		87A1BC3E2244F58600E3C5C7 /* RootSamplesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootSamplesViewController.swift; sourceTree = "<group>"; };
 		BD046DC0E3328DA8F83F2CD0 /* Pods-RxSamples.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxSamples.release.xcconfig"; path = "Target Support Files/Pods-RxSamples/Pods-RxSamples.release.xcconfig"; sourceTree = "<group>"; };
 		F834EF785C4B05DDE7BB7098 /* Pods_RxSamples.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RxSamples.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -133,6 +139,8 @@
 		873D6597224008CA0040DAD8 /* RxSamples */ = {
 			isa = PBXGroup;
 			children = (
+				8797BE062248DA7100C1E0BE /* Common */,
+				8797BE032248D82300C1E0BE /* MapSearchSample */,
 				873D660A2243E16D0040DAD8 /* SearchSample */,
 				878A62A7224513FD00E608B0 /* BrokenPublishSubjectSample */,
 				873D65DD224388B50040DAD8 /* CardCollapsingSample */,
@@ -205,6 +213,23 @@
 				878A62B92245163F00E608B0 /* GenericBindableView.swift */,
 			);
 			path = BrokenPublishSubjectSample;
+			sourceTree = "<group>";
+		};
+		8797BE032248D82300C1E0BE /* MapSearchSample */ = {
+			isa = PBXGroup;
+			children = (
+				8797BE042248D8C600C1E0BE /* MapKudaGoSearchViewController.swift */,
+			);
+			path = MapSearchSample;
+			sourceTree = "<group>";
+		};
+		8797BE062248DA7100C1E0BE /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				8797BE072248DA8700C1E0BE /* DrawerConstants.swift */,
+				8797BE092248DB2F00C1E0BE /* MapDrawerViewController.swift */,
+			);
+			path = Common;
 			sourceTree = "<group>";
 		};
 		8D10D9BCBA3E724FCF4601C8 /* Frameworks */ = {
@@ -449,12 +474,15 @@
 				873D65EA224388E00040DAD8 /* UIKit+Extensions.swift in Sources */,
 				878A62AB2245143800E608B0 /* WayPointViewModel.swift in Sources */,
 				873D65EC2243968D0040DAD8 /* DrawerHidingBehavior.swift in Sources */,
+				8797BE052248D8C600C1E0BE /* MapKudaGoSearchViewController.swift in Sources */,
 				873D6599224008CA0040DAD8 /* AppDelegate.swift in Sources */,
 				878A62AF224514D200E608B0 /* WayPointCell.swift in Sources */,
 				873D66102243E5940040DAD8 /* KudaGoSearchViewController.swift in Sources */,
 				873D65E6224388E00040DAD8 /* CardHeaderView.swift in Sources */,
+				8797BE0A2248DB2F00C1E0BE /* MapDrawerViewController.swift in Sources */,
 				873D65E7224388E00040DAD8 /* CardViewController.swift in Sources */,
 				873D65E5224388E00040DAD8 /* ShapeCell.swift in Sources */,
+				8797BE082248DA8700C1E0BE /* DrawerConstants.swift in Sources */,
 				87A1BC3F2244F58600E3C5C7 /* RootSamplesViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -14,6 +14,7 @@ enum Sample: CaseIterable {
     case cardCollapsingSimple
     case cardCollapsingSmart
     case brokenPublishSubject
+    case mapSearch
 
     var name: String {
         switch self {
@@ -25,6 +26,8 @@ enum Sample: CaseIterable {
             return "Скрывание карточки - сложная логика"
         case .brokenPublishSubject:
             return "Сломанный PublishSubject"
+        case .mapSearch:
+            return "Поиск на карте"
         }
     }
 }
@@ -75,6 +78,8 @@ class RootSamplesViewController: UIViewController, UITableViewDelegate {
             vc = CardViewController(kind: .smart)
         case .brokenPublishSubject:
             vc = WayPointsViewController()
+        case .mapSearch:
+            vc = MapKudaGoSearchViewController()
         }
         vc.title = selectedSample.name
         self.navigationController?.pushViewController(vc, animated: true)
