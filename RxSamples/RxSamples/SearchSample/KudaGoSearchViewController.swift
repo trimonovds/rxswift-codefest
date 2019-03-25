@@ -13,23 +13,6 @@ import RxCocoa
 
 typealias KudaGoEventCellConfigurator = CellConfigurator<KudaGoEventCell, KudaGoEvent>
 
-enum SearchScreenError: Swift.Error {
-    case api(APIError)
-    case timeout
-    case unknown(error: Swift.Error)
-
-    var description: String {
-        switch self {
-        case .api(let apiError):
-            return apiError.description
-        case .timeout:
-            return "Истекло время ожидания"
-        case .unknown(let error):
-            return "Неизвестная системная ошибка. \(error.localizedDescription)"
-        }
-    }
-}
-
 class KudaGoSearchViewController: UIViewController, UITableViewDelegate {
 
     override func viewDidLoad() {
@@ -68,25 +51,11 @@ class KudaGoSearchViewController: UIViewController, UITableViewDelegate {
                 self?.updateErrorBarPosition(forIsError: false, animated: true)
             })
             .debounce(0.25, scheduler: MainScheduler.instance)
-            .flatMapLatest { [weak self] searchText -> Observable<Result<[KudaGoEvent], SearchScreenError>> in
+            .flatMapLatest { [weak self] searchText -> Observable<Result<[KudaGoEvent], APIError>> in
                 guard let slf = self else { return .empty() }
                 guard !searchText.isEmpty else { return .just(.success([])) }
                 slf.update(withIsLoading: true)
                 return slf.searchApi.searchEvents(with: searchText)
-                    .map {
-                        switch $0 {
-                        case .success(let events): return .success(events)
-                        case .error(let apiError): return .error(.api(apiError))
-                        }
-                    }
-                    .timeout(5.0, scheduler: MainScheduler.instance)
-                    .catchError({ (err) -> Observable<Result<[KudaGoEvent], SearchScreenError>> in
-                        guard case RxError.timeout = err else {
-                            assert(false)
-                            return .just(.error(.api(.unknown)))
-                        }
-                        return .just(.error(.timeout))
-                    })
             }
             .observeOn(MainScheduler.instance)
             .bind(onNext: { [weak self] result in

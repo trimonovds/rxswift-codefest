@@ -25,7 +25,7 @@ class MapKudaGoSearchViewController: MapDrawerViewController {
         let state: MapCameraState
     }
 
-    var mapCamera: BehaviorRelay<MapCameraEventArgs>!
+    let mapCamera = PublishRelay<MapCameraEventArgs>()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,28 +33,24 @@ class MapKudaGoSearchViewController: MapDrawerViewController {
         tableView.backgroundColor = .white
         tableView.dataSource = dataSource
 
-        mapCamera = BehaviorRelay<MapCameraEventArgs>(value: MapCameraEventArgs(mapCamera: mapView.camera, state: .idle))
         let finishedCameraMoves = mapCamera.filter { $0.state == .idle }
-        finishedCameraMoves
-            .debounce(0.25, scheduler: MainScheduler.instance)
-            .flatMapLatest { [weak self] args -> Observable<Result<[KudaGoEvent], SearchScreenError>> in
+        let searchRequests = finishedCameraMoves
+            .debounce(0.5, scheduler: MainScheduler.instance)
+            .withLatestFrom(mapCamera)
+            .filter { $0.state != .animating }
+
+        searchRequests
+            .flatMapLatest { [weak self] request -> Observable<Result<[KudaGoEvent], APIError>> in
                 guard let slf = self else { return .empty() }
                 slf.update(withIsLoading: true)
-                return slf.searchApi.searchEvents(with: Constants.events, coordinate: args.mapCamera.centerCoordinate)
-                    .map {
-                        switch $0 {
-                        case .success(let events): return .success(events)
-                        case .error(let apiError): return .error(.api(apiError))
-                        }
-                    }
-                    .timeout(5.0, scheduler: MainScheduler.instance)
-                    .catchError({ (err) -> Observable<Result<[KudaGoEvent], SearchScreenError>> in
-                        guard case RxError.timeout = err else {
-                            assert(false)
-                            return .just(.error(.api(.unknown)))
-                        }
-                        return .just(.error(.timeout))
+                let interruptions = slf.mapCamera
+                    .filter { $0.state == .animating }
+                    .do(onNext: { [weak slf] _ in
+                        slf?.headerView.title = "Поиск отменен"
                     })
+                return slf.searchApi
+                    .searchEvents(with: Constants.events, coordinate: request.mapCamera.centerCoordinate)
+                    .takeUntil(interruptions)
             }
             .observeOn(MainScheduler.instance)
             .bind(onNext: { [weak self] result in
@@ -68,6 +64,14 @@ class MapKudaGoSearchViewController: MapDrawerViewController {
                 }
             })
             .disposed(by: bag)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        let center = CLLocationCoordinate2D(latitude: 55.69454914, longitude: 37.60688340)
+        let camera = MKMapCamera(lookingAtCenter: center, fromDistance: 67523, pitch: 0, heading: 0)
+        mapView.setCamera(camera, animated: true)
     }
 
     func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
@@ -99,7 +103,18 @@ fileprivate extension MapKudaGoSearchViewController {
     }
 
     private func update(withIsLoading isLoading: Bool) {
-        self.headerView.title = isLoading ? "Ищем \(Constants.events) по близости..." : Constants.events
+        self.headerView.title = isLoading ? "Ищем \(Constants.events)..." : Constants.events
         UIApplication.shared.isNetworkActivityIndicatorVisible = isLoading
+    }
+}
+
+extension Swift.Error {
+    var isRxTimeout: Bool {
+        guard let rxError = self as? RxError else { return false }
+        if case .timeout = rxError {
+            return true
+        } else {
+            return false
+        }
     }
 }
