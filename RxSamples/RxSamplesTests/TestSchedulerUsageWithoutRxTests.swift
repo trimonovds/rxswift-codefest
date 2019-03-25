@@ -30,13 +30,17 @@ class URLSessionTaskMock: URLSessionTaskProtocol {
 }
 
 class URLSessionMock: URLSessionProtocol {
-    typealias RequestBlock = (URL, @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionTaskProtocol
-    let requestBlock: RequestBlock
-    init(requestBlock: @escaping RequestBlock) {
-        self.requestBlock = requestBlock
+    typealias CompletionHandler = (Data?, URLResponse?, Error?) -> Void
+    typealias RequestBlock = (URL, @escaping CompletionHandler) -> URLSessionTaskProtocol
+
+    let implementation: RequestBlock!
+
+    init(implementation: @escaping RequestBlock) {
+        self.implementation = implementation
     }
-    func request(with url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionTaskProtocol {
-        return requestBlock(url, completion)
+
+    func request(with url: URL, completion: @escaping CompletionHandler) -> URLSessionTaskProtocol {
+        return implementation(url, completion)
     }
 }
 
