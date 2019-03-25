@@ -128,9 +128,9 @@ fileprivate extension MapDrawerViewController {
 }
 
 extension KudaGoSearchAPI {
-    func searchEvents(with text: String, coordinate: CLLocationCoordinate2D) -> Observable<Result<[KudaGoEvent], APIError>> {
+    func searchEvents(with text: String, locationArgs: LocationArgs) -> Observable<Result<[KudaGoEvent], APIError>> {
         let asyncRequest = { (_ completion: @escaping (Result<[KudaGoEvent], APIError>) -> Void) -> URLSessionTaskProtocol in
-            return self.searchEvents(withText: text, coordinate: coordinate, completion: completion)
+            return self.searchEvents(withText: text, locationArgs: locationArgs, completion: completion)
         }
         return Observable.fromAsync(asyncRequest)
     }

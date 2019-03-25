@@ -54,6 +54,11 @@ enum APIError: Swift.Error {
     }
 }
 
+struct LocationArgs {
+    let coordinate: CLLocationCoordinate2D
+    let radius: Double
+}
+
 class KudaGoSearchAPI {
 
     typealias Response = KudaGoEventsPageResponse
@@ -63,15 +68,15 @@ class KudaGoSearchAPI {
     }
 
     func searchEvents(withText searchText: String, completion: @escaping (Result<[KudaGoEvent], APIError>) -> Void) -> URLSessionTaskProtocol {
-        let url = makeSearchEventsURL(for: searchText)
+        let url = URL.searchEventURL(from: searchText)
         let task = session.request(with: url) { (data, response, error) in
             KudaGoSearchAPI.handleResponse(data: data, response: response, error: error, completion: completion)
         }
         return task
     }
 
-    func searchEvents(withText searchText: String, coordinate: CLLocationCoordinate2D, completion: @escaping (Result<[KudaGoEvent], APIError>) -> Void) -> URLSessionTaskProtocol {
-        let url = makeSearchEventsByCoordURL(for: searchText, coordinate: coordinate)
+    func searchEvents(withText searchText: String, locationArgs: LocationArgs, completion: @escaping (Result<[KudaGoEvent], APIError>) -> Void) -> URLSessionTaskProtocol {
+        let url = URL.searchEventURL(for: searchText, locationArgs: locationArgs)
         let task = session.request(with: url) { (data, response, error) in
             KudaGoSearchAPI.handleResponse(data: data, response: response, error: error, completion: completion)
         }
@@ -106,31 +111,36 @@ class KudaGoSearchAPI {
     private let session: URLSessionProtocol
 }
 
-fileprivate func makeSearchEventsByCoordURL(for searchText: String, coordinate: CLLocationCoordinate2D) -> URL {
-    let urlString = { (s: String, coord: CLLocationCoordinate2D?) -> String in
-        return "https://kudago.com/public-api/v1.4/search/?q=\(s)&ctype=event" +
-            (coord.flatMap { "&lat=\($0.latitude)&lon=\($0.longitude)&radius=5000" } ?? "")
+fileprivate extension URL {
+    static func searchEventURL(from searchText: String) -> URL {
+        let urlString = { (s: String) -> String in
+            return "https://kudago.com/public-api/v1.4/search/?q=\(s)&location=msk&ctype=event"
+        }
+        let url: URL
+        if let query = searchText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed), let textURL = URL(string: urlString(query)) {
+            url = textURL
+        } else {
+            url = URL(string: urlString(""))!
+        }
+        return url
     }
-    let url: URL
-    if let query = searchText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed), let textURL = URL(string: urlString(query, coordinate)) {
-        url = textURL
-    } else {
-        url = URL(string: urlString("", nil))!
-    }
-    return url
-}
 
-fileprivate func makeSearchEventsURL(for searchText: String) -> URL {
-    let urlString = { (s: String) -> String in
-        return "https://kudago.com/public-api/v1.4/search/?q=\(s)&location=msk&ctype=event"
+    static func searchEventURL(for searchText: String, locationArgs: LocationArgs) -> URL {
+        let urlString = { (s: String, locationArgs: LocationArgs?) -> String in
+            let locationPostfix = locationArgs.flatMap {
+                "&lat=\($0.coordinate.latitude)&lon=\($0.coordinate.longitude)&radius=\(Int($0.radius))"
+            }
+            return "https://kudago.com/public-api/v1.4/search/?q=\(s)&ctype=event&page_size=100" + (locationPostfix ?? "")
+        }
+        let url: URL
+        if let query = searchText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed), let textURL = URL(string: urlString(query, locationArgs)) {
+            url = textURL
+        } else {
+            url = URL(string: urlString("", nil))!
+        }
+        return url
     }
-    let url: URL
-    if let query = searchText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed), let textURL = URL(string: urlString(query)) {
-        url = textURL
-    } else {
-        url = URL(string: urlString(""))!
-    }
-    return url
+
 }
 
 extension URLSessionTask: URLSessionTaskProtocol { }

@@ -25,6 +25,24 @@ class MapKudaGoSearchViewController: MapDrawerViewController {
         let state: MapCameraState
     }
 
+    enum ScreenState {
+        case initial
+        case searching
+        case found([KudaGoEvent])
+        case error
+        case searchCanceled
+    }
+
+    var state: ScreenState = .initial {
+        didSet {
+            updateNetworkActivityIndicator(withIsLoading: state.isLoading)
+            headerView.title = state.cardHeaderTitle
+            if let events = state.events {
+                updateTableView(with: events)
+            }
+        }
+    }
+
     let mapCamera = PublishRelay<MapCameraEventArgs>()
 
     override func viewDidLoad() {
@@ -42,25 +60,25 @@ class MapKudaGoSearchViewController: MapDrawerViewController {
         searchRequests
             .flatMapLatest { [weak self] request -> Observable<Result<[KudaGoEvent], APIError>> in
                 guard let slf = self else { return .empty() }
-                slf.update(withIsLoading: true)
+                slf.state = .searching
                 let interruptions = slf.mapCamera
                     .filter { $0.state == .animating }
                     .do(onNext: { [weak slf] _ in
-                        slf?.headerView.title = "Поиск отменен"
+                        slf?.state = .searchCanceled
                     })
+                let locationArgs = LocationArgs(coordinate: request.mapCamera.centerCoordinate, radius: slf.mapView.currentRadius())
                 return slf.searchApi
-                    .searchEvents(with: Constants.events, coordinate: request.mapCamera.centerCoordinate)
+                    .searchEvents(with: Constants.events, locationArgs: locationArgs)
                     .takeUntil(interruptions)
             }
             .observeOn(MainScheduler.instance)
             .bind(onNext: { [weak self] result in
                 guard let slf = self else { return }
-                slf.update(withIsLoading: false)
                 switch result {
                 case .success(let events):
-                    slf.updateTableView(with: events)
+                    slf.state = .found(events)
                 case .error(_):
-                    slf.updateTableView(with: [])
+                    slf.state = .error
                 }
             })
             .disposed(by: bag)
@@ -102,19 +120,60 @@ fileprivate extension MapKudaGoSearchViewController {
         tableView.reloadData()
     }
 
-    private func update(withIsLoading isLoading: Bool) {
-        self.headerView.title = isLoading ? "Ищем \(Constants.events)..." : Constants.events
+    private func updateNetworkActivityIndicator(withIsLoading isLoading: Bool) {
         UIApplication.shared.isNetworkActivityIndicatorVisible = isLoading
     }
 }
 
-extension Swift.Error {
-    var isRxTimeout: Bool {
-        guard let rxError = self as? RxError else { return false }
-        if case .timeout = rxError {
+extension MKMapView {
+
+    func topCenterCoordinate() -> CLLocationCoordinate2D {
+        return self.convert(CGPoint(x: self.frame.size.width / 2.0, y: 0), toCoordinateFrom: self)
+    }
+
+    func currentRadius() -> Double {
+        let centerLocation = CLLocation(latitude: self.centerCoordinate.latitude, longitude: self.centerCoordinate.longitude)
+        let topCenterCoordinate = self.topCenterCoordinate()
+        let topCenterLocation = CLLocation(latitude: topCenterCoordinate.latitude, longitude: topCenterCoordinate.longitude)
+        return centerLocation.distance(from: topCenterLocation)
+    }
+
+}
+
+extension MapKudaGoSearchViewController.ScreenState {
+    var isLoading: Bool {
+        switch self {
+        case .searching:
             return true
-        } else {
+        default:
             return false
+        }
+    }
+
+    var events: [KudaGoEvent]? {
+        switch self {
+        case .found(let events):
+            return events
+        case .error:
+            return []
+        default:
+            return nil
+        }
+    }
+
+    var cardHeaderTitle: String {
+        switch self {
+        case .initial:
+            return MapKudaGoSearchViewController.Constants.events
+        case .error:
+            return "Произошла ошибка"
+        case .searching:
+            return "Ищем \(MapKudaGoSearchViewController.Constants.events)..."
+        case .found(let events):
+            let count = events.count
+            return count == 0 ? "Ничего не найдено" : "Найдено \(count) результатов"
+        case .searchCanceled:
+            return "Поиск отменен"
         }
     }
 }
