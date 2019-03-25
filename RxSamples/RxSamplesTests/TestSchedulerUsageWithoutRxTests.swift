@@ -130,13 +130,13 @@ class KudaGoSearchAPITests: XCTestCase {
         }
 
         let sut = KudaGoSearchAPI(session: networkServiceMock)
-        var actualResult: [KudaGoEvent]?
+        var completed: Bool = false
 
         // Act
         var searchTask: URLSessionTaskProtocol?
         testScheduler.scheduleAt(100) {
-            searchTask = sut.searchEvents(withText: "Конференция") { (result) in
-                actualResult = result.value
+            searchTask = sut.searchEvents(withText: "Конференция") { _ in
+                completed = true
             }
             searchTask!.resume()
         }
@@ -147,9 +147,9 @@ class KudaGoSearchAPITests: XCTestCase {
 
         // Assert
         testScheduler.advanceTo(599)
-        XCTAssert(actualResult == nil)
+        XCTAssert(!completed)
 
-        testScheduler.advanceTo(601)
-        XCTAssert(actualResult == nil)
+        testScheduler.advanceTo(601) // or testScheduler.start()
+        XCTAssert(!completed)
     }
 }
