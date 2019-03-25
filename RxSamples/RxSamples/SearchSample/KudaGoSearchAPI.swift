@@ -62,7 +62,7 @@ class KudaGoSearchAPI {
     }
 
     func searchEvents(withText searchText: String, completion: @escaping (Result<[KudaGoEvent], APIError>) -> Void) -> URLSessionTaskProtocol {
-        let url = KudaGoSearchAPI.makeURL(for: searchText)
+        let url = makeKudaGoURL(for: searchText)
         let task = session.request(with: url) { (data, response, error) in
             guard let response = response, let data = data else {
                 completion(.error(error.flatMap { APIError.URLSessionError(error: $0) } ?? APIError.unknown))
@@ -93,21 +93,18 @@ class KudaGoSearchAPI {
     private let session: URLSessionProtocol
 }
 
-fileprivate extension KudaGoSearchAPI {
-    static func makeURL(for searchText: String) -> URL {
-        let urlString = { (s: String) -> String in
-            return "https://kudago.com/public-api/v1.4/search/?q=\(s)&location=msk&ctype=event"
-        }
-        let url: URL
-        if let query = searchText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed), let textURL = URL(string: urlString(query)) {
-            url = textURL
-        } else {
-            url = URL(string: urlString(""))!
-        }
-        return url
+fileprivate func makeKudaGoURL(for searchText: String) -> URL {
+    let urlString = { (s: String) -> String in
+        return "https://kudago.com/public-api/v1.4/search/?q=\(s)&location=msk&ctype=event"
     }
+    let url: URL
+    if let query = searchText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed), let textURL = URL(string: urlString(query)) {
+        url = textURL
+    } else {
+        url = URL(string: urlString(""))!
+    }
+    return url
 }
-
 extension URLSessionTask: URLSessionTaskProtocol { }
 extension URLSession: URLSessionProtocol {
     func request(with url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionTaskProtocol {

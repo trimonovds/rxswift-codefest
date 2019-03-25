@@ -21,7 +21,6 @@ class URLSessionTaskMock: URLSessionTaskProtocol {
         self.onResume = onResume
         self.onCancel = onCancel
     }
-
     func resume() {
         onResume?()
     }
@@ -31,18 +30,46 @@ class URLSessionTaskMock: URLSessionTaskProtocol {
 }
 
 class URLSessionMock: URLSessionProtocol {
-    let requestImplementation: (URL, @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionTaskProtocol
-
-    init(requestImplementation: @escaping (URL, @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionTaskProtocol) {
-        self.requestImplementation = requestImplementation
+    typealias RequestBlock = (URL, @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionTaskProtocol
+    let requestBlock: RequestBlock
+    init(requestBlock: @escaping RequestBlock) {
+        self.requestBlock = requestBlock
     }
-
     func request(with url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionTaskProtocol {
-        return requestImplementation(url, completion)
+        return requestBlock(url, completion)
     }
 }
 
 class KudaGoSearchAPITests: XCTestCase {
+    func testWhenCancelTaskThenSearchIsCanceled() {
+        var dispatchWorkItem: DispatchWorkItem!
+        let networkServiceMock = URLSessionMock { url, completion in
+            return URLSessionTaskMock(onResume: {
+                let response = KudaGoEventsPageResponse(count: 1, next: nil, previos: nil, results: [
+                    KudaGoEvent(title: "Codefest X", description: "Лучшая конференция за Уралом")
+                ])
+                let data = try! JSONEncoder().encode(response)
+                dispatchWorkItem = DispatchWorkItem(block: {
+                    completion(data, HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil), nil)
+                })
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: dispatchWorkItem)
+            }, onCancel: {
+                dispatchWorkItem.cancel()
+            })
+        }
+        let sut = KudaGoSearchAPI(session: networkServiceMock)
+        let expectation = XCTestExpectation(description: "Search canceled")
+        expectation.isInverted = true
+        let searchTask = sut.searchEvents(withText: "Конференция") { (result) in
+            expectation.fulfill()
+        }
+        searchTask.resume()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.48) {
+            searchTask.cancel()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
+
     func testSearchWhenNetworkServiceRequestSucceedThenReturnsCorrectResutsInCompletion() {
         // Arrange
         let testScheduler = TestScheduler(initialClock: 0)
@@ -82,7 +109,7 @@ class KudaGoSearchAPITests: XCTestCase {
         XCTAssert(actualResult?.count == 1)
     }
 
-    func testSearchWhenNetworkServiceRequestCanceledSucceedThenReturnsCorrectResutsInCompletion() {
+    func testSearchWhenCancelTaskThenSearchIsCanceled() {
         // Arrange
         let testScheduler = TestScheduler(initialClock: 0)
         let networkServiceMock = URLSessionMock { url, completion in

@@ -46,7 +46,8 @@ class SmartDrawerHidingStrategy: DrawerHidingStrategy {
         self.timeInSeconds = timeInSeconds
     }
 
-    func hideEvents(didChangeAutoRotationMode: Observable<Bool>, didUpdateSpeed: Observable<Double>) -> Observable<Void> {
+    func hideEvents(didChangeAutoRotationMode: Observable<Bool>,
+                    didUpdateSpeed: Observable<Double>) -> Observable<Void> {
         let autoRotationIsOn = didChangeAutoRotationMode.distinctUntilChanged()
         let autoRotationDidTurnOn = autoRotationIsOn.filter { $0 }.mapTo(())
         let autoRotationDidTurnOff = autoRotationIsOn.filter { !$0 }.mapTo(())
