@@ -37,6 +37,7 @@
 		8797BE052248D8C600C1E0BE /* MapKudaGoSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8797BE042248D8C600C1E0BE /* MapKudaGoSearchViewController.swift */; };
 		8797BE082248DA8700C1E0BE /* DrawerConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8797BE072248DA8700C1E0BE /* DrawerConstants.swift */; };
 		8797BE0A2248DB2F00C1E0BE /* MapDrawerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8797BE092248DB2F00C1E0BE /* MapDrawerViewController.swift */; };
+		8797BE0C2249ED3F00C1E0BE /* SchedulerProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8797BE0B2249ED3F00C1E0BE /* SchedulerProvider.swift */; };
 		87A1BC3F2244F58600E3C5C7 /* RootSamplesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A1BC3E2244F58600E3C5C7 /* RootSamplesViewController.swift */; };
 		B41AE3219CF975773186B52C /* Pods_RxSamplesTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B5C2AFAE06168D1563E0CC /* Pods_RxSamplesTests.framework */; };
 /* End PBXBuildFile section */
@@ -91,6 +92,7 @@
 		8797BE042248D8C600C1E0BE /* MapKudaGoSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapKudaGoSearchViewController.swift; sourceTree = "<group>"; };
 		8797BE072248DA8700C1E0BE /* DrawerConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawerConstants.swift; sourceTree = "<group>"; };
 		8797BE092248DB2F00C1E0BE /* MapDrawerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapDrawerViewController.swift; sourceTree = "<group>"; };
+		8797BE0B2249ED3F00C1E0BE /* SchedulerProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulerProvider.swift; sourceTree = "<group>"; };
 		87A1BC3E2244F58600E3C5C7 /* RootSamplesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootSamplesViewController.swift; sourceTree = "<group>"; };
 		BD046DC0E3328DA8F83F2CD0 /* Pods-RxSamples.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxSamples.release.xcconfig"; path = "Target Support Files/Pods-RxSamples/Pods-RxSamples.release.xcconfig"; sourceTree = "<group>"; };
 		F834EF785C4B05DDE7BB7098 /* Pods_RxSamples.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RxSamples.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -228,6 +230,7 @@
 			children = (
 				8797BE072248DA8700C1E0BE /* DrawerConstants.swift */,
 				8797BE092248DB2F00C1E0BE /* MapDrawerViewController.swift */,
+				8797BE0B2249ED3F00C1E0BE /* SchedulerProvider.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -465,6 +468,7 @@
 				8797BDFF224680FE00C1E0BE /* StyleKit.m in Sources */,
 				873D65E8224388E00040DAD8 /* ShapesDataSource.swift in Sources */,
 				873D66052243B8C50040DAD8 /* DrawerHidingStrategies.swift in Sources */,
+				8797BE0C2249ED3F00C1E0BE /* SchedulerProvider.swift in Sources */,
 				873D660C2243E1810040DAD8 /* KudaGoSearchAPI.swift in Sources */,
 				878A62A92245141E00E608B0 /* WayPoint.swift in Sources */,
 				873D65EF224399E30040DAD8 /* Adapters.swift in Sources */,

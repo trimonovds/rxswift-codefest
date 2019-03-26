@@ -40,19 +40,24 @@ protocol Map: AnyObject {
     var mapCameraEvents: Observable<MapCameraEventArgs> { get }
 }
 
+protocol MapKudaGoSearchAPI {
+    func searchEvents(with text: String, locationArgs: LocationArgs) -> Observable<Result<[KudaGoEvent], APIError>>
+}
+
 class MapKudaGoSearchViewModel {
 
     var didChangeScreenState: Observable<ScreenState> {
         return screenState.asObservable()
     }
 
-    init(map: Map, searchApi: KudaGoSearchAPI) {
+    init(map: Map, searchApi: KudaGoSearchAPI, schedulerProvider: SchedulerProvider) {
         self.map = map
         self.searchApi = searchApi
+        self.schedulerProvider = schedulerProvider
 
         let finishedCameraMoves = map.mapCameraEvents.filter { $0.state == .finished }
         let searchRequests = finishedCameraMoves
-            .debounce(0.5, scheduler: MainScheduler.instance)
+            .debounce(0.5, scheduler: schedulerProvider.mainScheduler)
             .withLatestFrom(map.mapCameraEvents)
             .filter { $0.state != .started }
 
@@ -78,13 +83,13 @@ class MapKudaGoSearchViewModel {
                     return .error
                 }
             }
-            .observeOn(MainScheduler.instance)
             .bind(to: screenState)
             .disposed(by: bag)
     }
 
     private let map: Map
     private let searchApi: KudaGoSearchAPI
+    private let schedulerProvider: SchedulerProvider
     private let screenState = PublishRelay<ScreenState>()
     private let bag = DisposeBag()
 }
@@ -108,8 +113,13 @@ class MapKudaGoSearchViewController: MapDrawerViewController {
         tableView.dataSource = dataSource
 
         let map = RxMapDelegate(mapView: mapView)
-        viewModel = MapKudaGoSearchViewModel(map: map, searchApi: KudaGoSearchAPI(session: URLSession.shared))
+        viewModel = MapKudaGoSearchViewModel(
+            map: map,
+            searchApi: KudaGoSearchAPI(session: URLSession.shared),
+            schedulerProvider: DefaultSchedulerProvider.shared
+        )
         viewModel.didChangeScreenState
+            .observeOn(MainScheduler.instance)
             .bind(onNext: { [weak self] state in
                 guard let slf = self else { return }
                 slf.state = state
@@ -155,7 +165,6 @@ class RxMapDelegate: NSObject, Map, MKMapViewDelegate {
     private let mapCamera = PublishRelay<MapCameraEventArgs>()
 }
 
-
 fileprivate extension MapKudaGoSearchViewController {
 
     private func updateTableView(with events: [KudaGoEvent]) {
@@ -169,6 +178,15 @@ fileprivate extension MapKudaGoSearchViewController {
 
     private func updateNetworkActivityIndicator(withIsLoading isLoading: Bool) {
         UIApplication.shared.isNetworkActivityIndicatorVisible = isLoading
+    }
+}
+
+extension KudaGoSearchAPI {
+    func searchEvents(with text: String, locationArgs: LocationArgs) -> Observable<Result<[KudaGoEvent], APIError>> {
+        let asyncRequest = { (_ completion: @escaping (Result<[KudaGoEvent], APIError>) -> Void) -> URLSessionTaskProtocol in
+            return self.searchEvents(withText: text, locationArgs: locationArgs, completion: completion)
+        }
+        return Observable.fromAsync(asyncRequest)
     }
 }
 
