@@ -13,7 +13,7 @@ import RxCocoa
 import Utils
 import UltraDrawerView
 
-class MapDrawerViewController: UIViewController, UIScrollViewDelegate, MKMapViewDelegate {
+class MapDrawerViewController: UIViewController, UIScrollViewDelegate {
 
     var mapView: MKMapView!
     var tableView: UITableView!
@@ -24,7 +24,6 @@ class MapDrawerViewController: UIViewController, UIScrollViewDelegate, MKMapView
         super.viewDidLoad()
 
         mapView = MKMapView()
-        mapView.delegate = self
         view.addSubview(mapView)
         mapView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate(mapView.pinToParent())

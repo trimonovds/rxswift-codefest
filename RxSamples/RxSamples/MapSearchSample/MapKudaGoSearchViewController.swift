@@ -13,25 +13,83 @@ import RxCocoa
 import Utils
 import UltraDrawerView
 
+enum MapAnimationState {
+    case finished
+    case started
+}
+
+enum MapKudaGoSearchStrings {
+    static let events: String = "Спектакли"
+}
+
+struct MapCameraEventArgs {
+    let mapCamera: MKMapCamera
+    let state: MapAnimationState
+    let radius: Double
+}
+
+enum ScreenState {
+    case initial
+    case loading
+    case found([KudaGoEvent])
+    case error
+    case searchCanceled
+}
+
+protocol Map: AnyObject {
+    var mapCameraEvents: Observable<MapCameraEventArgs> { get }
+}
+
+class MapKudaGoSearchViewModel {
+
+    var didChangeScreenState: Observable<ScreenState> {
+        return screenState.asObservable()
+    }
+
+    init(map: Map, searchApi: KudaGoSearchAPI) {
+        self.map = map
+        self.searchApi = searchApi
+
+        let finishedCameraMoves = map.mapCameraEvents.filter { $0.state == .finished }
+        let searchRequests = finishedCameraMoves
+            .debounce(0.5, scheduler: MainScheduler.instance)
+            .withLatestFrom(map.mapCameraEvents)
+            .filter { $0.state != .started }
+
+        searchRequests
+            .flatMapLatest { [weak self] request -> Observable<Result<[KudaGoEvent], APIError>> in
+                guard let slf = self else { return .empty() }
+                slf.screenState.accept(.loading)
+                let interruptions = slf.map.mapCameraEvents
+                    .filter { $0.state == .started }
+                    .do(onNext: { [weak slf] _ in
+                        slf?.screenState.accept(.searchCanceled)
+                    })
+                let locationArgs = LocationArgs(coordinate: request.mapCamera.centerCoordinate, radius: request.radius)
+                return slf.searchApi
+                    .searchEvents(with: MapKudaGoSearchStrings.events, locationArgs: locationArgs)
+                    .takeUntil(interruptions)
+            }
+            .map { result -> ScreenState in
+                switch result {
+                case .success(let events):
+                    return .found(events)
+                case .error(_):
+                    return .error
+                }
+            }
+            .observeOn(MainScheduler.instance)
+            .bind(to: screenState)
+            .disposed(by: bag)
+    }
+
+    private let map: Map
+    private let searchApi: KudaGoSearchAPI
+    private let screenState = PublishRelay<ScreenState>()
+    private let bag = DisposeBag()
+}
+
 class MapKudaGoSearchViewController: MapDrawerViewController {
-
-    enum MapCameraState {
-        case idle
-        case animating
-    }
-
-    struct MapCameraEventArgs {
-        let mapCamera: MKMapCamera
-        let state: MapCameraState
-    }
-
-    enum ScreenState {
-        case initial
-        case searching
-        case found([KudaGoEvent])
-        case error
-        case searchCanceled
-    }
 
     var state: ScreenState = .initial {
         didSet {
@@ -43,43 +101,18 @@ class MapKudaGoSearchViewController: MapDrawerViewController {
         }
     }
 
-    let mapCamera = PublishRelay<MapCameraEventArgs>()
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
         tableView.backgroundColor = .white
         tableView.dataSource = dataSource
 
-        let finishedCameraMoves = mapCamera.filter { $0.state == .idle }
-        let searchRequests = finishedCameraMoves
-            .debounce(0.5, scheduler: MainScheduler.instance)
-            .withLatestFrom(mapCamera)
-            .filter { $0.state != .animating }
-
-        searchRequests
-            .flatMapLatest { [weak self] request -> Observable<Result<[KudaGoEvent], APIError>> in
-                guard let slf = self else { return .empty() }
-                slf.state = .searching
-                let interruptions = slf.mapCamera
-                    .filter { $0.state == .animating }
-                    .do(onNext: { [weak slf] _ in
-                        slf?.state = .searchCanceled
-                    })
-                let locationArgs = LocationArgs(coordinate: request.mapCamera.centerCoordinate, radius: slf.mapView.currentRadius())
-                return slf.searchApi
-                    .searchEvents(with: Constants.events, locationArgs: locationArgs)
-                    .takeUntil(interruptions)
-            }
-            .observeOn(MainScheduler.instance)
-            .bind(onNext: { [weak self] result in
+        let map = RxMapDelegate(mapView: mapView)
+        viewModel = MapKudaGoSearchViewModel(map: map, searchApi: KudaGoSearchAPI(session: URLSession.shared))
+        viewModel.didChangeScreenState
+            .bind(onNext: { [weak self] state in
                 guard let slf = self else { return }
-                switch result {
-                case .success(let events):
-                    slf.state = .found(events)
-                case .error(_):
-                    slf.state = .error
-                }
+                slf.state = state
             })
             .disposed(by: bag)
     }
@@ -92,24 +125,38 @@ class MapKudaGoSearchViewController: MapDrawerViewController {
         mapView.setCamera(camera, animated: true)
     }
 
-    func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
-        self.mapCamera.accept(.init(mapCamera: mapView.camera, state: .animating))
-    }
-
-    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        self.mapCamera.accept(.init(mapCamera: mapView.camera, state: .idle))
-    }
+    private var viewModel: MapKudaGoSearchViewModel!
 
     private let dataSource = TableViewDataSource()
-    private let searchApi = KudaGoSearchAPI(session: URLSession.shared)
     private let bag = DisposeBag()
 }
 
-fileprivate extension MapKudaGoSearchViewController {
+class RxMapDelegate: NSObject, Map, MKMapViewDelegate {
 
-    enum Constants {
-        static let events: String = "Спектакли"
+    var mapCameraEvents: Observable<MapCameraEventArgs> {
+        return mapCamera.asObservable()
     }
+
+    init(mapView: MKMapView) {
+        self.mapView = mapView
+        super.init()
+        mapView.delegate = self
+    }
+
+    func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
+        self.mapCamera.accept(.init(mapCamera: mapView.camera, state: .started, radius: mapView.currentRadius()))
+    }
+
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        self.mapCamera.accept(.init(mapCamera: mapView.camera, state: .finished, radius: mapView.currentRadius()))
+    }
+
+    private let mapView: MKMapView
+    private let mapCamera = PublishRelay<MapCameraEventArgs>()
+}
+
+
+fileprivate extension MapKudaGoSearchViewController {
 
     private func updateTableView(with events: [KudaGoEvent]) {
         dataSource.sectionConfigurations = [
@@ -140,10 +187,10 @@ extension MKMapView {
 
 }
 
-extension MapKudaGoSearchViewController.ScreenState {
+extension ScreenState {
     var isLoading: Bool {
         switch self {
-        case .searching:
+        case .loading:
             return true
         default:
             return false
@@ -164,11 +211,11 @@ extension MapKudaGoSearchViewController.ScreenState {
     var cardHeaderTitle: String {
         switch self {
         case .initial:
-            return MapKudaGoSearchViewController.Constants.events
+            return MapKudaGoSearchStrings.events
         case .error:
             return "Произошла ошибка"
-        case .searching:
-            return "Ищем \(MapKudaGoSearchViewController.Constants.events)..."
+        case .loading:
+            return "Ищем \(MapKudaGoSearchStrings.events)..."
         case .found(let events):
             let count = events.count
             return count == 0 ? "Ничего не найдено" : "Найдено \(count) результатов"
