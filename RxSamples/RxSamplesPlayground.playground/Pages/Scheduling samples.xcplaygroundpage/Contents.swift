@@ -65,17 +65,32 @@ func calculateFibonacci(n: Int) -> Observable<Int> {
 //        })
 //}
 
-example("observeOn after observeOn") {
+example("observeOn") {
     calculateFibonacci(n: 10)
-        .map { i -> Int in logWithQueueInfo("map"); return i * 2 }
+        .do(onNext: { i in logWithQueueInfo("doOnNext") },
+            onSubscribe: { logWithQueueInfo("doOnSubscribe") },
+            onSubscribed: { logWithQueueInfo("doOnSubscribed") },
+            onDispose: { logWithQueueInfo("doOnDispose") })
         .subscribeOn(SerialDispatchQueueScheduler(qos: .background))
         .observeOn(MainScheduler.instance)
-        .do(onNext: { i in logWithQueueInfo("doOnNext") },
-            onSubscribe: { logWithQueueInfo("doOnSubscribe") }, // Before DoSink subsribes
-            onSubscribed: { logWithQueueInfo("doOnSubscribed") }, // After DoSink subsribes
-            onDispose: { logWithQueueInfo("doOnDispose") })
-        .observeOn(SerialDispatchQueueScheduler(qos: .background))
         .subscribe(onNext: { (num) in
             logWithQueueInfo("onNext: \(num)")
         })
 }
+
+
+
+//example("observeOn after observeOn") {
+//    calculateFibonacci(n: 10)
+//        .map { i -> Int in logWithQueueInfo("map"); return i * 2 }
+//        .subscribeOn(SerialDispatchQueueScheduler(qos: .background))
+//        .observeOn(MainScheduler.instance)
+//        .do(onNext: { i in logWithQueueInfo("doOnNext") },
+//            onSubscribe: { logWithQueueInfo("doOnSubscribe") }, // Before DoSink subsribes
+//            onSubscribed: { logWithQueueInfo("doOnSubscribed") }, // After DoSink subsribes
+//            onDispose: { logWithQueueInfo("doOnDispose") })
+//        .observeOn(SerialDispatchQueueScheduler(qos: .background))
+//        .subscribe(onNext: { (num) in
+//            logWithQueueInfo("onNext: \(num)")
+//        })
+//}
