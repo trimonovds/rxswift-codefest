@@ -50,7 +50,7 @@ class MapKudaGoSearchViewModel {
         return screenState.asObservable()
     }
 
-    init(map: Map, searchApi: KudaGoSearchAPI, schedulerProvider: SchedulerProvider) {
+    init(map: Map, searchApi: MapKudaGoSearchAPI, schedulerProvider: SchedulerProvider) {
         self.map = map
         self.searchApi = searchApi
         self.schedulerProvider = schedulerProvider
@@ -88,7 +88,7 @@ class MapKudaGoSearchViewModel {
     }
 
     private let map: Map
-    private let searchApi: KudaGoSearchAPI
+    private let searchApi: MapKudaGoSearchAPI
     private let schedulerProvider: SchedulerProvider
     private let screenState = PublishRelay<ScreenState>()
     private let bag = DisposeBag()
@@ -181,7 +181,7 @@ fileprivate extension MapKudaGoSearchViewController {
     }
 }
 
-extension KudaGoSearchAPI {
+extension KudaGoSearchAPI: MapKudaGoSearchAPI {
     func searchEvents(with text: String, locationArgs: LocationArgs) -> Observable<Result<[KudaGoEvent], APIError>> {
         let asyncRequest = { (_ completion: @escaping (Result<[KudaGoEvent], APIError>) -> Void) -> URLSessionTaskProtocol in
             return self.searchEvents(withText: text, locationArgs: locationArgs, completion: completion)

@@ -38,6 +38,7 @@
 		8797BE082248DA8700C1E0BE /* DrawerConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8797BE072248DA8700C1E0BE /* DrawerConstants.swift */; };
 		8797BE0A2248DB2F00C1E0BE /* MapDrawerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8797BE092248DB2F00C1E0BE /* MapDrawerViewController.swift */; };
 		8797BE0C2249ED3F00C1E0BE /* SchedulerProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8797BE0B2249ED3F00C1E0BE /* SchedulerProvider.swift */; };
+		8797BE0E2249EDEE00C1E0BE /* MapKudaGoSearchViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8797BE0D2249EDEE00C1E0BE /* MapKudaGoSearchViewModelTests.swift */; };
 		87A1BC3F2244F58600E3C5C7 /* RootSamplesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A1BC3E2244F58600E3C5C7 /* RootSamplesViewController.swift */; };
 		B41AE3219CF975773186B52C /* Pods_RxSamplesTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68B5C2AFAE06168D1563E0CC /* Pods_RxSamplesTests.framework */; };
 /* End PBXBuildFile section */
@@ -93,6 +94,7 @@
 		8797BE072248DA8700C1E0BE /* DrawerConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawerConstants.swift; sourceTree = "<group>"; };
 		8797BE092248DB2F00C1E0BE /* MapDrawerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapDrawerViewController.swift; sourceTree = "<group>"; };
 		8797BE0B2249ED3F00C1E0BE /* SchedulerProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulerProvider.swift; sourceTree = "<group>"; };
+		8797BE0D2249EDEE00C1E0BE /* MapKudaGoSearchViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapKudaGoSearchViewModelTests.swift; sourceTree = "<group>"; };
 		87A1BC3E2244F58600E3C5C7 /* RootSamplesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootSamplesViewController.swift; sourceTree = "<group>"; };
 		BD046DC0E3328DA8F83F2CD0 /* Pods-RxSamples.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxSamples.release.xcconfig"; path = "Target Support Files/Pods-RxSamples/Pods-RxSamples.release.xcconfig"; sourceTree = "<group>"; };
 		F834EF785C4B05DDE7BB7098 /* Pods_RxSamples.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RxSamples.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -190,6 +192,7 @@
 				873D66062243B9B30040DAD8 /* SimpleDrawerHidingStrategyTests.swift */,
 				8797BDF822464B6B00C1E0BE /* SmartDrawerHidingStrategyTests.swift */,
 				873D66082243C6AD0040DAD8 /* TestSchedulerUsageWithoutRxTests.swift */,
+				8797BE0D2249EDEE00C1E0BE /* MapKudaGoSearchViewModelTests.swift */,
 			);
 			path = RxSamplesTests;
 			sourceTree = "<group>";
@@ -496,6 +499,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				873D65FD2243A8200040DAD8 /* DrawerHidingBehaviorTests.swift in Sources */,
+				8797BE0E2249EDEE00C1E0BE /* MapKudaGoSearchViewModelTests.swift in Sources */,
 				8797BDF922464B6B00C1E0BE /* SmartDrawerHidingStrategyTests.swift in Sources */,
 				873D66092243C6AD0040DAD8 /* TestSchedulerUsageWithoutRxTests.swift in Sources */,
 				873D66072243B9B30040DAD8 /* SimpleDrawerHidingStrategyTests.swift in Sources */,
