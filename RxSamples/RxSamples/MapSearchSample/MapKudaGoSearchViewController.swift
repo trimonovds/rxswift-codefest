@@ -13,13 +13,13 @@ import RxCocoa
 import Utils
 import UltraDrawerView
 
+enum MapKudaGoSearchStrings {
+    static let events: String = "Спектакли"
+}
+
 enum MapAnimationState {
     case finished
     case started
-}
-
-enum MapKudaGoSearchStrings {
-    static let events: String = "Спектакли"
 }
 
 struct MapCameraEventArgs {
