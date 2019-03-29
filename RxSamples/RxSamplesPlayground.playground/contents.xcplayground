@@ -13,6 +13,7 @@
         <page name='Lifecycle - hot[retain self in operator + retain and dispose subscr]'/>
         <page name='To Rx paradigm (from completions)'/>
         <page name='Scheduling samples'/>
-        <page name='Lifecycle another'/>
+        <page name='Lifecycle - another'/>
+        <page name='Lifecycle - subjects'/>
     </pages>
 </playground>
